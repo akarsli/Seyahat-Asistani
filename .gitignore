@@ -1,0 +1,10 @@
+# React
+frontend/node_modules/
+frontend/build/
+frontend/.env
+
+# Java (Maven/Gradle)
+backend/target/
+backend/build/
+backend/.idea/
+*.class

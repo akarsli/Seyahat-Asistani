@@ -191,8 +191,11 @@
   display: block;
   text-align: center;
   margin-top: auto;
-  margin-bottom: 20px;
+  padding-bottom: 20px;
   flex: 1;
+  border-top: 1px solid var(--primary-color);
+  border-radius: 15px;
+  background-color: #f9e7e1;
 }
 
 .footer a {
@@ -201,14 +204,13 @@
 }
 
 .content {
-  margin: 20px; 
+  margin: 20px;
   display: flex;
   flex-direction:row;
   justify-content: center;
-  gap: 20%;
-  padding: 15px 0;
-  border-top: 1px solid #565654;
-  border-bottom: 1px solid #565654;
+  padding-bottom: 20px;
+  gap: 15%;
+  border-bottom: 1px solid var(--primary-color);
 }
 
 .altcontent {
@@ -225,7 +227,12 @@
 
 .social-links {
   display: flex;
-  gap: 10px;
+  gap: 15px;
+}
+
+.social-links a {
+  font-size: 1.3rem;
+  color: var(--primary-color);
 }
 
 .end {

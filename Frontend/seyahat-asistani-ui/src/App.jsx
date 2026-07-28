@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { FaFacebook, FaLinkedin, FaYoutube, FaPinterest, FaReddit} from 'react-icons/fa';
+import { RiInstagramFill } from "react-icons/ri";
+import { SiTiktok } from 'react-icons/si';
 import axios from 'axios'
 import './App.css'
 
@@ -279,12 +282,12 @@ function App() {
             <p>© {currentYear} Tüm hakları saklıdır. </p>
           </div>
           <div className="social-links">
-            <a href="#">TikTok</a>
-            <a href="#">Instagram</a>
-            <a href="#">LinkedIn</a>
-            <a href="#">YouTube</a>
-            <a href="#">Pinterest</a>
-            <a href="#">Reddit</a>
+            <a href="#"><SiTiktok /></a>
+            <a href="#"><RiInstagramFill /></a>
+            <a href="#"><FaLinkedin /></a>
+            <a href="#"><FaYoutube /></a>
+            <a href="#"><FaPinterest /></a>
+            <a href="#"><FaReddit /></a>
           </div>
           
         </div>

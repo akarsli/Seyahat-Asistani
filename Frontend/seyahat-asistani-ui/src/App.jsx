@@ -124,6 +124,8 @@ function App() {
     setTempValue((prevTempValue) => (prevTempValue === '°C' ? '°F' : '°C'));
   };
 
+  const currentYear = new Date().getFullYear();
+
   // ---------------------------------------------------------
   // 3. ARAYÜZ (JSX)
   // ---------------------------------------------------------
@@ -242,6 +244,51 @@ function App() {
           </button>
         </div>
       )}
+
+      <div className="footer">
+        <div className="content">
+          <div className="altcontent">
+            <h4>Company</h4>
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Blog</a>
+            <a href="#">Contact</a>
+            <a href="#">FAQ</a>
+            <a href="#">Press</a>
+          </div>
+          <div className="altcontent">
+            <h4>Legal</h4>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Imprint</a>
+            <a href="#">Cookie settings</a>
+          </div>
+          <div className="altcontent">
+            <h4>Top Countries</h4>
+            <a href="#">Spain</a>
+            <a href="#">Italy</a>
+            <a href="#">Portugal</a>
+            <a href="#">Germany</a>
+            <a href="#">Turkiye</a>
+            <a href="#">All Countries</a>
+          </div>
+        </div>
+        <div className="endcontent">
+          <div className="end">
+            <p>Made with 💜 in Istanbul</p>
+            <p>© {currentYear} Tüm hakları saklıdır. </p>
+          </div>
+          <div className="social-links">
+            <a href="#">TikTok</a>
+            <a href="#">Instagram</a>
+            <a href="#">LinkedIn</a>
+            <a href="#">YouTube</a>
+            <a href="#">Pinterest</a>
+            <a href="#">Reddit</a>
+          </div>
+          
+        </div>
+      </div>
 
     </div>
   )

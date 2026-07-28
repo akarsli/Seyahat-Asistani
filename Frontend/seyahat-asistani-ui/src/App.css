@@ -186,9 +186,60 @@
   margin-left: 15%;
 }
 
+.footer {
+  height: auto;
+  display: block;
+  text-align: center;
+  margin-top: auto;
+  margin-bottom: 20px;
+  flex: 1;
+}
+
+.footer a {
+  text-decoration: none;
+  color: #6d6d6b;
+}
+
+.content {
+  margin: 20px; 
+  display: flex;
+  flex-direction:row;
+  justify-content: center;
+  gap: 20%;
+  padding: 15px 0;
+  border-top: 1px solid #565654;
+  border-bottom: 1px solid #565654;
+}
+
+.altcontent {
+  display:grid;
+  gap: 10px;
+}
+
+.endcontent {
+  display: flex;
+  padding: 0 25px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.social-links {
+  display: flex;
+  gap: 10px;
+}
+
+.end {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 20px;
+}
+
+
+
 /* Yumuşak Açılış Animasyonu */
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
 }
-

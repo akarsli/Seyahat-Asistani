@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { FaFacebook, FaLinkedin, FaYoutube, FaPinterest, FaReddit} from 'react-icons/fa';
+import { FaFacebook, FaLinkedin, FaYoutube, FaPinterest, FaReddit, FaUser} from 'react-icons/fa';
 import { RiInstagramFill } from "react-icons/ri";
+import { IoIosArrowRoundForward } from "react-icons/io";
 import { SiTiktok } from 'react-icons/si';
 import axios from 'axios'
 import './App.css'
@@ -146,7 +147,7 @@ function App() {
             <button>🇹🇷</button>
             <button onClick={handleClick}>{tempValue}</button>
           </div>
-          <button>👤</button>
+          <a><FaUser /></a>
         </div>
       </div>
 
@@ -247,6 +248,37 @@ function App() {
           </button>
         </div>
       )}
+
+      <div className="destinations">
+        <h3>Seyahat Tavsiyeleri</h3>
+        <div className="destinations-content">
+          <div className="destinations-card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFhyQXqA5UEASmiw-PYUjz4AjFvnf0gZyeQu3BxkMVdQ&s=10" alt="" />
+            <p>Aile ile Avrupa Turu</p>
+            <div className="link-container">
+              <a href="">Planlamaya Başla  </a>
+              <IoIosArrowRoundForward />
+            </div>
+          </div>
+          <div className="destinations-card">
+            <img src="https://www.hunkarturizm.com/image/blog/balkanlar-gezilecek-yerler_66b5da3e8c265.jpeg" alt="" />
+            <p>Arkadaşlarla Balkan Turu</p>
+            <div className="link-container">
+              <a href="">Planlamaya Başla  </a>
+              <IoIosArrowRoundForward />
+            </div>
+          </div>
+          <div className="destinations-card">
+            <img src="https://www.lumidea.co/tr/images/blog/turkiye-hakkinda.jpg" alt="" />
+            <p>Yalnız Türkiye Turu</p>
+            <div className="link-container">
+              <a href="">Planlamaya Başla  </a>
+              <IoIosArrowRoundForward />
+            </div>
+          </div>
+        </div>
+        
+      </div>
 
       <div className="footer">
         <div className="content">

@@ -168,18 +168,14 @@
 
 .hotels-grid {
   padding: 10px 0;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .hotels-grid img {
   height: auto;
   width: 60%;
   border-radius: 5px;
-}
-
-.hotels-grid a {
-  text-decoration: none;
-  color: var(--primary-color);
 }
 
 .result-container button {
@@ -205,9 +201,10 @@
 }
 
 .destinations-content {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   justify-content: center;
-  align-items: center;
+  align-items: start;
   gap: 40px;
 }
 
@@ -232,7 +229,7 @@
 }
 
 .link-container {
-  display: flex;
+  display: block;
   align-items: center;
 }
 
@@ -248,8 +245,6 @@
     color: var(--primary-color);
     border-bottom: 1px solid var(--primary-color);
   }
-
-
 }
 
 .footer {
@@ -308,7 +303,71 @@
   gap: 20px;
 }
 
+@media (max-width: 768px) {
+  .destinations-content {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
+  .survey-container {
+    width: 80%;
+  } 
+
+  .result-container {
+    width: 80%;
+  }
+
+  .hotels-grid {
+  padding: 10px 0;
+  display: grid;
+  text-align: center;
+  gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  }
+  
+}
+
+@media (max-width: 576px) {
+  .destinations-content {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .survey-container {
+    width: 80%;
+    font-size: 0.8rem;
+  } 
+
+  .result-container {
+    width: 80%;
+  }
+
+  .hotels-grid {
+  padding: 10px 0;
+  display: grid;
+  text-align: center;
+  gap: 20px;
+  grid-template-columns: repeat(1, 1fr);
+  }
+
+  .content {
+  display: flex;
+  flex-direction:column;
+  justify-content: center;
+  padding-bottom: 0;
+  }
+
+  .altcontent {
+    margin-bottom: 20px;
+  }
+
+  .endcontent {
+  display: flex;
+  flex-direction: column-reverse;
+  padding: 0 25px;
+  align-items:center;
+  justify-content:center;
+  gap: 15px;
+  }
+}
 
 /* Yumuşak Açılış Animasyonu */
 

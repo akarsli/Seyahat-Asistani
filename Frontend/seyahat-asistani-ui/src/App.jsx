@@ -98,7 +98,7 @@ function App() {
 
     try {
       // Spring Boot Backend'e İstek Gönderimi
-      const response = await axios.post('http://localhost:8080/api/get-vacation-plan', {
+      const response = await axios.post('http://localhost:8081/api/get-vacation-plan', {
         kisiSayisi: kisiSayisiDegeri,
         butce: butceHarfMap[answers[2]],
         tatilTarzi: tatilTarziHarfMap[answers[1]]
@@ -235,9 +235,10 @@ function App() {
                 <div className="hotel-info">
                   <h4>{otel.isim}</h4>
                   <p><strong>Fiyat:</strong> {otel.fiyat}</p>
-                  <a href={otel.link} target="_blank" rel="noreferrer" className="hotel-link">
-                    Oteli İncele
-                  </a>
+                    <div className="link-container">
+                      <a href="">Planlamaya Başla </a>
+                      <IoIosArrowRoundForward />
+                    </div>
                 </div>
               </div>
             ))}
@@ -272,7 +273,7 @@ function App() {
             <img src="https://www.lumidea.co/tr/images/blog/turkiye-hakkinda.jpg" alt="" />
             <p>Yalnız Türkiye Turu</p>
             <div className="link-container">
-              <a href="">Planlamaya Başla  </a>
+              <a href="">Planlamaya Başla </a>
               <IoIosArrowRoundForward />
             </div>
           </div>

@@ -12,6 +12,7 @@ function App() {
   // ---------------------------------------------------------
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false)
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0)
 
   const loadingMessages = [
@@ -242,7 +243,7 @@ function App() {
                 </div>
               )}
 
-              <button
+              <button className="result-container-btn"
                 onClick={handleNextQuestion}
                 disabled={
                   !answers[currentQuestion.id] || 
@@ -266,6 +267,23 @@ function App() {
             <p>{result.yapayZekaCevabi.ikna_metni}</p>
           </div>
 
+          <div className="map-container" onClick={() => setIsMapModalOpen(true)}>
+            <iframe title="Şehir Haritası" 
+              loading="lazy"
+              allowFullScreen
+              src={`https://maps.google.com/maps?q=${encodeURIComponent("Oteller, " + result.yapayZekaCevabi.sehir)}&t=&z=13&ie=UTF8&iwloc=near&output=embed`}></iframe>
+          </div>
+
+          {isMapModalOpen && (
+            <div className="map-modal-overlay">
+              <div className="map-modal-content">
+                <button className="close-modal-btn" onClick={() => setIsMapModalOpen(false)}> X Kapat</button>
+                <iframe title='Büyük Şehir Haritası'               
+                src={`https://maps.google.com/maps?q=${encodeURIComponent("Oteller, " + result.yapayZekaCevabi.sehir)}&t=&z=13&ie=UTF8&iwloc=near&output=embed`}></iframe>
+              </div>
+            </div>
+          )}
+
           <h3>Önerilen Oteller</h3>
           <div className="hotels-grid">
             {result.oteller?.map((otel, index) => (
@@ -275,7 +293,7 @@ function App() {
                   <h4>{otel.isim}</h4>
                   <p><strong>Fiyat:</strong> {otel.fiyat}</p>
                     <div className="link-container">
-                      <a href="">Planlamaya Başla </a>
+                      <a href="">Oteli incele </a>
                       <IoIosArrowRoundForward />
                     </div>
                 </div>
@@ -283,7 +301,7 @@ function App() {
             ))}
           </div>
           
-          <button onClick={handleReset}>
+          <button onClick={handleReset} className="result-container-btn">
             Yeniden Anket Yap
           </button>
         </div>
@@ -292,7 +310,7 @@ function App() {
       <div className="destinations">
         <h3>Seyahat Tavsiyeleri</h3>
         <div className="destinations-content" 
-              onClick={() => handleQuickPlan(4, 'Orta', 'Tarihi yerler, şarap tadımı ve sakinlik')}>
+              onClick={() => handleQuickPlan(4, 'Orta', 'Tarihi yerler ve sakinlik')}>
           <div className="destinations-card">
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFhyQXqA5UEASmiw-PYUjz4AjFvnf0gZyeQu3BxkMVdQ&s=10" alt="" />
             <p>Aile ile Avrupa Turu</p>

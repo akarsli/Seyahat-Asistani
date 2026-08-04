@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { FaFacebook, FaLinkedin, FaYoutube, FaPinterest, FaReddit, FaUser} from 'react-icons/fa';
 import { RiInstagramFill } from "react-icons/ri";
 import { IoIosArrowRoundForward } from "react-icons/io";
@@ -12,6 +12,26 @@ function App() {
   // ---------------------------------------------------------
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
+  const [loadingMessageIndex, setLoadingMessageIndex] = useState(0)
+
+  const loadingMessages = [
+    "🤖 Yapay Zeka rotanızı haritalandırıyor...",
+    "✨ Bütçenize en uygun oteller taranıyor...",
+    "🌍 Tatil tarzınıza özel gizli cennetler keşfediliyor...",
+    "🎒 Valizinizi hazırlayın, harika bir plan yolda..."
+  ]
+
+  useEffect(() => {
+    let interval;
+    if (loading) {
+      interval = setInterval(() => {
+        setLoadingMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
+      }, 2500);
+    } else {
+      setLoadingMessageIndex(0);
+    }
+    return () => clearInterval(interval);
+  }, [loading]);
 
   // Anket State'leri
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
@@ -114,6 +134,26 @@ function App() {
     }
   }
 
+  const handleQuickPlan = async (kisiSayisi, butce, tatilTarzi) => {
+    window.scrollTo({top:0, behavior: "smooth" })
+    setLoading(true);
+
+    try {
+      const response = await axios.post('http://localhost:8081/api/get-vacation-plan', {
+        kisiSayisi: kisiSayisi,
+        butce: butce,
+        tatilTarzi: tatilTarzi
+      });
+
+      setResult(response.data);
+    } catch (error) {
+      alert("Backend'e ulaşılamadı. Spring Boot servisinin açık olduğundan emin olun.")
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   // Yeniden Anket Yapmak/Arama Yapmak İstendiğinde State'leri Sıfırlama
   const handleReset = () => {
     setResult(null)
@@ -139,7 +179,7 @@ function App() {
       {/* HEADER */}
       <div className="header">
         <div className="header-left">
-          <h2>HolidayTrip</h2>
+          <h2 onClick={() => window.location.reload(1)} style={{cursor:'pointer'}}>HolidayTrip</h2>
         </div>
         <div className="header-right">
           <div className="header-buttons">
@@ -157,8 +197,7 @@ function App() {
           {loading ? (
             /* Yüklenme Alanı */
             <div className="loading-container">
-              <h3>🤖 Yapay Zeka Harika Bir Rota Hazırlıyor...</h3>
-              <p>Lütfen bekleyin, yanıtlarınız analiz ediliyor.</p>
+              <h3>{loadingMessages[loadingMessageIndex]}</h3>
             </div>
           ) : (
             /* Anket Soruları */
@@ -252,7 +291,8 @@ function App() {
 
       <div className="destinations">
         <h3>Seyahat Tavsiyeleri</h3>
-        <div className="destinations-content">
+        <div className="destinations-content" 
+              onClick={() => handleQuickPlan(4, 'Orta', 'Tarihi yerler, şarap tadımı ve sakinlik')}>
           <div className="destinations-card">
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFhyQXqA5UEASmiw-PYUjz4AjFvnf0gZyeQu3BxkMVdQ&s=10" alt="" />
             <p>Aile ile Avrupa Turu</p>
@@ -261,7 +301,8 @@ function App() {
               <IoIosArrowRoundForward />
             </div>
           </div>
-          <div className="destinations-card">
+          <div className="destinations-card"
+              onClick={() => handleQuickPlan(3, 'Ekonomik', 'Tarihi yerler, şarap tadımı ve sakinlik')}>
             <img src="https://www.hunkarturizm.com/image/blog/balkanlar-gezilecek-yerler_66b5da3e8c265.jpeg" alt="" />
             <p>Arkadaşlarla Balkan Turu</p>
             <div className="link-container">
@@ -269,7 +310,8 @@ function App() {
               <IoIosArrowRoundForward />
             </div>
           </div>
-          <div className="destinations-card">
+          <div className="destinations-card"
+              onClick={() => handleQuickPlan(1, 'Orta', 'Doğa yürüyüşleri, kamp ve macera')}>
             <img src="https://www.lumidea.co/tr/images/blog/turkiye-hakkinda.jpg" alt="" />
             <p>Yalnız Türkiye Turu</p>
             <div className="link-container">

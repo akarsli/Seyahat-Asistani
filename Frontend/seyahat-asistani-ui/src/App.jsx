@@ -147,6 +147,7 @@ function App() {
       });
 
       setResult(response.data);
+
     } catch (error) {
       alert("Backend'e ulaşılamadı. Spring Boot servisinin açık olduğundan emin olun.")
       console.error(error);
@@ -284,18 +285,24 @@ function App() {
             </div>
           )}
 
-          <h3>Önerilen Oteller</h3>
+          <h3>🏆 En Yüksek Puanlı Oteller</h3>
           <div className="hotels-grid">
             {result.oteller?.map((otel, index) => (
               <div key={index} className="hotel-card">
                 <img src={otel.resim} alt={otel.isim} />
                 <div className="hotel-info">
                   <h4>{otel.isim}</h4>
+                  
+                  {/* JSON'dan gelen puanı yıldızla gösteriyoruz */}
+                  <p style={{ color: '#f39c12', fontWeight: 'bold' }}>
+                    ⭐ {otel.puan} / 10
+                  </p>
+                  
                   <p><strong>Fiyat:</strong> {otel.fiyat}</p>
-                    <div className="link-container">
-                      <a href="">Oteli incele </a>
-                      <IoIosArrowRoundForward />
-                    </div>
+                  <div className="link-container">
+                    <a href={otel.link}>Planlamaya Başla </a>
+                    <IoIosArrowRoundForward />
+                  </div>
                 </div>
               </div>
             ))}

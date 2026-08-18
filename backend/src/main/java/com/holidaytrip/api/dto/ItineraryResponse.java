@@ -10,7 +10,7 @@ public class ItineraryResponse {
     private String description;
     private int durationDays;
     private String estimatedBudget;
-    private String pace;
+    private String weather;
     private List<DailyPlan> dailyPlans;
 
     @Data

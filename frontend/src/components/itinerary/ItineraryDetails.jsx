@@ -31,7 +31,7 @@ const ItineraryDetails = ({ data }) => {
       <div className="max-w-4xl mx-auto p-6 md:p-8 space-y-8">
         
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
             <div className="p-3 bg-orange-100 text-orange-600 rounded-xl">
               <CloudSun className="w-6 h-6" />
@@ -49,21 +49,6 @@ const ItineraryDetails = ({ data }) => {
             <div>
               <p className="text-sm text-slate-500 font-medium">Tahmini Bütçe</p>
               <p className="text-lg font-bold text-slate-800">{data.estimatedBudget}</p>
-            </div>
-          </div>
-
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-            <div className="p-3 bg-purple-100 text-purple-600 rounded-xl">
-              <Activity className="w-6 h-6" />
-            </div>
-            <div className="w-full">
-              <p className="text-sm text-slate-500 font-medium mb-1 flex justify-between">
-                <span>Tempo</span>
-                <span className="font-bold text-purple-600">{data.pace}</span>
-              </p>
-              <div className="w-full bg-slate-100 rounded-full h-2">
-                <div className="bg-gradient-to-r from-purple-400 to-purple-600 h-2 rounded-full w-[60%]"></div>
-              </div>
             </div>
           </div>
         </div>

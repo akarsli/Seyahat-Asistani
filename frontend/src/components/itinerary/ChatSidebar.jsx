@@ -1,51 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Send, Map, SlidersHorizontal, User, Bot, Sparkles } from 'lucide-react';
 
-const ChatSidebar = ({ hasPlan, onSendPrompt }) => {
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      sender: 'ai',
-      text: hasPlan 
-        ? 'Merhaba! Ben HolidayTrip asistanınız. Sizin için hazırladığım rotayı yan tarafta görebilirsiniz. Rotada herhangi bir değişiklik yapmak ister misiniz? Örneğin hızı ayarlayabilir veya spesifik bir yer ekleyebiliriz.'
-        : 'Merhaba! Ben HolidayTrip asistanınız. Nereye seyahat etmek istersiniz? Bana hayalinizdeki tatili anlatın, sizin için planlayayım!',
-    }
-  ]);
+const ChatSidebar = ({ hasPlan, messages, onSendMessage, loading }) => {
   const [input, setInput] = useState('');
 
-  // Update initial message if the plan state changes from outside
-  useEffect(() => {
-    if (hasPlan && messages.length === 1 && messages[0].sender === 'ai') {
-      setMessages([{
-        id: Date.now(),
-        sender: 'ai',
-        text: 'Harika! Rotanızı yan tarafta görebilirsiniz. Rotada herhangi bir değişiklik yapmak ister misiniz?'
-      }]);
-    }
-  }, [hasPlan]);
-
   const handleSend = () => {
-    if (!input.trim()) return;
-    
-    // Add user message
-    const userText = input;
-    const newMsg = { id: Date.now(), sender: 'user', text: userText };
-    setMessages((prev) => [...prev, newMsg]);
+    if (!input.trim() || loading) return;
+    onSendMessage(input);
     setInput('');
-    
-    if (!hasPlan && onSendPrompt) {
-      // Generate the initial plan
-      onSendPrompt(userText);
-    } else {
-      // Mock AI response for refinement
-      setTimeout(() => {
-        setMessages(prev => [...prev, {
-          id: Date.now() + 1,
-          sender: 'ai',
-          text: 'Harika bir fikir! Rotanızı buna göre güncelliyorum. Başka bir isteğiniz var mı?'
-        }]);
-      }, 1500);
-    }
   };
 
   return (
@@ -86,20 +48,24 @@ const ChatSidebar = ({ hasPlan, onSendPrompt }) => {
                   : 'bg-slate-100 text-slate-800 rounded-tl-none'
               }`}>
                 <p className="text-sm leading-relaxed">{msg.text}</p>
-                {msg.sender === 'ai' && msg.id === 1 && hasPlan && (
-                  <div className="mt-3 flex gap-2">
-                    <button className="text-xs px-3 py-1.5 bg-white border border-slate-200 rounded-full hover:bg-slate-50 transition-colors">
-                      Haritayı Göster
-                    </button>
-                    <button className="text-xs px-3 py-1.5 bg-white border border-slate-200 rounded-full hover:bg-slate-50 transition-colors">
-                      Hızı Düşür
-                    </button>
-                  </div>
-                )}
               </div>
             </div>
           </div>
         ))}
+        {loading && (
+          <div className="flex justify-start">
+             <div className="flex gap-3 max-w-[85%] flex-row">
+               <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center bg-blue-100 text-[#1E3A8A]">
+                 <Bot className="w-4 h-4 animate-pulse" />
+               </div>
+               <div className="p-3 rounded-2xl bg-slate-100 text-slate-800 rounded-tl-none flex items-center gap-1">
+                 <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
+                 <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-100"></div>
+                 <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-200"></div>
+               </div>
+             </div>
+          </div>
+        )}
       </div>
 
       {/* Chat Input */}
@@ -108,14 +74,16 @@ const ChatSidebar = ({ hasPlan, onSendPrompt }) => {
           <input
             type="text"
             placeholder={hasPlan ? "Rotayı nasıl değiştirelim?" : "Hayalinizdeki tatili anlatın..."}
-            className="w-full pl-4 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/50 transition-all text-sm"
+            className="w-full pl-4 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/50 transition-all text-sm disabled:opacity-50"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+            disabled={loading}
           />
           <button 
             onClick={handleSend}
-            className="absolute right-2 p-2 bg-[#1E3A8A] text-white rounded-lg hover:bg-[#1e3a8acd] transition-colors"
+            disabled={loading}
+            className="absolute right-2 p-2 bg-[#1E3A8A] text-white rounded-lg hover:bg-[#1e3a8acd] transition-colors disabled:opacity-50"
           >
             <Send className="w-4 h-4" />
           </button>

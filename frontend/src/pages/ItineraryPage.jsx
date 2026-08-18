@@ -50,6 +50,8 @@ const ItineraryPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
+  const [isGenerating, setIsGenerating] = useState(false);
+  
   // Extraction State
   const [parameters, setParameters] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -79,7 +81,12 @@ const ItineraryPage = () => {
       if (isComplete) {
          setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Harika! Tüm detayları aldım. Şimdi sizin için en uygun rotayı hazırlıyorum, lütfen bekleyin...' }]);
          const fullPrompt = `Nereden: ${data.departureLocation}, Nereye: ${data.destination}, Tarih: ${data.travelDate}, Bütçe: ${data.budget}, Kişi: ${data.numberOfPeople}. Ek Detaylar: ${text}`;
-         await generatePlan(fullPrompt);
+         
+         // 1.5 saniyelik gecikme ile checklistin onaylı halini ekranda tutuyoruz
+         setTimeout(() => {
+           setIsGenerating(true);
+           generatePlan(fullPrompt);
+         }, 1500);
       } else {
          setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Teşekkürler. Lütfen sağ taraftaki listede eksik kalan (bekleniyor) bilgileri de bana söyler misiniz?' }]);
          setLoading(false);
@@ -115,6 +122,7 @@ const ItineraryPage = () => {
       setError(err.message);
     } finally {
       setLoading(false);
+      setIsGenerating(false);
     }
   };
 
@@ -157,7 +165,7 @@ const ItineraryPage = () => {
         </div>
         
         <div className="flex-1 h-full relative overflow-y-auto">
-          {loading && isComplete && !itineraryData ? (
+          {isGenerating && !itineraryData ? (
             <div className="h-full flex flex-col items-center justify-center bg-slate-50">
               <div className="relative">
                 <div className="w-24 h-24 border-4 border-blue-200 rounded-full animate-spin"></div>

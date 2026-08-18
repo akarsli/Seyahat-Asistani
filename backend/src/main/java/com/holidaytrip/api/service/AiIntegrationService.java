@@ -129,9 +129,13 @@ public class AiIntegrationService {
                 "Kullanıcıya açıklama yapma. Sadece ve sadece aşağıdaki tam JSON formatında bir veri döndür, markdown formatı (```json vs) KULLANMA. JSON diziliminin hatasız olmasına KESİNLİKLE dikkat et.\n\n" +
                 "LÜTFEN DİKKAT:\n" +
                 "1. Kullanıcının sana verdiği parametrelerde (Nereye: ..., Nereden: ...) yazan Rota/Hedef ülke-şehre KESİNLİKLE uy. Başka bir ülke için plan oluşturma.\n" +
-                "2. Kullanıcı kaç gün kalacağını belirtmişse (Örn: 5 günlük, 1 hafta), 'dailyPlans' dizisine TAM OLARAK O KADAR GÜN EKLE (1. Gün, 2. Gün ... 5. Gün gibi). Örnek JSON sadece 1 gün gösteriyor diye tek gün yapma, istenen süre kadar obje oluştur!\n" +
+                "2. ÇOK ÖNEMLİ: Kullanıcı kaç gün kalacağını belirtmişse (Örn: 7 günlük, 1 hafta, 5 gün), 'dailyPlans' dizisine TAM OLARAK VE KESİNLİKLE O KADAR GÜN EKLE (1. Gün, 2. Gün ... 7. Gün gibi). KISA KESMEK VEYA GÜNLERİ ATLAMAK YASAKTIR. Örneğin 7 gün denmişse dizide tam 7 tane gün objesi olmak ZORUNDADIR. Örnek JSON'da 1 gün var diye aldanma, istenen gün sayısı kadar obje üret!\n" +
                 "3. 'estimatedBudget' kısmında seyahat edilecek ülkeye, gün sayısına ve kişi sayısına göre GERÇEKÇİ bir tahmini uçuş + konaklama + harcama bütçesi hesapla. Uçuk veya aşırı düşük rakamlar yazma.\n" +
-                "4. 'weather' alanı için kullanıcının belirttiği tarihe (Ne zaman gidilecek?) ve o bölgeye ait ORTALAMA hava durumunu (Örn: '24°C, Güneşli') yaz.\n\n" +
+                "4. 'weather' alanı için kullanıcının belirttiği tarihe (Ne zaman gidilecek?) ve o bölgeye ait ORTALAMA hava durumunu (Örn: '24°C, Güneşli') yaz.\n" +
+                "5. 'transportOptions' dizisine kullanıcının çıkış noktasından hedef ülkeye/şehre gitmesi için MANTIKLI, GERÇEKÇİ ve UCUZ BİLET ÖNERİLERİ (Uçak, Tren veya Otobüs) ekle. Örneğin İstanbul'dan İtalya'ya gidiliyorsa bir Uçak bileti koy.\n" +
+                "6. Havalimanından şehir merkezine nasıl gidileceğini (Tren/Otobüs/Metro/HAVAŞ vb.) gösteren bir bilet/transfer önerisini de 'transportOptions' dizisine ekle. İtalya içinde Roma'dan Floransa'ya geçilecekse bir Tren bileti daha koy.\n" +
+                "7. Tatilin son günü için dönüş uçuşunu (veya dönüş biletini) mutlaka 'transportOptions' dizisine ekle. 'type' alanı sadece 'Plane', 'Train', 'Bus' veya 'Subway' olabilir. 'targetDayNumber' alanına bu biletin hangi gün kullanılacağını yaz (Örn: Gidiş uçuşu ve havalimanı transferi için 1, dönüş uçuşu için son günün numarası). EĞER bilet tatilin sonunda eve dönüş biletini temsil ediyorsa 'isReturnTicket': true ekle, diğer tüm biletler için false yap.\n" +
+                "8. ALTERNATİF ULAŞIM: Özellikle Avrupa içi veya birbirine yakın şehirlerarası seyahatlerde (Örn: Frankfurt - Paris, İstanbul - Sofya vb.), uçak biletine ek olarak DAHA UCUZ veya DAHA PRATİK bir Tren veya Otobüs bileti de ekleyerek kullanıcıya seçme şansı sun. ANCAK UZUN YOLCULUKLARDA (uçakla 2-3 saat veya daha fazla süren, ya da karayoluyla çok uzun sürecek mesafelerde) eğer uçak veya tren gibi mantıklı alternatifler varsa KESİNLİKLE OTOBÜS BİLETİ GÖSTERME.\n\n" +
                 "Örnek JSON yapısı (dailyPlans BİR DİZİ(Array) OLMALI, İÇİNDE OBJELER OLMALIDIR):\n" +
                 "{\n" +
                 "  \"destination\": \"Şehir, Ülke\",\n" +
@@ -140,6 +144,19 @@ public class AiIntegrationService {
                 "  \"durationDays\": 3,\n" +
                 "  \"estimatedBudget\": \"Tahmini bütçe (örn: $1200 - $1500)\",\n" +
                 "  \"weather\": \"24°C, Güneşli\",\n" +
+                "  \"transportOptions\": [\n" +
+                "    {\n" +
+                "      \"type\": \"Plane\",\n" +
+                "      \"provider\": \"Turkish Airlines\",\n" +
+                "      \"departure\": \"İstanbul (IST) - 08:30\",\n" +
+                "      \"arrival\": \"Roma (FCO) - 10:15\",\n" +
+                "      \"price\": \"$150\",\n" +
+                "      \"duration\": \"2h 45m\",\n" +
+                "      \"description\": \"En hızlı ve direkt uçuş\",\n" +
+                "      \"targetDayNumber\": 1,\n" +
+                "      \"isReturnTicket\": false\n" +
+                "    }\n" +
+                "  ],\n" +
                 "  \"dailyPlans\": [\n" +
                 "    {\n" +
                 "      \"dayNumber\": 1,\n" +

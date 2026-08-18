@@ -65,25 +65,27 @@ const HeroSection = () => {
   ];
 
   return (
-    <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image & Overlay */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
-          alt="Beautiful destination"
+          src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
+          alt="Beautiful nature destination"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-slate-900/40 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
+        {/* Soft transition to page background */}
+        <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-slate-50 via-slate-50/80 to-transparent"></div>
       </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto mt-20">
-        <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight drop-shadow-lg">
+      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto mt-20 pb-24">
+        <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight drop-shadow-lg">
           Hayalindeki Seyahati <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-800 to-blue-400">Planlamak Artık Çok Kolay</span>
         </h1>
 
-        <p className="text-lg md:text-xl text-slate-200 mb-10 max-w-2xl mx-auto font-light drop-shadow-md">
+        <p className="text-base md:text-lg text-slate-200 mb-10 max-w-2xl mx-auto font-light drop-shadow-md">
           Nereye gitmek istediğini, ne zaman gideceğini veya sadece aklındaki tatil fikrini yaz. Yapay zeka senin için mükemmel rotayı saniyeler içinde hazırlasın.
         </p>
 

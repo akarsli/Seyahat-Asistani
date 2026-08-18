@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import ChatSidebar from '../components/itinerary/ChatSidebar';
@@ -11,6 +11,7 @@ const ItineraryPage = () => {
   const [itineraryData, setItineraryData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const fetchInitiated = useRef(false);
 
   const generatePlan = async (promptText) => {
     setLoading(true);
@@ -25,7 +26,14 @@ const ItineraryPage = () => {
       });
       
       if (!response.ok) {
-        throw new Error('API yanıt vermedi veya hata oluştu.');
+        let errorMessage = 'API yanıt vermedi veya hata oluştu.';
+        try {
+          const errorData = await response.text();
+          if (errorData) errorMessage = errorData;
+        } catch (e) {
+          // Ignore parsing error
+        }
+        throw new Error(errorMessage);
       }
       
       const data = await response.json();
@@ -34,12 +42,14 @@ const ItineraryPage = () => {
       setError(err.message);
     } finally {
       setLoading(false);
+      fetchInitiated.current = false;
     }
   };
 
   useEffect(() => {
     const prompt = location.state?.prompt;
-    if (prompt && !itineraryData && !loading) {
+    if (prompt && !itineraryData && !loading && !fetchInitiated.current) {
+      fetchInitiated.current = true;
       generatePlan(prompt);
     }
   }, [location.state]);
@@ -68,9 +78,12 @@ const ItineraryPage = () => {
             </div>
           ) : error ? (
             <div className="h-full flex flex-col items-center justify-center bg-slate-50 text-red-500 p-8 text-center">
-              <h2 className="text-2xl font-bold mb-4">Bir Hata Oluştu!</h2>
-              <p>{error}</p>
-              <p className="mt-4 text-slate-600">Lütfen API anahtarınızın application.properties dosyasına doğru girildiğinden ve Spring Boot Backend'in (8081 portunda) çalıştığından emin olun.</p>
+              <h2 className="text-2xl font-bold mb-2">Bir Hata Oluştu!</h2>
+              <p className="mb-4 text-slate-600">Geliştirici Detayları:</p>
+              <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg w-full max-w-2xl max-h-64 overflow-auto text-left text-xs sm:text-sm mt-2 mb-4 font-mono whitespace-pre-wrap shadow-inner">
+                {error}
+              </div>
+              <p className="mt-4 text-slate-600">Lütfen API anahtarınızın application.properties dosyasına doğru girildiğinden, limitlere takılmadığınızdan ve Spring Boot Backend'in (8081 portunda) çalıştığından emin olun.</p>
             </div>
           ) : itineraryData ? (
             <ItineraryDetails data={itineraryData} />

@@ -9,7 +9,7 @@ const ItineraryDetails = ({ data }) => {
       {/* Banner */}
       <div className="relative h-64 w-full">
         <img 
-          src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" 
+          src={`https://loremflickr.com/1600/900/${encodeURIComponent(data.destination.split(',')[0].trim())},landscape/all`} 
           alt={data.destination} 
           className="w-full h-full object-cover"
         />
@@ -38,7 +38,7 @@ const ItineraryDetails = ({ data }) => {
             </div>
             <div>
               <p className="text-sm text-slate-500 font-medium">Hava Durumu</p>
-              <p className="text-lg font-bold text-slate-800">Bilinmiyor</p>
+              <p className="text-lg font-bold text-slate-800">{data.weather || 'Bilinmiyor'}</p>
             </div>
           </div>
           

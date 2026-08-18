@@ -7,9 +7,9 @@ const Navbar = () => {
   const currentPath = location.pathname;
 
   const navLinks = [
-    { name: 'Home', path: '/', icon: Map },
-    { name: 'Destinations', path: '/destinations', icon: Compass },
-    { name: 'My Trips', path: '/itinerary', icon: Plane },
+    { name: 'Ana Sayfa', path: '/', icon: Map },
+    { name: 'Keşfet', path: '/destinations', icon: Compass },
+    { name: 'Planlarım', path: '/itinerary', icon: Plane },
   ];
 
   return (
@@ -44,7 +44,7 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-4">
             <button className="flex items-center gap-2 border-2 cursor-pointer border-[#1E3A8A] text-[#1E3A8A] hover:bg-[#1E3A8A] hover:text-white px-5 py-2.5 rounded-full font-medium transition-all shadow-sm transform hover:-translate-y-0.5">
               <User className="w-4 h-4" />
-              <span>Login</span>
+              <span>Giriş Yap</span>
             </button>
           </div>
         </div>

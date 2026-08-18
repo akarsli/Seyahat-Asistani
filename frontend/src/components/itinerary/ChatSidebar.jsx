@@ -18,15 +18,15 @@ const ChatSidebar = ({ hasPlan, messages, onSendMessage, loading }) => {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#1E3A8A] to-[#1E3A8A] flex items-center justify-center text-white">
             <Sparkles className="w-4 h-4" />
           </div>
-          <span className="font-semibold text-slate-800">Travel Concierge</span>
+          <span className="font-semibold text-slate-800">Seyahat Asistanı</span>
         </div>
         
         {/* Quick Actions */}
         <div className="flex gap-2">
-          <button className="p-2 text-slate-500 hover:text-[#1E3A8A] hover:bg-blue-50 rounded-lg transition-colors" title="View Map">
+          <button className="p-2 text-slate-500 hover:text-[#1E3A8A] hover:bg-blue-50 rounded-lg transition-colors" title="Haritayı Görüntüle">
             <Map className="w-4 h-4" />
           </button>
-          <button className="p-2 text-slate-500 hover:text-[#1E3A8A] hover:bg-blue-50 rounded-lg transition-colors" title="Adjust Pace">
+          <button className="p-2 text-slate-500 hover:text-[#1E3A8A] hover:bg-blue-50 rounded-lg transition-colors" title="Tempoyu Ayarla">
             <SlidersHorizontal className="w-4 h-4" />
           </button>
         </div>

@@ -20,7 +20,7 @@ const ItineraryDetails = ({ data }) => {
               {data.destination}
             </span>
             <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold">
-              {data.durationDays} Days
+              {data.durationDays} Gün
             </span>
           </div>
           <h1 className="text-4xl font-bold">{data.title}</h1>

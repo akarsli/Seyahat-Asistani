@@ -3,7 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import ChatSidebar from '../components/itinerary/ChatSidebar';
 import ItineraryDetails from '../components/itinerary/ItineraryDetails';
-import { Loader2, Map, Check, MapPin, Clock, Wallet, User, Calendar, Plane } from 'lucide-react';
+import { Loader2, Map, Check, MapPin, Clock, Wallet, User, Calendar, Plane, LogIn } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const RequirementsChecklist = ({ params }) => {
   const reqs = [
@@ -45,12 +46,15 @@ const RequirementsChecklist = ({ params }) => {
 const ItineraryPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   
   const [itineraryData, setItineraryData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
   const [isGenerating, setIsGenerating] = useState(false);
+  const [mobileView, setMobileView] = useState('chat'); // 'chat' or 'plan'
+  const [showAuthPopup, setShowAuthPopup] = useState(false);
   
   // Extraction State
   const [parameters, setParameters] = useState(null);
@@ -79,14 +83,22 @@ const ItineraryPage = () => {
       const isComplete = data.numberOfPeople && data.departureLocation && data.budget && data.travelDate && data.destination;
       
       if (isComplete) {
-         setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Harika! Tüm detayları aldım. Şimdi sizin için en uygun rotayı hazırlıyorum, lütfen bekleyin...' }]);
-         const fullPrompt = `Nereden: ${data.departureLocation}, Nereye: ${data.destination}, Tarih: ${data.travelDate}, Bütçe: ${data.budget}, Kişi: ${data.numberOfPeople}. Ek Detaylar: ${text}`;
-         
-         // 1.5 saniyelik gecikme ile checklistin onaylı halini ekranda tutuyoruz
-         setTimeout(() => {
-           setIsGenerating(true);
-           generatePlan(fullPrompt);
-         }, 1500);
+         if (!user) {
+           setTimeout(() => {
+             setShowAuthPopup(true);
+             setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Tüm detayları aldım! Planlamaya başlayabilmemiz için giriş yapmanız gerekiyor.' }]);
+           }, 1500);
+           // Burada generatePlan çağırmıyoruz, kullanıcı giriş yapmalı
+         } else {
+           setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Harika! Tüm detayları aldım. Şimdi sizin için en uygun rotayı hazırlıyorum, lütfen bekleyin...' }]);
+           const fullPrompt = `Nereden: ${data.departureLocation}, Nereye: ${data.destination}, Tarih: ${data.travelDate}, Bütçe: ${data.budget}, Kişi: ${data.numberOfPeople}. Ek Detaylar: ${text}`;
+           
+           // 1.5 saniyelik gecikme ile checklistin onaylı halini ekranda tutuyoruz
+           setTimeout(() => {
+             setIsGenerating(true);
+             generatePlan(fullPrompt);
+           }, 1500);
+         }
       } else {
          setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Teşekkürler. Lütfen sağ taraftaki listede eksik kalan (bekleniyor) bilgileri de bana söyler misiniz?' }]);
          setLoading(false);
@@ -118,6 +130,7 @@ const ItineraryPage = () => {
       const data = await response.json();
       setItineraryData(data);
       setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Rotanız hazır! Sağ taraftan tüm detayları inceleyebilirsiniz.' }]);
+      setMobileView('plan');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -141,10 +154,22 @@ const ItineraryPage = () => {
     const prompt = location.state?.prompt;
     if (prompt && !itineraryData && !loading && !fetchInitiated.current) {
       fetchInitiated.current = true;
-      setMessages([{ id: Date.now(), sender: 'user', text: prompt }]);
+      if (messages.length === 0) {
+        setMessages([{ id: Date.now(), sender: 'user', text: prompt }]);
+      }
       extractParams(prompt, null);
     }
-  }, [location.state]);
+    
+    // Eğer sayfaya giriş yaptıktan sonra dönüldüyse ve liste tamamsa otomatik başlat
+    if (user && isComplete && !isGenerating && !itineraryData && !loading) {
+       const fullPrompt = `Nereden: ${parameters.departureLocation}, Nereye: ${parameters.destination}, Tarih: ${parameters.travelDate}, Bütçe: ${parameters.budget}, Kişi: ${parameters.numberOfPeople}. Ek Detaylar: ${prompt || ''}`;
+       setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Harika! Tüm detayları aldım. Şimdi sizin için en uygun rotayı hazırlıyorum, lütfen bekleyin...' }]);
+       setTimeout(() => {
+         setIsGenerating(true);
+         generatePlan(fullPrompt);
+       }, 1500);
+    }
+  }, [location.state, user]);
 
   const isComplete = parameters?.numberOfPeople && parameters?.departureLocation && parameters?.budget && parameters?.travelDate && parameters?.destination;
 
@@ -154,8 +179,8 @@ const ItineraryPage = () => {
         <Navbar />
       </div>
       
-      <div className="flex-1 flex overflow-hidden">
-        <div className="w-full md:w-1/3 lg:w-[400px] flex-shrink-0 h-full hidden md:block">
+      <div className="flex-1 flex overflow-hidden relative">
+        <div className={`w-full md:w-1/3 lg:w-[400px] flex-shrink-0 h-full ${mobileView === 'chat' ? 'block' : 'hidden'} md:block`}>
           <ChatSidebar 
             hasPlan={!!itineraryData} 
             messages={messages}
@@ -164,7 +189,29 @@ const ItineraryPage = () => {
           />
         </div>
         
-        <div className="flex-1 h-full relative overflow-y-auto">
+        <div className={`flex-1 h-full relative overflow-y-auto ${mobileView === 'plan' ? 'block' : 'hidden'} md:block`}>
+          
+          {/* Popup Overlay for Unauthenticated Users */}
+          {showAuthPopup && (
+            <div className="absolute inset-0 z-40 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm">
+              <div className="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl flex flex-col items-center text-center transform scale-100 transition-all">
+                <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                  <LogIn className="w-10 h-10 text-amber-500" />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-800 mb-3">Giriş Yapmanız Gerekiyor</h2>
+                <p className="text-slate-500 mb-8">
+                  Yapay zeka asistanını kullanabilmek ve harika rotalar oluşturabilmek için hesabınıza giriş yapmalısınız.
+                </p>
+                <button
+                  onClick={() => navigate('/auth', { state: { returnTo: '/itinerary', prompt: location.state?.prompt } })}
+                  className="w-full bg-[#F59E0B] hover:bg-amber-600 text-white py-3.5 rounded-xl font-bold transition-all shadow-md shadow-amber-600/20 flex justify-center items-center gap-2"
+                >
+                  Giriş Yap / Kayıt Ol
+                </button>
+              </div>
+            </div>
+          )}
+
           {isGenerating && !itineraryData ? (
             <div className="h-full flex flex-col items-center justify-center bg-slate-50">
               <div className="relative">
@@ -188,6 +235,22 @@ const ItineraryPage = () => {
           ) : (
             <RequirementsChecklist params={parameters} />
           )}
+        </div>
+
+        {/* Mobile Floating Toggle */}
+        <div className="md:hidden fixed bottom-6 right-6 z-50 bg-white p-1.5 rounded-full shadow-2xl border border-slate-200 flex gap-1">
+          <button 
+            onClick={() => setMobileView('chat')}
+            className={`px-5 py-2.5 rounded-full font-bold text-sm transition-all ${mobileView === 'chat' ? 'bg-[#1E3A8A] text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
+          >
+            Sohbet
+          </button>
+          <button 
+            onClick={() => setMobileView('plan')}
+            className={`px-5 py-2.5 rounded-full font-bold text-sm transition-all ${mobileView === 'plan' ? 'bg-[#F59E0B] text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
+          >
+            Plan
+          </button>
         </div>
       </div>
     </div>

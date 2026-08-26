@@ -1,15 +1,18 @@
 import React from 'react';
 import { CloudSun, Wallet, Activity, MapPin, Sparkles, Clock, Plane, Train, Bus, TrainFront, ArrowRight, Ticket } from 'lucide-react';
+import { useCurrency } from '../../context/CurrencyContext';
 
 const ItineraryDetails = ({ data }) => {
+  const { convertPriceText } = useCurrency();
+
   if (!data) return null;
 
   return (
     <div className="h-full overflow-y-auto bg-slate-50">
       {/* Banner */}
-      <div className="relative h-64 w-full">
+      <div className="relative h-64 w-full bg-slate-200">
         <img
-          src={`https://loremflickr.com/1600/900/${encodeURIComponent((data.destination || 'City').split(',')[0].trim())},city,nature/all`}
+          src={`https://image.pollinations.ai/prompt/beautiful%20landmark%20cityscape%20of%20${encodeURIComponent((data.destination || 'City').split(',')[0].trim())}?width=1600&height=900&nologo=true&seed=42`}
           alt={data.destination || 'Destination'}
           className="w-full h-full object-cover"
         />
@@ -48,7 +51,7 @@ const ItineraryDetails = ({ data }) => {
             </div>
             <div>
               <p className="text-sm text-slate-500 font-medium">Tahmini Bütçe</p>
-              <p className="text-lg font-bold text-slate-800">{data.estimatedBudget}</p>
+              <p className="text-lg font-bold text-slate-800">{convertPriceText(data.estimatedBudget)}</p>
             </div>
           </div>
         </div>
@@ -107,7 +110,7 @@ const ItineraryDetails = ({ data }) => {
                               <span className="font-bold text-slate-800">{ticket.provider}</span>
                             </div>
                             <span className="text-sm font-semibold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
-                              {ticket.price}
+                              {convertPriceText(ticket.price)}
                             </span>
                           </div>
                           <div className="p-5 flex-1 flex flex-col justify-between relative">

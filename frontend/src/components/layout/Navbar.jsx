@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Plane, Compass, Map, User } from 'lucide-react';
+import { useCurrency } from '../../context/CurrencyContext';
 
 const Navbar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
+  const { currency, setCurrency } = useCurrency();
 
   const navLinks = [
     { name: 'Ana Sayfa', path: '/', icon: Map },
@@ -42,6 +44,18 @@ const Navbar = () => {
 
           {/* User Actions */}
           <div className="hidden md:flex items-center gap-4">
+            {/* Currency Selector */}
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+              className="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#F59E0B] focus:border-[#F59E0B] block p-2 cursor-pointer font-medium"
+            >
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="GBP">GBP (£)</option>
+              <option value="TRY">TRY (₺)</option>
+            </select>
+
             <button className="flex items-center gap-2 border-2 cursor-pointer border-[#1E3A8A] text-[#1E3A8A] hover:bg-[#1E3A8A] hover:text-white px-5 py-2.5 rounded-full font-medium transition-all shadow-sm transform hover:-translate-y-0.5">
               <User className="w-4 h-4" />
               <span>Giriş Yap</span>

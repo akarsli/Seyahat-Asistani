@@ -8,9 +8,9 @@ const ItineraryDetails = ({ data }) => {
     <div className="h-full overflow-y-auto bg-slate-50">
       {/* Banner */}
       <div className="relative h-64 w-full">
-        <img 
-          src={`https://loremflickr.com/1600/900/${encodeURIComponent(data.destination.split(',')[0].trim())},city,nature/all`} 
-          alt={data.destination} 
+        <img
+          src={`https://loremflickr.com/1600/900/${encodeURIComponent((data.destination || 'City').split(',')[0].trim())},city,nature/all`}
+          alt={data.destination || 'Destination'}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
@@ -29,7 +29,7 @@ const ItineraryDetails = ({ data }) => {
       </div>
 
       <div className="max-w-4xl mx-auto p-6 md:p-8 space-y-8">
-        
+
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
@@ -41,7 +41,7 @@ const ItineraryDetails = ({ data }) => {
               <p className="text-lg font-bold text-slate-800">{data.weather || 'Bilinmiyor'}</p>
             </div>
           </div>
-          
+
           <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
             <div className="p-3 bg-green-100 text-green-600 rounded-xl">
               <Wallet className="w-6 h-6" />
@@ -56,12 +56,12 @@ const ItineraryDetails = ({ data }) => {
         {/* Itinerary Timeline */}
         <div className="space-y-8">
           <h2 className="text-2xl font-bold text-slate-800">Gün Gün Rota</h2>
-          
+
           {(() => {
             // Reusable component for rendering ticket cards
             const renderTickets = (tickets, title, dayNumber = null) => {
               if (!tickets || tickets.length === 0) return null;
-              
+
               const displayTitle = dayNumber ? `${title} (${dayNumber}. Gün)` : title;
 
               return (
@@ -74,7 +74,7 @@ const ItineraryDetails = ({ data }) => {
                     {tickets.map((ticket, tIdx) => {
                       let TransportIcon = Plane;
                       let bgClass = "bg-blue-50 text-blue-600";
-                      
+
                       if (ticket.type === 'Train') {
                         TransportIcon = Train;
                         bgClass = "bg-emerald-50 text-emerald-600";
@@ -91,13 +91,13 @@ const ItineraryDetails = ({ data }) => {
                           <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                             <div className="flex items-center gap-3">
                               <div className={`w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 overflow-hidden relative group-logo`}>
-                                <img 
-                                  src={`https://logo.clearbit.com/${ticket.provider.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()}.com`} 
-                                  alt={ticket.provider}
+                                <img
+                                  src={`https://logo.clearbit.com/${(ticket.provider || '').replace(/[^a-zA-Z0-9]/g, '').toLowerCase()}.com`}
+                                  alt={ticket.provider || 'Provider'}
                                   className="w-full h-full object-contain p-1"
                                   onError={(e) => {
                                     e.target.style.display = 'none';
-                                    if(e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                                    if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
                                   }}
                                 />
                                 <div className="w-full h-full items-center justify-center hidden fallback-icon" style={{ display: 'none' }}>
@@ -114,12 +114,12 @@ const ItineraryDetails = ({ data }) => {
                             {/* Ticket Cutout Effects */}
                             <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-50 rounded-full border-r border-slate-200"></div>
                             <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-50 rounded-full border-l border-slate-200"></div>
-                            
+
                             <div className="flex items-center justify-between mb-4 px-4">
                               <div className="text-center">
                                 <p className="text-xs text-slate-500 font-medium mb-1">Kalkış</p>
-                                <p className="font-bold text-slate-800 truncate max-w-[100px]">{ticket.departure.split('-')[0].trim()}</p>
-                                <p className="text-sm text-slate-500">{ticket.departure.includes('-') ? ticket.departure.split('-')[1].trim() : ''}</p>
+                                <p className="font-bold text-slate-800 truncate max-w-[100px]">{ticket.departure ? ticket.departure.split('-')[0].trim() : '-'}</p>
+                                <p className="text-sm text-slate-500">{ticket.departure && ticket.departure.includes('-') ? ticket.departure.split('-')[1].trim() : ''}</p>
                               </div>
                               <div className="flex flex-col items-center px-4 flex-1">
                                 <p className="text-xs text-slate-400 font-medium mb-1">{ticket.duration}</p>
@@ -131,11 +131,11 @@ const ItineraryDetails = ({ data }) => {
                               </div>
                               <div className="text-center">
                                 <p className="text-xs text-slate-500 font-medium mb-1">Varış</p>
-                                <p className="font-bold text-slate-800 truncate max-w-[100px]">{ticket.arrival.split('-')[0].trim()}</p>
-                                <p className="text-sm text-slate-500">{ticket.arrival.includes('-') ? ticket.arrival.split('-')[1].trim() : ''}</p>
+                                <p className="font-bold text-slate-800 truncate max-w-[100px]">{ticket.arrival ? ticket.arrival.split('-')[0].trim() : '-'}</p>
+                                <p className="text-sm text-slate-500">{ticket.arrival && ticket.arrival.includes('-') ? ticket.arrival.split('-')[1].trim() : ''}</p>
                               </div>
                             </div>
-                            
+
                             {ticket.description && (
                               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-center">
                                 <p className="text-xs text-slate-500 flex items-center gap-1">
@@ -153,17 +153,20 @@ const ItineraryDetails = ({ data }) => {
               );
             };
 
-            const allReturnTickets = data.transportOptions ? data.transportOptions.filter(t => t.isReturnTicket) : [];
-
             return (
               <>
                 {data.dailyPlans && data.dailyPlans.map((day, idx) => {
+                  const isLastDay = idx === data.dailyPlans.length - 1;
                   const dayTickets = data.transportOptions ? data.transportOptions.filter(t => t.targetDayNumber === day.dayNumber) : [];
-                  const topTickets = dayTickets.filter(t => !t.isReturnTicket);
+
+                  // Gidiş ve ara transfer biletleri (Son gün hariç ve dönüş bileti olmayanlar üstte)
+                  const topTickets = dayTickets.filter(t => !isLastDay && !t.isReturnTicket);
+                  // Dönüş ve son gün biletleri (Planın altında gösterilecek)
+                  const bottomTickets = dayTickets.filter(t => isLastDay || t.isReturnTicket);
 
                   return (
                     <div key={idx} className="space-y-4">
-                      
+
                       {/* Render Arrival/Transfer Tickets for this day (at the top) */}
                       {renderTickets(topTickets, "Ulaşım", day.dayNumber)}
 
@@ -172,7 +175,7 @@ const ItineraryDetails = ({ data }) => {
                         <div className="bg-slate-50 px-6 py-4 border-b border-slate-200">
                           <h3 className="text-lg font-bold text-slate-800">{day.dayNumber}. Gün: {day.dayTitle}</h3>
                         </div>
-                        
+
                         <div className="p-6 space-y-6">
                           {day.activities && day.activities.map((act, actIdx) => (
                             <div key={actIdx} className="relative pl-6 border-l-2 border-slate-200 pb-2 last:pb-0">
@@ -198,20 +201,20 @@ const ItineraryDetails = ({ data }) => {
                           ))}
                         </div>
                       </div>
+
+                      {/* Render Return/Last Day Tickets at the bottom of the day */}
+                      {bottomTickets.length > 0 && (
+                        <div className="pt-4">
+                          {renderTickets(bottomTickets, "Dönüş Yolculuğu (Eve Dönüş)")}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
-
-                {/* Render Return Tickets at the very bottom of the itinerary */}
-                {allReturnTickets.length > 0 && (
-                  <div className="mt-8 pt-8 border-t-2 border-dashed border-slate-300">
-                    {renderTickets(allReturnTickets, "Dönüş Yolculuğu (Eve Dönüş)")}
-                  </div>
-                )}
               </>
             );
           })()}
-          
+
         </div>
 
       </div>

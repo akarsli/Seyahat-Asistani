@@ -129,7 +129,7 @@ public class AiIntegrationService {
                 "Kullanıcıya açıklama yapma. Sadece ve sadece aşağıdaki tam JSON formatında bir veri döndür, markdown formatı (```json vs) KULLANMA. JSON diziliminin hatasız olmasına KESİNLİKLE dikkat et.\n\n" +
                 "LÜTFEN DİKKAT:\n" +
                 "1. Kullanıcının sana verdiği parametrelerde (Nereye: ..., Nereden: ...) yazan Rota/Hedef ülke-şehre KESİNLİKLE uy. Başka bir ülke için plan oluşturma.\n" +
-                "2. ÇOK ÖNEMLİ: Kullanıcı kaç gün kalacağını belirtmişse (Örn: 7 günlük, 1 hafta, 5 gün), 'dailyPlans' dizisine TAM OLARAK VE KESİNLİKLE O KADAR GÜN EKLE (1. Gün, 2. Gün ... 7. Gün gibi). KISA KESMEK VEYA GÜNLERİ ATLAMAK YASAKTIR. Örneğin 7 gün denmişse dizide tam 7 tane gün objesi olmak ZORUNDADIR. Örnek JSON'da 1 gün var diye aldanma, istenen gün sayısı kadar obje üret!\n" +
+                "2. ÇOK ÖNEMLİ: Kullanıcı kaç gün kalacağını belirtmişse (Örn: 7 günlük, 1 hafta, 5 gün), 'dailyPlans' dizisine TAM OLARAK VE KESİNLİKLE O KADAR GÜN EKLE (1. Gün, 2. Gün ... 7. Gün gibi). KISA KESMEK VEYA GÜNLERİ ATLAMAK YASAKTIR. Örneğin 5 gün denmişse dizide tam 5 tane gün objesi olmak ZORUNDADIR. Örnek JSON'da sadece formatı anlaman için 2 gün verilmiştir, sen istenen gün sayısı kadar obje üreteceksin!\n" +
                 "3. 'estimatedBudget' kısmında seyahat edilecek ülkeye, gün sayısına ve kişi sayısına göre GERÇEKÇİ bir tahmini uçuş + konaklama + harcama bütçesi hesapla. Uçuk veya aşırı düşük rakamlar yazma.\n" +
                 "4. 'weather' alanı için kullanıcının belirttiği tarihe (Ne zaman gidilecek?) ve o bölgeye ait ORTALAMA hava durumunu (Örn: '24°C, Güneşli') yaz.\n" +
                 "5. 'transportOptions' dizisine kullanıcının çıkış noktasından hedef ülkeye/şehre gitmesi için MANTIKLI, GERÇEKÇİ ve UCUZ BİLET ÖNERİLERİ (Uçak, Tren veya Otobüs) ekle. Örneğin İstanbul'dan İtalya'ya gidiliyorsa bir Uçak bileti koy.\n" +
@@ -160,12 +160,24 @@ public class AiIntegrationService {
                 "  \"dailyPlans\": [\n" +
                 "    {\n" +
                 "      \"dayNumber\": 1,\n" +
-                "      \"dayTitle\": \"Gün başlığı\",\n" +
+                "      \"dayTitle\": \"1. Gün başlığı\",\n" +
                 "      \"activities\": [\n" +
                 "        {\n" +
                 "          \"time\": \"09:00 AM\",\n" +
                 "          \"title\": \"Aktivite\",\n" +
                 "          \"description\": \"Detay\",\n" +
+                "          \"isAiSuggestion\": true\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"dayNumber\": 2,\n" +
+                "      \"dayTitle\": \"2. Gün başlığı\",\n" +
+                "      \"activities\": [\n" +
+                "        {\n" +
+                "          \"time\": \"10:00 AM\",\n" +
+                "          \"title\": \"Aktivite 2\",\n" +
+                "          \"description\": \"Detay 2\",\n" +
                 "          \"isAiSuggestion\": true\n" +
                 "        }\n" +
                 "      ]\n" +
@@ -200,6 +212,9 @@ public class AiIntegrationService {
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, entity, String.class);
             return parseGroqResponse(response.getBody());
+        } catch (org.springframework.web.client.HttpStatusCodeException e) {
+            e.printStackTrace();
+            throw new RuntimeException("API Hatası (" + e.getStatusCode() + "): " + e.getResponseBodyAsString());
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Yapay Zeka servisi ile iletişim kurulamadı veya API limitine ulaşıldı: " + e.getMessage());

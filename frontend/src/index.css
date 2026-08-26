@@ -4,6 +4,7 @@
   --color-primary: #3b82f6;
   --color-secondary: #f43f5e;
   --color-dark: #0f172a;
+  --font-sans: 'Quicksand', sans-serif;
 }
 
 body {

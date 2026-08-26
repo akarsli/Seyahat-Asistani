@@ -30,9 +30,9 @@ const Navbar = () => {
             {navLinks.map((link) => {
               const isActive = currentPath === link.path;
               return (
-                <Link 
+                <Link
                   key={link.name}
-                  to={link.path} 
+                  to={link.path}
                   className="relative group text-black font-medium flex items-center gap-1"
                 >
                   <link.icon className="w-4 h-4" /> {link.name}
@@ -48,7 +48,7 @@ const Navbar = () => {
             <select
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
-              className="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#F59E0B] focus:border-[#F59E0B] block p-2 cursor-pointer font-medium"
+              className="bg-none border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#F59E0B] focus:border-[#F59E0B] block p-2 cursor-pointer font-medium"
             >
               <option value="USD">USD ($)</option>
               <option value="EUR">EUR (€)</option>

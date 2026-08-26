@@ -44,7 +44,7 @@ const destinations = [
     id: 5,
     name: 'Kapadokya',
     country: 'Türkiye',
-    image: 'https://images.unsplash.com/photo-1600100412854-f584e0310243?q=80&w=1000&auto=format&fit=crop',
+    image: 'https://image.pollinations.ai/prompt/beautiful%20landscape%20cappadocia%20turkey%20hot%20air%20balloons?width=1000&height=1000&nologo=true&seed=42',
     description: 'Peri bacaları, sıcak hava balonları ve yeraltı şehirleriyle masalsı bir Anadolu deneyimi.',
     highlights: ['Göreme Açık Hava Müzesi', 'Balon Turu', 'Yeraltı Şehirleri', 'Uçhisar Kalesi'],
     tags: ['Macera', 'Tarih', 'Masalsı']

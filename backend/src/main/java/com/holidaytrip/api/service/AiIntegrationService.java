@@ -133,10 +133,10 @@ public class AiIntegrationService {
                 "3. 'estimatedBudget' kısmında seyahat edilecek ülkeye, gün sayısına ve kişi sayısına göre GERÇEKÇİ bir tahmini uçuş + konaklama + harcama bütçesi hesapla. Uçuk veya aşırı düşük rakamlar yazma.\n" +
                 "4. 'weather' alanı için kullanıcının belirttiği tarihe (Ne zaman gidilecek?) ve o bölgeye ait ORTALAMA hava durumunu (Örn: '24°C, Güneşli') yaz.\n" +
                 "5. 'transportOptions' dizisine kullanıcının çıkış noktasından hedef ülkeye/şehre gitmesi için MANTIKLI, GERÇEKÇİ ve UCUZ BİLET ÖNERİLERİ (Uçak, Tren veya Otobüs) ekle. Örneğin İstanbul'dan İtalya'ya gidiliyorsa bir Uçak bileti koy.\n" +
-                "6. Havalimanından şehir merkezine nasıl gidileceğini (Tren/Otobüs/Metro/HAVAŞ vb.) gösteren bir bilet/transfer önerisini de 'transportOptions' dizisine ekle. İtalya içinde Roma'dan Floransa'ya geçilecekse bir Tren bileti daha koy.\n" +
-                "7. Tatilin son günü için dönüş uçuşunu (veya dönüş biletini) mutlaka 'transportOptions' dizisine ekle. 'type' alanı sadece 'Plane', 'Train', 'Bus' veya 'Subway' olabilir. 'targetDayNumber' alanına bu biletin hangi gün kullanılacağını yaz (Örn: Gidiş uçuşu ve havalimanı transferi için 1, dönüş uçuşu için son günün numarası). EĞER bilet tatilin sonunda eve dönüş biletini temsil ediyorsa 'isReturnTicket': true ekle, diğer tüm biletler için false yap.\n" +
+                "6. Havalimanından şehir merkezine nasıl gidileceğini (Tren/Otobüs/Metro/HAVAŞ vb.) gösteren bir bilet/transfer önerisini de 'transportOptions' dizisine ekle. AYRICA EĞER SEYAHAT BİRDEN FAZLA ŞEHRİ İÇERİYORSA (Örn: Roma'dan Floransa'ya geçilecekse) bu şehirler arası geçiş için gereken Tren veya Otobüs biletlerini de KESİNLİKLE 'transportOptions' içerisine ekle ve 'targetDayNumber' olarak geçişin yapılacağı günü yaz.\n" +
+                "7. Tatilin son günü için dönüş uçuşunu (veya eve dönüş biletini) MUTLAKA 'transportOptions' dizisine ekle. 'type' alanı sadece 'Plane', 'Train', 'Bus' veya 'Subway' olabilir. 'targetDayNumber' alanına bu biletin hangi gün kullanılacağını yaz (Örn: Dönüş uçuşu için seyahatin son gününün numarası). EĞER bilet tatilin sonunda eve dönüş biletini temsil ediyorsa 'isReturnTicket': true ekle, diğer tüm biletler için false yap. SEYAHATTE KULLANILACAK TÜM BİLETLERİ (Gidiş, Şehirler Arası, Dönüş) EKSİKSİZ LİSTELE.\n" +
                 "8. ALTERNATİF ULAŞIM: Özellikle Avrupa içi veya birbirine yakın şehirlerarası seyahatlerde (Örn: Frankfurt - Paris, İstanbul - Sofya vb.), uçak biletine ek olarak DAHA UCUZ veya DAHA PRATİK bir Tren veya Otobüs bileti de ekleyerek kullanıcıya seçme şansı sun. ANCAK UZUN YOLCULUKLARDA (uçakla 2-3 saat veya daha fazla süren, ya da karayoluyla çok uzun sürecek mesafelerde) eğer uçak veya tren gibi mantıklı alternatifler varsa KESİNLİKLE OTOBÜS BİLETİ GÖSTERME.\n\n" +
-                "Örnek JSON yapısı (dailyPlans BİR DİZİ(Array) OLMALI, İÇİNDE OBJELER OLMALIDIR):\n" +
+                "Örnek JSON yapısı (transportOptions ve dailyPlans BİRER DİZİ(Array) OLMALI):\n" +
                 "{\n" +
                 "  \"destination\": \"Şehir, Ülke\",\n" +
                 "  \"title\": \"Plan Başlığı\",\n" +
@@ -155,6 +155,28 @@ public class AiIntegrationService {
                 "      \"description\": \"En hızlı ve direkt uçuş\",\n" +
                 "      \"targetDayNumber\": 1,\n" +
                 "      \"isReturnTicket\": false\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"type\": \"Train\",\n" +
+                "      \"provider\": \"Trenitalia\",\n" +
+                "      \"departure\": \"Roma Termini - 09:00\",\n" +
+                "      \"arrival\": \"Floransa S.M.N. - 10:30\",\n" +
+                "      \"price\": \"$45\",\n" +
+                "      \"duration\": \"1h 30m\",\n" +
+                "      \"description\": \"Şehirler arası hızlı tren\",\n" +
+                "      \"targetDayNumber\": 2,\n" +
+                "      \"isReturnTicket\": false\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"type\": \"Plane\",\n" +
+                "      \"provider\": \"Turkish Airlines\",\n" +
+                "      \"departure\": \"Floransa (FLR) - 18:00\",\n" +
+                "      \"arrival\": \"İstanbul (IST) - 21:30\",\n" +
+                "      \"price\": \"$160\",\n" +
+                "      \"duration\": \"2h 30m\",\n" +
+                "      \"description\": \"Eve dönüş uçuşu\",\n" +
+                "      \"targetDayNumber\": 3,\n" +
+                "      \"isReturnTicket\": true\n" +
                 "    }\n" +
                 "  ],\n" +
                 "  \"dailyPlans\": [\n" +

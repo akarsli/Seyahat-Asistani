@@ -1,16 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Plane, Compass, Map, User, Menu, X, LogOut } from 'lucide-react';
+import { Plane, Compass, Map, User, Menu, X, LogOut, ChevronDown } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
   const { currency, setCurrency } = useCurrency();
   const { user, logout } = useAuth();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -53,34 +65,72 @@ const Navbar = () => {
           </div>
 
           {/* User Actions */}
-          <div className="hidden md:flex items-center gap-4">
-            {/* Currency Selector */}
-            <select
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value)}
-              className="bg-none border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#F59E0B] focus:border-[#F59E0B] block p-2 cursor-pointer font-medium"
-            >
-              <option value="USD">USD ($)</option>
-              <option value="EUR">EUR (€)</option>
-              <option value="GBP">GBP (£)</option>
-              <option value="TRY">TRY (₺)</option>
-            </select>
+          <div className="hidden md:flex items-center gap-6">
+            {!user && (
+              <select
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value)}
+                className="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#F59E0B] focus:border-[#F59E0B] block p-2 cursor-pointer outline-none font-medium"
+              >
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="GBP">GBP (£)</option>
+                <option value="TRY">TRY (₺)</option>
+              </select>
+            )}
 
             {user ? (
-              <div className="flex items-center gap-4">
-                <span className="font-semibold text-slate-700 hidden lg:block">
-                  Merhaba, {user.fullName.split(' ')[0]}
-                </span>
+              <div className="relative" ref={userMenuRef}>
                 <button 
-                  onClick={handleLogout}
-                  className="flex items-center justify-center p-2.5 rounded-full bg-slate-100 text-slate-600 hover:bg-red-50 hover:text-red-500 transition-colors shadow-sm"
-                  title="Çıkış Yap"
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center gap-3 p-1.5 pr-3 rounded-full border border-slate-200 hover:bg-slate-50 transition-colors bg-white shadow-sm"
                 >
-                  <LogOut className="w-4 h-4" />
+                  <div className="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center font-bold">
+                    {user.fullName.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="font-semibold text-slate-700 hidden lg:block text-sm">
+                    Merhaba, {user.fullName.split(' ')[0]}
+                  </span>
+                  <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
+
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden z-50">
+                    <div className="p-4 border-b border-slate-100 bg-slate-50">
+                      <p className="font-bold text-slate-800">{user.fullName}</p>
+                      <p className="text-xs text-slate-500 truncate">{user.email}</p>
+                    </div>
+                    
+                    <div className="p-2">
+                      <div className="px-3 py-2">
+                        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 block">Para Birimi</label>
+                        <select
+                          value={currency}
+                          onChange={(e) => setCurrency(e.target.value)}
+                          className="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#F59E0B] focus:border-[#F59E0B] block p-2.5 cursor-pointer outline-none font-medium"
+                        >
+                          <option value="USD">USD ($)</option>
+                          <option value="EUR">EUR (€)</option>
+                          <option value="GBP">GBP (£)</option>
+                          <option value="TRY">TRY (₺)</option>
+                        </select>
+                      </div>
+                    </div>
+                    
+                    <div className="p-2 border-t border-slate-100">
+                      <button 
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-red-600 hover:bg-red-50 transition-colors font-medium text-left"
+                      >
+                        <LogOut className="w-5 h-5" />
+                        <span>Çıkış Yap</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
-              <Link 
+              <Link
                 to="/auth"
                 className="flex items-center gap-2 border-2 cursor-pointer border-[#1E3A8A] text-[#1E3A8A] hover:bg-[#1E3A8A] hover:text-white px-5 py-2.5 rounded-full font-medium transition-all shadow-sm transform hover:-translate-y-0.5"
               >
@@ -92,7 +142,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
-            <button 
+            <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="p-2 text-slate-600 hover:text-[#1E3A8A] hover:bg-slate-100 rounded-lg transition-colors"
             >
@@ -112,9 +162,8 @@ const Navbar = () => {
                     key={link.name}
                     to={link.path}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${
-                      isActive ? 'bg-[#F59E0B]/10 text-[#F59E0B]' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                    }`}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${isActive ? 'bg-[#F59E0B]/10 text-[#F59E0B]' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                      }`}
                   >
                     <link.icon className="w-5 h-5" />
                     {link.name}
@@ -122,35 +171,58 @@ const Navbar = () => {
                 );
               })}
             </div>
-            
+
             <div className="px-4 pt-4 border-t border-slate-200 flex flex-col gap-4">
-              <select
-                value={currency}
-                onChange={(e) => setCurrency(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#F59E0B] focus:border-[#F59E0B] block p-3 cursor-pointer font-medium"
-              >
-                <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="GBP">GBP (£)</option>
-                <option value="TRY">TRY (₺)</option>
-              </select>
+              {!user && (
+                <select
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#F59E0B] focus:border-[#F59E0B] block p-3 cursor-pointer font-medium"
+                >
+                  <option value="USD">USD ($)</option>
+                  <option value="EUR">EUR (€)</option>
+                  <option value="GBP">GBP (£)</option>
+                  <option value="TRY">TRY (₺)</option>
+                </select>
+              )}
 
               {user ? (
                 <div className="w-full flex flex-col gap-3">
-                  <div className="bg-slate-100 p-3 rounded-xl flex items-center justify-center gap-2 text-slate-700 font-semibold">
-                    <User className="w-5 h-5 text-slate-500" />
-                    Merhaba, {user.fullName}
+                  <div className="bg-slate-100 p-4 rounded-xl flex flex-col gap-1 border border-slate-200">
+                    <div className="flex items-center gap-3 mb-2">
+                       <div className="w-10 h-10 bg-indigo-200 text-indigo-700 rounded-full flex items-center justify-center font-bold">
+                         {user.fullName.charAt(0).toUpperCase()}
+                       </div>
+                       <div>
+                         <p className="font-bold text-slate-800">{user.fullName}</p>
+                         <p className="text-xs text-slate-500 truncate max-w-[200px]">{user.email}</p>
+                       </div>
+                    </div>
+                    
+                    <div className="mt-2 pt-3 border-t border-slate-200">
+                        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 block">Para Birimi</label>
+                        <select
+                          value={currency}
+                          onChange={(e) => setCurrency(e.target.value)}
+                          className="w-full bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#F59E0B] focus:border-[#F59E0B] block p-2.5 cursor-pointer outline-none font-medium"
+                        >
+                          <option value="USD">USD ($)</option>
+                          <option value="EUR">EUR (€)</option>
+                          <option value="GBP">GBP (£)</option>
+                          <option value="TRY">TRY (₺)</option>
+                        </select>
+                    </div>
                   </div>
-                  <button 
+                  <button
                     onClick={handleLogout}
-                    className="w-full flex justify-center items-center gap-2 bg-red-50 text-red-600 hover:bg-red-100 px-5 py-3 rounded-xl font-bold transition-colors shadow-sm"
+                    className="w-full flex justify-center items-center gap-2 bg-red-50 text-red-600 hover:bg-red-100 px-5 py-3.5 rounded-xl font-bold transition-colors shadow-sm cursor-pointer"
                   >
                     <LogOut className="w-5 h-5" />
                     <span>Çıkış Yap</span>
                   </button>
                 </div>
               ) : (
-                <Link 
+                <Link
                   to="/auth"
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="w-full flex justify-center items-center gap-2 bg-[#1E3A8A] text-white px-5 py-3 rounded-xl font-bold shadow-sm"

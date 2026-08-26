@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Send, Map, SlidersHorizontal, User, Bot, Sparkles } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 const ChatSidebar = ({ hasPlan, messages, onSendMessage, loading }) => {
   const [input, setInput] = useState('');
+  const { user } = useAuth();
 
   const handleSend = () => {
     if (!input.trim() || loading) return;
@@ -37,9 +39,9 @@ const ChatSidebar = ({ hasPlan, messages, onSendMessage, loading }) => {
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`flex gap-3 max-w-[85%] ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-              <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center ${msg.sender === 'user' ? 'bg-slate-200 text-slate-600' : 'bg-blue-100 text-[#1E3A8A]'
+              <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center ${msg.sender === 'user' ? (user ? 'bg-indigo-100 text-indigo-600 font-bold text-sm' : 'bg-slate-200 text-slate-600') : 'bg-blue-100 text-[#1E3A8A]'
                 }`}>
-                {msg.sender === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                {msg.sender === 'user' ? (user ? user.fullName.charAt(0).toUpperCase() : <User className="w-4 h-4" />) : <Bot className="w-4 h-4" />}
               </div>
               <div className={`p-3 rounded-2xl ${msg.sender === 'user'
                   ? 'bg-[#F59E0B] text-white rounded-tr-none'

@@ -1,0 +1,300 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { LayoutDashboard, Users, Map, LogOut, Loader2, ArrowLeft, TrendingUp, CheckCircle2, Activity, Calendar, Zap, DollarSign } from 'lucide-react';
+import Navbar from '../components/layout/Navbar';
+
+const AdminPage = () => {
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [stats, setStats] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [plans, setPlans] = useState([]);
+  const [dataLoading, setDataLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!authLoading) {
+      if (!user || user.role !== 'ADMIN') {
+        navigate('/'); // Redirect non-admins to home
+      } else {
+        fetchAllData();
+      }
+    }
+  }, [user, authLoading, navigate]);
+
+  const fetchAllData = async () => {
+    setDataLoading(true);
+    setError(null);
+    try {
+      const [statsRes, usersRes, plansRes] = await Promise.all([
+        fetch(`http://localhost:8081/api/admin/stats?email=${user.email}`),
+        fetch(`http://localhost:8081/api/admin/users?email=${user.email}`),
+        fetch(`http://localhost:8081/api/admin/plans?email=${user.email}`)
+      ]);
+
+      if (!statsRes.ok || !usersRes.ok || !plansRes.ok) throw new Error('Veriler çekilirken hata oluştu.');
+
+      setStats(await statsRes.json());
+      setUsers(await usersRes.json());
+      setPlans(await plansRes.json());
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setDataLoading(false);
+    }
+  };
+
+  if (authLoading || (!user && dataLoading)) return null;
+
+  const StatCard = ({ title, value, icon, color }) => (
+    <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex items-center gap-6">
+      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-${color}-100 text-${color}-600`}>
+        {icon}
+      </div>
+      <div>
+        <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">{title}</p>
+        <p className="text-3xl font-bold text-slate-800">{value}</p>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row">
+      {/* Sidebar */}
+      <div className="w-full md:w-64 bg-slate-900 text-white flex flex-col flex-shrink-0 relative z-20">
+        <div className="p-6">
+          <div className="flex items-center gap-2 mb-2 text-amber-500">
+            <LayoutDashboard className="w-8 h-8" />
+            <h1 className="text-2xl font-bold tracking-tight text-white">Yönetim Paneli</h1>
+          </div>
+          <p className="text-xs text-slate-400 font-medium">HolidayTrip Admin Console</p>
+        </div>
+
+        <nav className="flex-1 px-4 py-4 space-y-2">
+          <button
+            onClick={() => setActiveTab('dashboard')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${activeTab === 'dashboard' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
+          >
+            <Activity className="w-5 h-5" />
+            Genel Bakış
+          </button>
+          <button
+            onClick={() => setActiveTab('users')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${activeTab === 'users' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
+          >
+            <Users className="w-5 h-5" />
+            Kullanıcılar
+          </button>
+          <button
+            onClick={() => setActiveTab('plans')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${activeTab === 'plans' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
+          >
+            <Map className="w-5 h-5" />
+            Üretilen Rotalar
+          </button>
+        </nav>
+
+        <div className="p-4 mt-auto">
+          <button 
+            onClick={() => navigate('/')}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-colors font-medium"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Siteye Dön
+          </button>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0 bg-slate-50 relative z-10 overflow-y-auto max-h-screen">
+        <header className="bg-white border-b border-slate-200 px-8 py-5 flex justify-between items-center sticky top-0 z-10">
+          <div>
+            <h2 className="text-xl font-bold text-slate-800 capitalize">
+              {activeTab === 'dashboard' && 'Genel İstatistikler'}
+              {activeTab === 'users' && 'Kullanıcı Yönetimi'}
+              {activeTab === 'plans' && 'Platformdaki Rotalar'}
+            </h2>
+          </div>
+          <div className="flex items-center gap-4">
+             <div className="text-right hidden sm:block">
+               <p className="text-sm font-bold text-slate-800">{user.fullName}</p>
+               <p className="text-xs text-slate-500 font-medium">Sistem Yöneticisi</p>
+             </div>
+             <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold border-2 border-white shadow-sm">
+               {user.fullName.charAt(0).toUpperCase()}
+             </div>
+          </div>
+        </header>
+
+        <main className="p-8">
+          {dataLoading ? (
+            <div className="flex flex-col items-center justify-center py-32 text-indigo-600">
+              <Loader2 className="w-12 h-12 animate-spin mb-4" />
+              <p className="font-semibold text-slate-500">Veriler Yükleniyor...</p>
+            </div>
+          ) : error ? (
+            <div className="bg-red-50 text-red-600 p-6 rounded-2xl border border-red-200 text-center font-medium">
+              {error}
+            </div>
+          ) : (
+            <>
+              {activeTab === 'dashboard' && stats && (
+                <div className="space-y-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                    <StatCard title="Toplam Kullanıcı" value={stats.totalUsers} icon={<Users className="w-7 h-7" />} color="blue" />
+                    <StatCard title="Üretilen Rotalar" value={stats.totalPlans} icon={<Map className="w-7 h-7" />} color="amber" />
+                    <StatCard title="Bugün Yeni Kayıt" value={stats.usersToday} icon={<TrendingUp className="w-7 h-7" />} color="green" />
+                    <StatCard title="Bugün Üretilen" value={stats.plansToday} icon={<Activity className="w-7 h-7" />} color="indigo" />
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <StatCard 
+                      title="AI Token Kullanımı" 
+                      value={stats.totalTokens?.toLocaleString('tr-TR') || 0} 
+                      icon={<Zap className="w-7 h-7" />} 
+                      color="purple" 
+                    />
+                    <StatCard 
+                      title="AI Tahmini Maliyet" 
+                      value={`$${(stats.totalCostUsd || 0).toFixed(4)}`} 
+                      icon={<DollarSign className="w-7 h-7" />} 
+                      color="emerald" 
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                      <div className="p-5 border-b border-slate-100 flex justify-between items-center">
+                        <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                          <Users className="w-5 h-5 text-indigo-600" /> 
+                          Son Kayıt Olanlar
+                        </h3>
+                      </div>
+                      <div className="divide-y divide-slate-100">
+                        {users.slice(-5).reverse().map(u => (
+                          <div key={u.id} className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                            <div>
+                              <p className="font-semibold text-slate-800">{u.fullName}</p>
+                              <p className="text-xs text-slate-500">{u.email}</p>
+                            </div>
+                            <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-1 rounded-md">
+                                {new Date(u.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                      <div className="p-5 border-b border-slate-100 flex justify-between items-center">
+                        <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                          <Map className="w-5 h-5 text-amber-500" /> 
+                          Son Üretilen Rotalar
+                        </h3>
+                      </div>
+                      <div className="divide-y divide-slate-100">
+                        {plans.slice(0, 5).map(p => (
+                          <div key={p.id} className="p-4 flex flex-col gap-1 hover:bg-slate-50 transition-colors">
+                            <div className="flex justify-between items-start">
+                              <p className="font-bold text-slate-800 truncate pr-4">{p.title || p.destination}</p>
+                              <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-1 rounded-md whitespace-nowrap">
+                                {new Date(p.createdAt).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-500">Hazırlatan: {p.userName}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'users' && (
+                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm">
+                      <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase text-xs">
+                        <tr>
+                          <th className="px-6 py-4">ID</th>
+                          <th className="px-6 py-4">İsim & E-posta</th>
+                          <th className="px-6 py-4">Yetki</th>
+                          <th className="px-6 py-4 text-center">Kalan Kota</th>
+                          <th className="px-6 py-4 text-right">Kayıt Tarihi</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {users.map(u => (
+                          <tr key={u.id} className="hover:bg-slate-50 transition-colors">
+                            <td className="px-6 py-4 text-slate-500 font-medium">#{u.id}</td>
+                            <td className="px-6 py-4">
+                              <p className="font-bold text-slate-800">{u.fullName}</p>
+                              <p className="text-xs text-slate-500">{u.email}</p>
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className={`px-2 py-1 rounded-md text-xs font-bold ${u.role === 'ADMIN' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600'}`}>
+                                {u.role}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-center">
+                              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-amber-50 text-amber-600 font-bold border border-amber-100">
+                                {u.role === 'ADMIN' ? '∞' : u.remainingQuota}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-right text-slate-500 whitespace-nowrap">
+                              {new Date(u.createdAt).toLocaleString('tr-TR')}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'plans' && (
+                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm">
+                      <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase text-xs">
+                        <tr>
+                          <th className="px-6 py-4">ID</th>
+                          <th className="px-6 py-4">Rota Başlığı & Hedef</th>
+                          <th className="px-6 py-4">Kullanıcı</th>
+                          <th className="px-6 py-4 text-right">Oluşturulma Tarihi</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {plans.map(p => (
+                          <tr key={p.id} className="hover:bg-slate-50 transition-colors">
+                            <td className="px-6 py-4 text-slate-500 font-medium">#{p.id}</td>
+                            <td className="px-6 py-4">
+                              <p className="font-bold text-slate-800">{p.title || 'İsimsiz Rota'}</p>
+                              <p className="text-xs font-medium text-amber-600">{p.destination}</p>
+                            </td>
+                            <td className="px-6 py-4">
+                              <p className="font-medium text-slate-700">{p.userName}</p>
+                              <p className="text-xs text-slate-500">{p.userEmail}</p>
+                            </td>
+                            <td className="px-6 py-4 text-right text-slate-500 whitespace-nowrap">
+                              {new Date(p.createdAt).toLocaleString('tr-TR')}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default AdminPage;

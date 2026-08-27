@@ -51,7 +51,7 @@ const ViewItineraryPage = () => {
       <div className="pt-24 px-4 max-w-7xl mx-auto w-full mb-6">
          <button 
            onClick={() => navigate('/history')}
-           className="flex items-center gap-2 text-slate-500 hover:text-slate-800 font-medium transition-colors bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200"
+           className="flex items-center gap-2 text-slate-500 hover:text-slate-800 font-medium transition-colors bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 cursor-pointer"
          >
            <ArrowLeft className="w-5 h-5" />
            Geçmiş Planlara Dön

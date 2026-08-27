@@ -124,11 +124,20 @@ const ItineraryDetails = ({ data }) => {
                                 <p className="font-bold text-slate-800 truncate max-w-[100px]">{ticket.departure ? ticket.departure.split('-')[0].trim() : '-'}</p>
                                 <p className="text-sm text-slate-500">{ticket.departure && ticket.departure.includes('-') ? ticket.departure.split('-')[1].trim() : ''}</p>
                               </div>
-                              <div className="flex flex-col items-center px-4 flex-1">
+                              <div className="flex flex-col items-center px-2 flex-1">
                                 <p className="text-xs text-slate-400 font-medium mb-1">{ticket.duration}</p>
-                                <div className="w-full flex items-center gap-2 text-slate-300">
+                                <div className="w-full flex items-center gap-1 text-slate-300">
                                   <div className="h-[2px] flex-1 border-t-2 border-dashed border-slate-300"></div>
-                                  <TransportIcon className="w-4 h-4 text-slate-400" />
+                                  
+                                  {ticket.layoverCity ? (
+                                    <div className="flex flex-col items-center text-slate-500 px-1 mt-1">
+                                      <p className="text-[10px] font-bold text-orange-500 uppercase leading-none">{ticket.layoverCity}</p>
+                                      <p className="text-[9px] whitespace-nowrap mt-0.5">{ticket.layoverDuration} Bekleme</p>
+                                    </div>
+                                  ) : (
+                                    <TransportIcon className="w-4 h-4 text-slate-400" />
+                                  )}
+
                                   <div className="h-[2px] flex-1 border-t-2 border-dashed border-slate-300"></div>
                                 </div>
                               </div>

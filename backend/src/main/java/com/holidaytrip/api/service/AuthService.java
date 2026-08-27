@@ -83,7 +83,7 @@ public class AuthService {
         // Generate fake simple token for MVP
         String fakeToken = UUID.randomUUID().toString();
 
-        return new AuthResponseDto(fakeToken, user.getFullName(), user.getEmail(), user.getRemainingQuota());
+        return new AuthResponseDto(fakeToken, user.getFullName(), user.getEmail(), user.getRemainingQuota(), user.getRole());
     }
 
     public AuthResponseDto login(AuthRequestDto request) {
@@ -105,7 +105,7 @@ public class AuthService {
         // Generate fake simple token for MVP
         String fakeToken = UUID.randomUUID().toString();
 
-        return new AuthResponseDto(fakeToken, user.getFullName(), user.getEmail(), user.getRemainingQuota());
+        return new AuthResponseDto(fakeToken, user.getFullName(), user.getEmail(), user.getRemainingQuota(), user.getRole());
     }
 
     public AuthResponseDto googleLogin(String tokenString) {
@@ -134,7 +134,7 @@ public class AuthService {
                 user = checkAndResetQuota(user);
 
                 String fakeToken = UUID.randomUUID().toString();
-                return new AuthResponseDto(fakeToken, user.getFullName(), user.getEmail(), user.getRemainingQuota());
+                return new AuthResponseDto(fakeToken, user.getFullName(), user.getEmail(), user.getRemainingQuota(), user.getRole());
             } else {
                 throw new RuntimeException("Geçersiz Google Token'ı.");
             }

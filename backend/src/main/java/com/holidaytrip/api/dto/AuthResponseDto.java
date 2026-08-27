@@ -10,4 +10,5 @@ public class AuthResponseDto {
     private String fullName;
     private String email;
     private Integer remainingQuota;
+    private String role;
 }

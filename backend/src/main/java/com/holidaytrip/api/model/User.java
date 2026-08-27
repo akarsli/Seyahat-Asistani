@@ -26,4 +26,7 @@ public class User {
     
     private Integer remainingQuota = 3;
     private LocalDateTime lastQuotaReset;
+    
+    private String role = "USER";
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

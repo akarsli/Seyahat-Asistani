@@ -7,6 +7,7 @@ import DestinationsPage from './pages/DestinationsPage'
 import AuthPage from './pages/AuthPage'
 import HistoryPage from './pages/HistoryPage'
 import ViewItineraryPage from './pages/ViewItineraryPage'
+import AdminPage from './pages/AdminPage'
 import { CurrencyProvider } from './context/CurrencyContext'
 import { AuthProvider } from './context/AuthContext'
 
@@ -25,6 +26,7 @@ function App() {
               <Route path="/destinations" element={<DestinationsPage />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/auth" element={<AuthPage />} />
+              <Route path="/admin" element={<AdminPage />} />
             </Routes>
           </Router>
         </CurrencyProvider>

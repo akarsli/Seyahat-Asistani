@@ -53,10 +53,11 @@ public class ItineraryController {
             ItineraryResponse response = aiIntegrationService.generateItinerary(request.getPrompt());
 
             // Save to DB
-            User user = userRepository.findByEmail(request.getEmail()).orElse(null);
-            if (user != null) {
-                Itinerary itinerary = new Itinerary();
-                itinerary.setUser(user);
+            User user = userRepository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı (Oturumunuzun süresi dolmuş olabilir, lütfen tekrar giriş yapın)."));
+            
+            Itinerary itinerary = new Itinerary();
+            itinerary.setUser(user);
                 itinerary.setTitle(response.getTitle());
                 itinerary.setDestination(response.getDestination());
                 itinerary.setCreatedAt(LocalDateTime.now());
@@ -67,7 +68,6 @@ public class ItineraryController {
                 } catch (Exception e) {
                     System.out.println("Could not save itinerary to DB: " + e.getMessage());
                 }
-            }
 
             authService.decrementQuota(request.getEmail());
 
@@ -90,5 +90,18 @@ public class ItineraryController {
     public ResponseEntity<String> getItinerary(@PathVariable Long id) {
         Itinerary itinerary = itineraryRepository.findById(id).orElseThrow(() -> new RuntimeException("Plan bulunamadı."));
         return ResponseEntity.ok().header("Content-Type", "application/json").body(itinerary.getResponseData());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteItinerary(@PathVariable Long id, @RequestParam String email) {
+        Itinerary itinerary = itineraryRepository.findById(id).orElseThrow(() -> new RuntimeException("Plan bulunamadı."));
+        
+        // Basit yetki kontrolü
+        if (!itinerary.getUser().getEmail().equals(email)) {
+            return ResponseEntity.status(403).body("Bu planı silme yetkiniz yok.");
+        }
+
+        itineraryRepository.delete(itinerary);
+        return ResponseEntity.ok("Plan başarıyla silindi.");
     }
 }

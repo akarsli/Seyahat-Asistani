@@ -36,6 +36,10 @@ const Navbar = () => {
     { name: 'Planlarım', path: '/itinerary', icon: Plane },
   ];
 
+  if (user?.role === 'ADMIN') {
+    navLinks.push({ name: 'Admin Paneli', path: '/admin', icon: User });
+  }
+
   return (
     <nav className="fixed w-full z-50 bg-white/70 backdrop-blur-md border-b border-white/20 shadow-sm">
       <div className="w-full px-6 lg:px-12 xl:px-24">
@@ -104,26 +108,18 @@ const Navbar = () => {
                     <div className="p-3 border-b border-slate-100 bg-amber-50/50">
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Kalan Planlama Hakkınız</span>
-                        <span className="text-sm font-bold text-[#F59E0B] bg-amber-100 px-2 py-0.5 rounded-md">{user.remainingQuota ?? 3} / 3</span>
+                        <span className="text-sm font-bold text-[#F59E0B] bg-amber-100 px-2 py-0.5 rounded-md">
+                          {user.role === 'ADMIN' ? '∞' : `${user.remainingQuota ?? 3} / 3`}
+                        </span>
                       </div>
                       <div className="w-full bg-amber-200/50 rounded-full h-1.5">
                         <div 
                           className="bg-[#F59E0B] h-1.5 rounded-full transition-all duration-500" 
-                          style={{ width: `${((user.remainingQuota ?? 3) / 3) * 100}%` }}
+                          style={{ width: user.role === 'ADMIN' ? '100%' : `${((user.remainingQuota ?? 3) / 3) * 100}%` }}
                         ></div>
                       </div>
                     </div>
 
-                    <div className="p-2 border-b border-slate-100">
-                      <Link 
-                        to="/history"
-                        onClick={() => setIsUserMenuOpen(false)}
-                        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors font-medium text-left"
-                      >
-                        <Clock className="w-5 h-5" />
-                        <span>Geçmiş Planlarım</span>
-                      </Link>
-                    </div>
 
                     <div className="p-2">
                       <div className="px-3 py-2">
@@ -144,7 +140,7 @@ const Navbar = () => {
                     <div className="p-2 border-t border-slate-100">
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-red-600 hover:bg-red-50 transition-colors font-medium text-left"
+                        className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-red-600 hover:bg-red-50 transition-colors font-medium text-left cursor-pointer"
                       >
                         <LogOut className="w-5 h-5" />
                         <span>Çıkış Yap</span>
@@ -251,12 +247,14 @@ const Navbar = () => {
                     <div className="mt-1 mb-2 bg-white rounded-lg p-3 flex flex-col border border-slate-200">
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Kalan Planlama Hakkınız</span>
-                        <span className="text-sm font-bold text-[#F59E0B] bg-amber-100 px-2 py-0.5 rounded-md">{user.remainingQuota ?? 3} / 3</span>
+                        <span className="text-sm font-bold text-[#F59E0B] bg-amber-100 px-2 py-0.5 rounded-md">
+                          {user.role === 'ADMIN' ? '∞' : `${user.remainingQuota ?? 3} / 3`}
+                        </span>
                       </div>
                       <div className="w-full bg-slate-100 rounded-full h-1.5">
                         <div 
                           className="bg-[#F59E0B] h-1.5 rounded-full transition-all duration-500" 
-                          style={{ width: `${((user.remainingQuota ?? 3) / 3) * 100}%` }}
+                          style={{ width: user.role === 'ADMIN' ? '100%' : `${((user.remainingQuota ?? 3) / 3) * 100}%` }}
                         ></div>
                       </div>
                     </div>
@@ -276,15 +274,6 @@ const Navbar = () => {
                     </div>
                   </div>
                   
-                  <Link
-                    to="/history"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="w-full flex justify-center items-center gap-2 bg-slate-100 text-slate-700 hover:bg-slate-200 px-5 py-3.5 rounded-xl font-bold transition-colors shadow-sm cursor-pointer"
-                  >
-                    <Clock className="w-5 h-5" />
-                    <span>Geçmiş Planlarım</span>
-                  </Link>
-
                   <button
                     onClick={handleLogout}
                     className="w-full flex justify-center items-center gap-2 bg-red-50 text-red-600 hover:bg-red-100 px-5 py-3.5 rounded-xl font-bold transition-colors shadow-sm cursor-pointer"

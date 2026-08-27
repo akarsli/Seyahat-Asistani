@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import { useAuth } from '../context/AuthContext';
-import { Map, Calendar, ArrowRight, Loader2, Plane, LogIn } from 'lucide-react';
+import { Map, Calendar, ArrowRight, Loader2, Plane, LogIn, Trash2 } from 'lucide-react';
 
 const HistoryPage = () => {
   const { user, loading: authLoading } = useAuth();
@@ -36,6 +36,28 @@ const HistoryPage = () => {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (e, planId) => {
+    e.preventDefault(); // Prevent navigating to the itinerary
+    if (!window.confirm('Bu planı silmek istediğinize emin misiniz?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8081/api/itinerary/${planId}?email=${user.email}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Plan silinemedi.');
+      }
+      
+      // Update UI
+      setHistory(history.filter(plan => plan.id !== planId));
+    } catch (err) {
+      alert(err.message);
     }
   };
 
@@ -106,6 +128,15 @@ const HistoryPage = () => {
               <div key={plan.id} className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all border border-slate-100 overflow-hidden group flex flex-col">
                 <div className="h-32 bg-gradient-to-r from-[#1E3A8A] to-blue-600 p-6 flex flex-col justify-end relative overflow-hidden">
                   <Map className="absolute -top-6 -right-6 w-32 h-32 text-white opacity-10 transform group-hover:scale-110 transition-transform duration-500" />
+                  
+                  <button 
+                    onClick={(e) => handleDelete(e, plan.id)}
+                    className="absolute top-4 right-4 bg-white/20 hover:bg-red-500 hover:text-white text-white/80 p-2 rounded-full backdrop-blur-sm transition-colors z-20 cursor-pointer"
+                    title="Planı Sil"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+
                   <h3 className="text-xl font-bold text-white relative z-10 truncate">{plan.title || 'Seyahat Planı'}</h3>
                 </div>
 

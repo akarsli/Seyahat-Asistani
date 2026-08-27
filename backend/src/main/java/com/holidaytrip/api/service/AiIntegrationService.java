@@ -22,20 +22,22 @@ import java.util.Map;
 @Service
 public class AiIntegrationService {
 
-    @Value("${groq.api.key}")
+    @Value("${gemini.api.key}")
     private String apiKey;
 
-    @Value("${groq.api.url}")
+    @Value("${gemini.api.url}")
     private String apiUrl;
 
-    @Value("${groq.api.model}")
+    @Value("${gemini.api.model}")
     private String apiModel;
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final AiUsageService aiUsageService;
 
-    public AiIntegrationService(RestTemplate restTemplate) {
+    public AiIntegrationService(RestTemplate restTemplate, AiUsageService aiUsageService) {
         this.restTemplate = restTemplate;
+        this.aiUsageService = aiUsageService;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
@@ -47,7 +49,7 @@ public class AiIntegrationService {
     )
     public ParameterExtractionResponse extractParameters(String userPrompt, ParameterExtractionResponse currentParams) {
         if (apiKey == null || apiKey.contains("BURAYA_YAZIN")) {
-            throw new RuntimeException("Lütfen application.properties dosyasına Groq API anahtarınızı girin.");
+            throw new RuntimeException("Lütfen application.properties dosyasına Gemini API anahtarınızı girin.");
         }
 
         String systemInstruction = "Sen bir seyahat asistanısın. Görevin kullanıcının metninden aşağıdaki 5 parametreyi çıkarmaktır:\n" +
@@ -94,15 +96,24 @@ public class AiIntegrationService {
 
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, entity, String.class);
-            return parseGroqExtractionResponse(response.getBody());
+            return parseGeminiExtractionResponse(response.getBody());
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Parametre çıkarımı sırasında hata oluştu: " + e.getMessage());
         }
     }
 
-    private ParameterExtractionResponse parseGroqExtractionResponse(String responseBody) throws Exception {
+    private ParameterExtractionResponse parseGeminiExtractionResponse(String responseBody) throws Exception {
         JsonNode root = objectMapper.readTree(responseBody);
+        
+        // Track Token Usage
+        JsonNode usage = root.path("usage");
+        if (!usage.isMissingNode()) {
+            long promptTokens = usage.path("prompt_tokens").asLong(0);
+            long completionTokens = usage.path("completion_tokens").asLong(0);
+            aiUsageService.addUsage(promptTokens, completionTokens);
+        }
+
         JsonNode choices = root.path("choices");
         if (choices.isArray() && choices.size() > 0) {
             String aiText = choices.get(0).path("message").path("content").asText().trim();
@@ -122,7 +133,7 @@ public class AiIntegrationService {
     )
     public ItineraryResponse generateItinerary(String userPrompt) {
         if (apiKey == null || apiKey.contains("BURAYA_YAZIN")) {
-            throw new RuntimeException("Lütfen application.properties dosyasına Groq API anahtarınızı girin.");
+            throw new RuntimeException("Lütfen application.properties dosyasına Gemini API anahtarınızı girin.");
         }
 
         String systemInstruction = "Sen uzman bir seyahat asistanısın. Aşağıdaki kullanıcı isteğine uygun bir seyahat planı hazırla. " +
@@ -135,7 +146,8 @@ public class AiIntegrationService {
                 "5. 'transportOptions' dizisine kullanıcının çıkış noktasından hedef ülkeye/şehre gitmesi için MANTIKLI, GERÇEKÇİ ve UCUZ BİLET ÖNERİLERİ (Uçak, Tren veya Otobüs) ekle. Örneğin İstanbul'dan İtalya'ya gidiliyorsa bir Uçak bileti koy.\n" +
                 "6. Havalimanından şehir merkezine nasıl gidileceğini (Tren/Otobüs/Metro/HAVAŞ vb.) gösteren bir bilet/transfer önerisini de 'transportOptions' dizisine ekle. AYRICA EĞER SEYAHAT BİRDEN FAZLA ŞEHRİ İÇERİYORSA (Örn: Roma'dan Floransa'ya geçilecekse) bu şehirler arası geçiş için gereken Tren veya Otobüs biletlerini de KESİNLİKLE 'transportOptions' içerisine ekle ve 'targetDayNumber' olarak geçişin yapılacağı günü yaz.\n" +
                 "7. Tatilin son günü için dönüş uçuşunu (veya eve dönüş biletini) MUTLAKA 'transportOptions' dizisine ekle. 'type' alanı sadece 'Plane', 'Train', 'Bus' veya 'Subway' olabilir. 'targetDayNumber' alanına bu biletin hangi gün kullanılacağını yaz (Örn: Dönüş uçuşu için seyahatin son gününün numarası). EĞER bilet tatilin sonunda eve dönüş biletini temsil ediyorsa 'isReturnTicket': true ekle, diğer tüm biletler için false yap. SEYAHATTE KULLANILACAK TÜM BİLETLERİ (Gidiş, Şehirler Arası, Dönüş) EKSİKSİZ LİSTELE.\n" +
-                "8. ALTERNATİF ULAŞIM: Özellikle Avrupa içi veya birbirine yakın şehirlerarası seyahatlerde (Örn: Frankfurt - Paris, İstanbul - Sofya vb.), uçak biletine ek olarak DAHA UCUZ veya DAHA PRATİK bir Tren veya Otobüs bileti de ekleyerek kullanıcıya seçme şansı sun. ANCAK UZUN YOLCULUKLARDA (uçakla 2-3 saat veya daha fazla süren, ya da karayoluyla çok uzun sürecek mesafelerde) eğer uçak veya tren gibi mantıklı alternatifler varsa KESİNLİKLE OTOBÜS BİLETİ GÖSTERME.\n\n" +
+                "8. ALTERNATİF ULAŞIM: Özellikle Avrupa içi veya birbirine yakın şehirlerarası seyahatlerde uçak biletine ek olarak DAHA UCUZ veya DAHA PRATİK bir Tren veya Otobüs bileti de ekle. ANCAK UZUN YOLCULUKLARDA uçak veya tren gibi mantıklı alternatifler varsa OTOBÜS BİLETİ GÖSTERME.\n" +
+                "9. AKTARMALI UÇUŞLAR (Layover): Eğer önerdiğin uçuş aktarmalı ise (örneğin İstanbul'dan New York'a Paris aktarmalı), mutlaka 'layoverCity' (örneğin: 'Paris (CDG)') ve 'layoverDuration' (örneğin: '2h 15m') alanlarını doldur. Eğer uçuş direkt veya tren/otobüs ise bu alanları null bırak.\n\n" +
                 "Örnek JSON yapısı (transportOptions ve dailyPlans BİRER DİZİ(Array) OLMALI):\n" +
                 "{\n" +
                 "  \"destination\": \"Şehir, Ülke\",\n" +
@@ -154,7 +166,22 @@ public class AiIntegrationService {
                 "      \"duration\": \"2h 45m\",\n" +
                 "      \"description\": \"En hızlı ve direkt uçuş\",\n" +
                 "      \"targetDayNumber\": 1,\n" +
-                "      \"isReturnTicket\": false\n" +
+                "      \"isReturnTicket\": false,\n" +
+                "      \"layoverCity\": null,\n" +
+                "      \"layoverDuration\": null\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"type\": \"Plane\",\n" +
+                "      \"provider\": \"Lufthansa\",\n" +
+                "      \"departure\": \"İstanbul (IST) - 08:30\",\n" +
+                "      \"arrival\": \"New York (JFK) - 16:15\",\n" +
+                "      \"price\": \"$650\",\n" +
+                "      \"duration\": \"14h 45m\",\n" +
+                "      \"description\": \"Aktarmalı uçuş\",\n" +
+                "      \"targetDayNumber\": 1,\n" +
+                "      \"isReturnTicket\": false,\n" +
+                "      \"layoverCity\": \"Münih (MUC)\",\n" +
+                "      \"layoverDuration\": \"3h 20m\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"type\": \"Train\",\n" +
@@ -165,7 +192,9 @@ public class AiIntegrationService {
                 "      \"duration\": \"1h 30m\",\n" +
                 "      \"description\": \"Şehirler arası hızlı tren\",\n" +
                 "      \"targetDayNumber\": 2,\n" +
-                "      \"isReturnTicket\": false\n" +
+                "      \"isReturnTicket\": false,\n" +
+                "      \"layoverCity\": null,\n" +
+                "      \"layoverDuration\": null\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"type\": \"Plane\",\n" +
@@ -176,7 +205,9 @@ public class AiIntegrationService {
                 "      \"duration\": \"2h 30m\",\n" +
                 "      \"description\": \"Eve dönüş uçuşu\",\n" +
                 "      \"targetDayNumber\": 3,\n" +
-                "      \"isReturnTicket\": true\n" +
+                "      \"isReturnTicket\": true,\n" +
+                "      \"layoverCity\": null,\n" +
+                "      \"layoverDuration\": null\n" +
                 "    }\n" +
                 "  ],\n" +
                 "  \"dailyPlans\": [\n" +
@@ -210,7 +241,7 @@ public class AiIntegrationService {
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", apiModel);
         
-        // Groq/OpenAI JSON mode
+        // Gemini/OpenAI JSON mode
         Map<String, String> responseFormat = new HashMap<>();
         responseFormat.put("type", "json_object");
         requestBody.put("response_format", responseFormat);
@@ -233,7 +264,7 @@ public class AiIntegrationService {
 
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, entity, String.class);
-            return parseGroqResponse(response.getBody());
+            return parseGeminiResponse(response.getBody());
         } catch (org.springframework.web.client.HttpStatusCodeException e) {
             e.printStackTrace();
             throw new RuntimeException("API Hatası (" + e.getStatusCode() + "): " + e.getResponseBodyAsString());
@@ -243,8 +274,17 @@ public class AiIntegrationService {
         }
     }
 
-    private ItineraryResponse parseGroqResponse(String responseBody) throws Exception {
+    private ItineraryResponse parseGeminiResponse(String responseBody) throws Exception {
         JsonNode root = objectMapper.readTree(responseBody);
+        
+        // Track Token Usage
+        JsonNode usage = root.path("usage");
+        if (!usage.isMissingNode()) {
+            long promptTokens = usage.path("prompt_tokens").asLong(0);
+            long completionTokens = usage.path("completion_tokens").asLong(0);
+            aiUsageService.addUsage(promptTokens, completionTokens);
+        }
+
         JsonNode choices = root.path("choices");
         if (choices.isArray() && choices.size() > 0) {
             JsonNode message = choices.get(0).path("message");

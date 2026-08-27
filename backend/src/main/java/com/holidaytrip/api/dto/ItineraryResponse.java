@@ -45,6 +45,12 @@ public class ItineraryResponse {
         
         @com.fasterxml.jackson.annotation.JsonAlias({"returnTicket", "isReturn"})
         private boolean isReturnTicket; // true if this is the final return ticket home
+        
+        @com.fasterxml.jackson.annotation.JsonAlias({"layover", "transit"})
+        private String layoverCity; // e.g., "Münih (MUC)"
+        
+        @com.fasterxml.jackson.annotation.JsonAlias({"layoverTime", "waitTime"})
+        private String layoverDuration; // e.g., "2h 15m"
     }
 
     @Data

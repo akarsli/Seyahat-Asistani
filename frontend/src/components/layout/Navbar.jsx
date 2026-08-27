@@ -81,9 +81,9 @@ const Navbar = () => {
 
             {user ? (
               <div className="relative" ref={userMenuRef}>
-                <button 
+                <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center gap-3 p-1.5 pr-3 rounded-full border border-slate-200 hover:bg-slate-50 transition-colors bg-white shadow-sm"
+                  className="flex items-center gap-3 p-1.5 pr-3 rounded-full border border-slate-200 hover:bg-slate-50 transition-colors bg-white shadow-sm cursor-pointer"
                 >
                   <div className="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center font-bold">
                     {user.fullName.charAt(0).toUpperCase()}
@@ -100,7 +100,7 @@ const Navbar = () => {
                       <p className="font-bold text-slate-800">{user.fullName}</p>
                       <p className="text-xs text-slate-500 truncate">{user.email}</p>
                     </div>
-                    
+
                     <div className="p-2">
                       <div className="px-3 py-2">
                         <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 block">Para Birimi</label>
@@ -116,9 +116,9 @@ const Navbar = () => {
                         </select>
                       </div>
                     </div>
-                    
+
                     <div className="p-2 border-t border-slate-100">
-                      <button 
+                      <button
                         onClick={handleLogout}
                         className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-red-600 hover:bg-red-50 transition-colors font-medium text-left"
                       >
@@ -130,13 +130,38 @@ const Navbar = () => {
                 )}
               </div>
             ) : (
-              <Link
-                to="/auth"
-                className="flex items-center gap-2 border-2 cursor-pointer border-[#1E3A8A] text-[#1E3A8A] hover:bg-[#1E3A8A] hover:text-white px-5 py-2.5 rounded-full font-medium transition-all shadow-sm transform hover:-translate-y-0.5"
-              >
-                <User className="w-4 h-4" />
-                <span>Giriş Yap / Kayıt Ol</span>
-              </Link>
+              <div className="relative" ref={userMenuRef}>
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center gap-2 hover:bg-slate-50 p-1.5 pr-3 rounded-full transition-colors border border-slate-200 shadow-sm bg-white cursor-pointer"
+                >
+                  <div className="w-8 h-8 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center">
+                    <User className="w-5 h-5" />
+                  </div>
+                  <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden z-50 p-2">
+                    <Link
+                      to="/auth"
+                      state={{ isLogin: true }}
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-[#F59E0B] text-white hover:bg-orange-400 transition-colors font-semibold mb-2 shadow-sm"
+                    >
+                      <span>Giriş Yap</span>
+                    </Link>
+                    <Link
+                      to="/auth"
+                      state={{ isLogin: false }}
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors font-semibold"
+                    >
+                      <span>Kayıt Ol</span>
+                    </Link>
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
@@ -190,27 +215,27 @@ const Navbar = () => {
                 <div className="w-full flex flex-col gap-3">
                   <div className="bg-slate-100 p-4 rounded-xl flex flex-col gap-1 border border-slate-200">
                     <div className="flex items-center gap-3 mb-2">
-                       <div className="w-10 h-10 bg-indigo-200 text-indigo-700 rounded-full flex items-center justify-center font-bold">
-                         {user.fullName.charAt(0).toUpperCase()}
-                       </div>
-                       <div>
-                         <p className="font-bold text-slate-800">{user.fullName}</p>
-                         <p className="text-xs text-slate-500 truncate max-w-[200px]">{user.email}</p>
-                       </div>
+                      <div className="w-10 h-10 bg-indigo-200 text-indigo-700 rounded-full flex items-center justify-center font-bold">
+                        {user.fullName.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <p className="font-bold text-slate-800">{user.fullName}</p>
+                        <p className="text-xs text-slate-500 truncate max-w-[200px]">{user.email}</p>
+                      </div>
                     </div>
-                    
+
                     <div className="mt-2 pt-3 border-t border-slate-200">
-                        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 block">Para Birimi</label>
-                        <select
-                          value={currency}
-                          onChange={(e) => setCurrency(e.target.value)}
-                          className="w-full bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#F59E0B] focus:border-[#F59E0B] block p-2.5 cursor-pointer outline-none font-medium"
-                        >
-                          <option value="USD">USD ($)</option>
-                          <option value="EUR">EUR (€)</option>
-                          <option value="GBP">GBP (£)</option>
-                          <option value="TRY">TRY (₺)</option>
-                        </select>
+                      <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 block">Para Birimi</label>
+                      <select
+                        value={currency}
+                        onChange={(e) => setCurrency(e.target.value)}
+                        className="w-full bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#F59E0B] focus:border-[#F59E0B] block p-2.5 cursor-pointer outline-none font-medium"
+                      >
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="TRY">TRY (₺)</option>
+                      </select>
                     </div>
                   </div>
                   <button
@@ -222,14 +247,24 @@ const Navbar = () => {
                   </button>
                 </div>
               ) : (
-                <Link
-                  to="/auth"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full flex justify-center items-center gap-2 bg-[#1E3A8A] text-white px-5 py-3 rounded-xl font-bold shadow-sm"
-                >
-                  <User className="w-5 h-5" />
-                  <span>Giriş Yap / Kayıt Ol</span>
-                </Link>
+                <div className="w-full flex flex-col gap-3">
+                  <Link
+                    to="/auth"
+                    state={{ isLogin: true }}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="w-full flex justify-center items-center gap-2 bg-[#1E3A8A] text-white px-5 py-3 rounded-xl font-bold shadow-sm"
+                  >
+                    <span>Giriş Yap</span>
+                  </Link>
+                  <Link
+                    to="/auth"
+                    state={{ isLogin: false }}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="w-full flex justify-center items-center gap-2 bg-slate-100 text-slate-700 px-5 py-3 rounded-xl font-bold"
+                  >
+                    <span>Kayıt Ol</span>
+                  </Link>
+                </div>
               )}
             </div>
           </div>

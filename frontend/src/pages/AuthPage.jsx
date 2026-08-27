@@ -8,7 +8,7 @@ const AuthPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(location.state?.isLogin !== false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -33,7 +33,7 @@ const AuthPage = () => {
       
       const data = await res.json();
       login(data);
-      const returnTo = location.state?.returnTo || '/itinerary';
+      const returnTo = location.state?.returnTo || '/';
       navigate(returnTo, { state: { prompt: location.state?.prompt } });
     } catch (err) {
       setError(err.message);
@@ -66,7 +66,7 @@ const AuthPage = () => {
       const data = await response.json();
       login(data); // context update
       
-      const returnTo = location.state?.returnTo || '/itinerary';
+      const returnTo = location.state?.returnTo || '/';
       navigate(returnTo, { state: { prompt: location.state?.prompt } }); // Redirect to planner
     } catch (err) {
       setError(err.message);

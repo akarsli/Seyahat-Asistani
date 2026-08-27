@@ -47,6 +47,8 @@ public class AdminController {
         long usersToday = users.stream().filter(u -> u.getCreatedAt() != null && u.getCreatedAt().toLocalDate().isEqual(LocalDate.now())).count();
         long plansToday = itineraries.stream().filter(i -> i.getCreatedAt() != null && i.getCreatedAt().toLocalDate().isEqual(LocalDate.now())).count();
 
+        long usersOutOfQuota = users.stream().filter(u -> !"ADMIN".equals(u.getRole()) && (u.getRemainingQuota() == null || u.getRemainingQuota() <= 0)).count();
+
         AiUsage aiStats = aiUsageService.getStats();
 
         Map<String, Object> stats = new HashMap<>();
@@ -54,6 +56,7 @@ public class AdminController {
         stats.put("totalPlans", itineraries.size());
         stats.put("usersToday", usersToday);
         stats.put("plansToday", plansToday);
+        stats.put("usersOutOfQuota", usersOutOfQuota);
         
         stats.put("totalPromptTokens", aiStats.getTotalPromptTokens());
         stats.put("totalCompletionTokens", aiStats.getTotalCompletionTokens());
@@ -98,5 +101,24 @@ public class AdminController {
         }).collect(Collectors.toList());
         
         return ResponseEntity.ok(planList);
+    }
+
+    @PutMapping("/users/{userId}/quota")
+    public ResponseEntity<?> updateUserQuota(
+            @PathVariable Long userId,
+            @RequestParam String email,
+            @RequestParam Integer newQuota) {
+        
+        if (!isAdmin(email)) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Yetkisiz erişim");
+
+        User targetUser = userRepository.findById(userId).orElse(null);
+        if (targetUser == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Kullanıcı bulunamadı");
+        }
+
+        targetUser.setRemainingQuota(newQuota);
+        userRepository.save(targetUser);
+
+        return ResponseEntity.ok("Kota güncellendi");
     }
 }

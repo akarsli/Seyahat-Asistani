@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, Map, LogOut, Loader2, ArrowLeft, TrendingUp, CheckCircle2, Activity, Calendar, Zap, DollarSign } from 'lucide-react';
+import { LayoutDashboard, Users, Map, LogOut, Loader2, ArrowLeft, TrendingUp, CheckCircle2, Activity, Calendar, Zap, DollarSign, Search } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 
 const AdminPage = () => {
@@ -14,6 +14,13 @@ const AdminPage = () => {
   const [plans, setPlans] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  const [isQuotaModalOpen, setIsQuotaModalOpen] = useState(false);
+  const [selectedUserForQuota, setSelectedUserForQuota] = useState(null);
+  const [newQuotaValue, setNewQuotaValue] = useState('');
+  const [updatingQuota, setUpdatingQuota] = useState(false);
+  
+  const [userSearchTerm, setUserSearchTerm] = useState('');
 
   useEffect(() => {
     if (!authLoading) {
@@ -38,12 +45,47 @@ const AdminPage = () => {
       if (!statsRes.ok || !usersRes.ok || !plansRes.ok) throw new Error('Veriler çekilirken hata oluştu.');
 
       setStats(await statsRes.json());
-      setUsers(await usersRes.json());
+      
+      const usersData = await usersRes.json();
+      setUsers(usersData);
       setPlans(await plansRes.json());
     } catch (err) {
       setError(err.message);
     } finally {
       setDataLoading(false);
+    }
+  };
+
+  const openQuotaModal = (user) => {
+    setSelectedUserForQuota(user);
+    setNewQuotaValue(user.remainingQuota);
+    setIsQuotaModalOpen(true);
+  };
+
+  const closeQuotaModal = () => {
+    setIsQuotaModalOpen(false);
+    setSelectedUserForQuota(null);
+    setNewQuotaValue('');
+  };
+
+  const handleUpdateQuota = async () => {
+    if (!selectedUserForQuota || newQuotaValue === '') return;
+
+    setUpdatingQuota(true);
+    try {
+      const response = await fetch(`http://localhost:8081/api/admin/users/${selectedUserForQuota.id}/quota?email=${user.email}&newQuota=${newQuotaValue}`, {
+        method: 'PUT'
+      });
+      
+      if (!response.ok) throw new Error('Kota güncellenemedi.');
+      
+      // Update local state
+      setUsers(users.map(u => u.id === selectedUserForQuota.id ? { ...u, remainingQuota: parseInt(newQuotaValue) } : u));
+      closeQuotaModal();
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setUpdatingQuota(false);
     }
   };
 
@@ -149,6 +191,19 @@ const AdminPage = () => {
                     <StatCard title="Bugün Yeni Kayıt" value={stats.usersToday} icon={<TrendingUp className="w-7 h-7" />} color="green" />
                     <StatCard title="Bugün Üretilen" value={stats.plansToday} icon={<Activity className="w-7 h-7" />} color="indigo" />
                   </div>
+
+                  <div className="bg-red-50 p-6 rounded-2xl border border-red-100 flex items-center justify-between shadow-sm">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-red-100 text-red-600 rounded-xl">
+                        <Users className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-red-800">Limiti Dolan Kullanıcılar</h3>
+                        <p className="text-sm text-red-600">Haftalık planlama kotasını doldurmuş kullanıcı sayısı.</p>
+                      </div>
+                    </div>
+                    <div className="text-3xl font-bold text-red-700">{stats.usersOutOfQuota || 0}</div>
+                  </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <StatCard 
@@ -214,20 +269,36 @@ const AdminPage = () => {
               )}
 
               {activeTab === 'users' && (
-                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-sm">
-                      <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase text-xs">
+                <div className="space-y-4">
+                  <div className="flex items-center bg-white p-2 rounded-xl border border-slate-200 shadow-sm max-w-md focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
+                    <Search className="w-5 h-5 text-slate-400 ml-2" />
+                    <input 
+                      type="text" 
+                      placeholder="İsim veya e-posta ile ara..." 
+                      value={userSearchTerm}
+                      onChange={(e) => setUserSearchTerm(e.target.value)}
+                      className="w-full bg-transparent border-none outline-none px-3 py-1.5 text-slate-700 placeholder:text-slate-400"
+                    />
+                  </div>
+                  
+                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-sm">
+                        <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase text-xs">
                         <tr>
                           <th className="px-6 py-4">ID</th>
                           <th className="px-6 py-4">İsim & E-posta</th>
                           <th className="px-6 py-4">Yetki</th>
                           <th className="px-6 py-4 text-center">Kalan Kota</th>
                           <th className="px-6 py-4 text-right">Kayıt Tarihi</th>
+                          <th className="px-6 py-4 text-center">İşlemler</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
-                        {users.map(u => (
+                        {users.filter(u => 
+                          u.fullName.toLowerCase().includes(userSearchTerm.toLowerCase()) || 
+                          u.email.toLowerCase().includes(userSearchTerm.toLowerCase())
+                        ).map(u => (
                           <tr key={u.id} className="hover:bg-slate-50 transition-colors">
                             <td className="px-6 py-4 text-slate-500 font-medium">#{u.id}</td>
                             <td className="px-6 py-4">
@@ -247,12 +318,33 @@ const AdminPage = () => {
                             <td className="px-6 py-4 text-right text-slate-500 whitespace-nowrap">
                               {new Date(u.createdAt).toLocaleString('tr-TR')}
                             </td>
+                            <td className="px-6 py-4 text-center">
+                              {u.role !== 'ADMIN' && (
+                                <button 
+                                  onClick={() => openQuotaModal(u)}
+                                  className="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:text-indigo-800 px-4 py-2 rounded-lg text-sm font-bold transition-colors cursor-pointer border border-indigo-200"
+                                >
+                                  Kota Güncelle
+                                </button>
+                              )}
+                            </td>
                           </tr>
                         ))}
+                        {users.filter(u => 
+                          u.fullName.toLowerCase().includes(userSearchTerm.toLowerCase()) || 
+                          u.email.toLowerCase().includes(userSearchTerm.toLowerCase())
+                        ).length === 0 && (
+                          <tr>
+                            <td colSpan="5" className="px-6 py-8 text-center text-slate-500 font-medium">
+                              Aramanızla eşleşen kullanıcı bulunamadı.
+                            </td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>
                 </div>
+              </div>
               )}
 
               {activeTab === 'plans' && (
@@ -292,6 +384,46 @@ const AdminPage = () => {
             </>
           )}
         </main>
+
+        {/* Quota Update Modal */}
+        {isQuotaModalOpen && selectedUserForQuota && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm">
+            <div className="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl flex flex-col">
+              <h2 className="text-2xl font-bold text-slate-800 mb-2">Kota Güncelle</h2>
+              <p className="text-slate-500 mb-6">
+                <strong className="text-slate-700">{selectedUserForQuota.fullName}</strong> adlı kullanıcının kotasını düzenliyorsunuz.
+              </p>
+              
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-slate-700 mb-2">Yeni Kota Sayısı</label>
+                <input 
+                  type="number" 
+                  min="0"
+                  value={newQuotaValue}
+                  onChange={(e) => setNewQuotaValue(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all font-medium text-slate-700"
+                  placeholder="Sayı girin..."
+                />
+              </div>
+
+              <div className="flex gap-3 mt-auto">
+                <button
+                  onClick={closeQuotaModal}
+                  className="flex-1 px-5 py-3 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
+                >
+                  İptal
+                </button>
+                <button
+                  onClick={handleUpdateQuota}
+                  disabled={updatingQuota}
+                  className="flex-1 px-5 py-3 rounded-xl font-bold text-white bg-[#F59E0B] hover:bg-amber-600 shadow-md shadow-amber-600/20 transition-all disabled:opacity-50 flex items-center justify-center"
+                >
+                  {updatingQuota ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Kaydet'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

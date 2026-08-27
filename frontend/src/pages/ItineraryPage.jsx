@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import ChatSidebar from '../components/itinerary/ChatSidebar';
 import ItineraryDetails from '../components/itinerary/ItineraryDetails';
-import { Loader2, Map, Check, MapPin, Clock, Wallet, User, Calendar, Plane, LogIn, Sparkles } from 'lucide-react';
+import { Loader2, Map, Check, MapPin, Clock, Wallet, User, Calendar, Plane, LogIn, Sparkles, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 
@@ -56,6 +56,7 @@ const ItineraryPage = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [mobileView, setMobileView] = useState('chat'); // 'chat' or 'plan'
   const [showAuthPopup, setShowAuthPopup] = useState(false);
+  const [showQuotaPopup, setShowQuotaPopup] = useState(false);
   
   // Extraction State
   const [parameters, setParameters] = useState(null);
@@ -92,7 +93,8 @@ const ItineraryPage = () => {
            }, 1500);
            // Burada generatePlan çağırmıyoruz, kullanıcı giriş yapmalı
          } else if (user.remainingQuota <= 0) {
-           setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Haftalık plan kotanız dolmuştur. Yeni rotalar oluşturabilmek için kotanızın sıfırlanmasını bekleyiniz.' }]);
+           setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Haftalık plan kotanız dolmuştur. Yeni rotalar oluşturabilmek için planınızı yükseltmeniz gerekmektedir.' }]);
+           setTimeout(() => setShowQuotaPopup(true), 1500);
            setLoading(false);
          } else {
            setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Harika! Tüm detayları aldım. Şimdi sizin için en uygun rotayı hazırlıyorum, lütfen bekleyin...' }]);
@@ -169,7 +171,8 @@ const ItineraryPage = () => {
     // Eğer sayfaya giriş yaptıktan sonra dönüldüyse ve liste tamamsa otomatik başlat
     if (user && isComplete && !isGenerating && !itineraryData && !loading) {
        if (user.remainingQuota <= 0) {
-           setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Haftalık plan kotanız dolmuştur. Yeni rotalar oluşturabilmek için kotanızın sıfırlanmasını bekleyiniz.' }]);
+           setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Haftalık plan kotanız dolmuştur. Yeni rotalar oluşturabilmek için planınızı yükseltmeniz gerekmektedir.' }]);
+           setTimeout(() => setShowQuotaPopup(true), 1000);
            return;
        }
        const fullPrompt = `Nereden: ${parameters.departureLocation}, Nereye: ${parameters.destination}, Tarih: ${parameters.travelDate}, Bütçe: ${parameters.budget}, Kişi: ${parameters.numberOfPeople}. Ek Detaylar: ${prompt || ''}`;
@@ -276,6 +279,39 @@ const ItineraryPage = () => {
                 >
                   Giriş Yap / Kayıt Ol
                 </button>
+              </div>
+            </div>
+          )}
+
+          {/* Popup Overlay for Empty Quota */}
+          {showQuotaPopup && (
+            <div className="absolute inset-0 z-40 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm">
+              <div className="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl flex flex-col items-center text-center transform scale-100 transition-all">
+                <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                  <AlertTriangle className="w-10 h-10 text-red-500" />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-800 mb-3">Kotanız Dolmuştur!</h2>
+                <p className="text-slate-500 mb-8">
+                  Haftalık ücretsiz plan oluşturma kotanızı doldurdunuz. Hemen planınızı yükselterek sınırsız yapay zeka gücünden faydalanmaya devam edebilirsiniz.
+                </p>
+                <div className="flex gap-3 w-full">
+                  <button
+                    onClick={() => setShowQuotaPopup(false)}
+                    className="flex-1 px-5 py-3.5 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
+                  >
+                    Kapat
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowQuotaPopup(false);
+                      // navigate('/pricing') veya benzeri eklenebilir gelecekte
+                      alert('Plan yükseltme sayfası yakında eklenecektir!');
+                    }}
+                    className="flex-1 bg-[#F59E0B] hover:bg-amber-600 text-white py-3.5 rounded-xl font-bold transition-all shadow-md shadow-amber-600/20"
+                  >
+                    Plan Yükselt
+                  </button>
+                </div>
               </div>
             </div>
           )}

@@ -9,4 +9,5 @@ public class AuthResponseDto {
     private String token; // For now we can just return a simple fake token or email
     private String fullName;
     private String email;
+    private Integer remainingQuota;
 }

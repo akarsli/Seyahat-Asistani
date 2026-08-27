@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Plane, Compass, Map, User, Menu, X, LogOut, ChevronDown } from 'lucide-react';
+import { Plane, Compass, Map, User, Menu, X, LogOut, ChevronDown, Clock } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
 
@@ -99,6 +99,30 @@ const Navbar = () => {
                     <div className="p-4 border-b border-slate-100 bg-slate-50">
                       <p className="font-bold text-slate-800">{user.fullName}</p>
                       <p className="text-xs text-slate-500 truncate">{user.email}</p>
+                    </div>
+
+                    <div className="p-3 border-b border-slate-100 bg-amber-50/50">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Kalan Planlama Hakkınız</span>
+                        <span className="text-sm font-bold text-[#F59E0B] bg-amber-100 px-2 py-0.5 rounded-md">{user.remainingQuota ?? 3} / 3</span>
+                      </div>
+                      <div className="w-full bg-amber-200/50 rounded-full h-1.5">
+                        <div 
+                          className="bg-[#F59E0B] h-1.5 rounded-full transition-all duration-500" 
+                          style={{ width: `${((user.remainingQuota ?? 3) / 3) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    <div className="p-2 border-b border-slate-100">
+                      <Link 
+                        to="/history"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors font-medium text-left"
+                      >
+                        <Clock className="w-5 h-5" />
+                        <span>Geçmiş Planlarım</span>
+                      </Link>
                     </div>
 
                     <div className="p-2">
@@ -224,6 +248,19 @@ const Navbar = () => {
                       </div>
                     </div>
 
+                    <div className="mt-1 mb-2 bg-white rounded-lg p-3 flex flex-col border border-slate-200">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Kalan Planlama Hakkınız</span>
+                        <span className="text-sm font-bold text-[#F59E0B] bg-amber-100 px-2 py-0.5 rounded-md">{user.remainingQuota ?? 3} / 3</span>
+                      </div>
+                      <div className="w-full bg-slate-100 rounded-full h-1.5">
+                        <div 
+                          className="bg-[#F59E0B] h-1.5 rounded-full transition-all duration-500" 
+                          style={{ width: `${((user.remainingQuota ?? 3) / 3) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
                     <div className="mt-2 pt-3 border-t border-slate-200">
                       <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 block">Para Birimi</label>
                       <select
@@ -238,6 +275,16 @@ const Navbar = () => {
                       </select>
                     </div>
                   </div>
+                  
+                  <Link
+                    to="/history"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="w-full flex justify-center items-center gap-2 bg-slate-100 text-slate-700 hover:bg-slate-200 px-5 py-3.5 rounded-xl font-bold transition-colors shadow-sm cursor-pointer"
+                  >
+                    <Clock className="w-5 h-5" />
+                    <span>Geçmiş Planlarım</span>
+                  </Link>
+
                   <button
                     onClick={handleLogout}
                     className="w-full flex justify-center items-center gap-2 bg-red-50 text-red-600 hover:bg-red-100 px-5 py-3.5 rounded-xl font-bold transition-colors shadow-sm cursor-pointer"

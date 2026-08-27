@@ -46,7 +46,7 @@ const RequirementsChecklist = ({ params }) => {
 const ItineraryPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, decrementQuota } = useAuth();
   
   const [itineraryData, setItineraryData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -89,6 +89,9 @@ const ItineraryPage = () => {
              setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Tüm detayları aldım! Planlamaya başlayabilmemiz için giriş yapmanız gerekiyor.' }]);
            }, 1500);
            // Burada generatePlan çağırmıyoruz, kullanıcı giriş yapmalı
+         } else if (user.remainingQuota <= 0) {
+           setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Haftalık plan kotanız dolmuştur. Yeni rotalar oluşturabilmek için kotanızın sıfırlanmasını bekleyiniz.' }]);
+           setLoading(false);
          } else {
            setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Harika! Tüm detayları aldım. Şimdi sizin için en uygun rotayı hazırlıyorum, lütfen bekleyin...' }]);
            const fullPrompt = `Nereden: ${data.departureLocation}, Nereye: ${data.destination}, Tarih: ${data.travelDate}, Bütçe: ${data.budget}, Kişi: ${data.numberOfPeople}. Ek Detaylar: ${text}`;
@@ -115,7 +118,7 @@ const ItineraryPage = () => {
       const response = await fetch('http://localhost:8081/api/itinerary/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: fullPrompt })
+        body: JSON.stringify({ prompt: fullPrompt, email: user?.email })
       });
       
       if (!response.ok) {
@@ -129,6 +132,7 @@ const ItineraryPage = () => {
       
       const data = await response.json();
       setItineraryData(data);
+      decrementQuota();
       setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Rotanız hazır! Sağ taraftan tüm detayları inceleyebilirsiniz.' }]);
       setMobileView('plan');
     } catch (err) {
@@ -162,6 +166,10 @@ const ItineraryPage = () => {
     
     // Eğer sayfaya giriş yaptıktan sonra dönüldüyse ve liste tamamsa otomatik başlat
     if (user && isComplete && !isGenerating && !itineraryData && !loading) {
+       if (user.remainingQuota <= 0) {
+           setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Haftalık plan kotanız dolmuştur. Yeni rotalar oluşturabilmek için kotanızın sıfırlanmasını bekleyiniz.' }]);
+           return;
+       }
        const fullPrompt = `Nereden: ${parameters.departureLocation}, Nereye: ${parameters.destination}, Tarih: ${parameters.travelDate}, Bütçe: ${parameters.budget}, Kişi: ${parameters.numberOfPeople}. Ek Detaylar: ${prompt || ''}`;
        setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Harika! Tüm detayları aldım. Şimdi sizin için en uygun rotayı hazırlıyorum, lütfen bekleyin...' }]);
        setTimeout(() => {

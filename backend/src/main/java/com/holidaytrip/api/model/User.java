@@ -8,6 +8,8 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "users")
 @Data
@@ -21,4 +23,7 @@ public class User {
     private String fullName;
     private String email;
     private String password;
+    
+    private Integer remainingQuota = 3;
+    private LocalDateTime lastQuotaReset;
 }

@@ -27,8 +27,19 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('holidaytrip_user');
   };
 
+  const decrementQuota = () => {
+    if (user) {
+      const currentQuota = user.remainingQuota !== undefined ? user.remainingQuota : 3;
+      if (currentQuota > 0) {
+        const updatedUser = { ...user, remainingQuota: currentQuota - 1 };
+        setUser(updatedUser);
+        localStorage.setItem('holidaytrip_user', JSON.stringify(updatedUser));
+      }
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, decrementQuota }}>
       {children}
     </AuthContext.Provider>
   );

@@ -3,8 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import ChatSidebar from '../components/itinerary/ChatSidebar';
 import ItineraryDetails from '../components/itinerary/ItineraryDetails';
-import { Loader2, Map, Check, MapPin, Clock, Wallet, User, Calendar, Plane, LogIn } from 'lucide-react';
+import { Loader2, Map, Check, MapPin, Clock, Wallet, User, Calendar, Plane, LogIn, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 
 const RequirementsChecklist = ({ params }) => {
   const reqs = [
@@ -59,6 +60,7 @@ const ItineraryPage = () => {
   // Extraction State
   const [parameters, setParameters] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [initialInput, setInitialInput] = useState('');
   
   const fetchInitiated = useRef(false);
 
@@ -180,6 +182,64 @@ const ItineraryPage = () => {
   }, [location.state, user]);
 
   const isComplete = parameters?.numberOfPeople && parameters?.departureLocation && parameters?.budget && parameters?.travelDate && parameters?.destination;
+
+  if (messages.length === 0) {
+    return (
+      <div className="h-screen flex flex-col bg-slate-50">
+        <div className="h-20 flex-shrink-0">
+          <Navbar />
+        </div>
+        <div className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+          {/* Top Right History Button */}
+          {user && (
+            <div className="absolute top-6 right-6 md:top-8 md:right-8 z-20">
+               <Link to="/history" className="flex items-center gap-2 bg-white px-4 py-2 md:px-5 md:py-2.5 rounded-xl shadow-sm border border-slate-200 text-slate-700 font-bold hover:bg-slate-50 hover:shadow-md transition-all text-sm md:text-base">
+                  <Clock className="w-4 h-4 md:w-5 md:h-5 text-[#1E3A8A]" />
+                  Geçmiş Planlarım
+               </Link>
+            </div>
+          )}
+
+          {/* Input UI */}
+          <div className="relative z-10 w-full max-w-3xl">
+             <h1 className="text-3xl md:text-5xl font-extrabold text-slate-800 text-center mb-6 drop-shadow-sm">
+               Nereyi Keşfetmek İstersiniz?
+             </h1>
+             <p className="text-slate-500 text-center mb-10 text-lg max-w-xl mx-auto">
+               Aklınızdaki rotayı veya tatil fikrini yazın, saniyeler içinde sizin için en ideal seyahat planını çıkaralım.
+             </p>
+             
+             <div className="bg-white p-2 rounded-[25px] border border-slate-200 shadow-xl flex flex-col md:flex-row items-center gap-2 transition-all focus-within:shadow-[#1E3A8A]/10 focus-within:border-blue-300">
+               <div className="flex-1 flex items-center gap-3 px-4 w-full h-14">
+                 <Sparkles className="w-6 h-6 text-[#F59E0B] hidden md:block" />
+                 <input
+                   type="text"
+                   placeholder="Örn: Ekim'de İtalya gezisi..."
+                   className="w-full bg-transparent text-slate-800 placeholder-slate-400 focus:outline-none text-lg h-full"
+                   value={initialInput}
+                   onChange={(e) => setInitialInput(e.target.value)}
+                   onKeyDown={(e) => {
+                     if (e.key === 'Enter' && initialInput.trim()) {
+                       handleSendMessage(initialInput);
+                     }
+                   }}
+                   autoFocus
+                 />
+               </div>
+               <button
+                 onClick={() => {
+                   if (initialInput.trim()) handleSendMessage(initialInput);
+                 }}
+                 className="w-full md:w-auto bg-[#F59E0B] hover:bg-[#d97706] text-black px-8 py-4 md:py-0 md:h-14 rounded-[15px] cursor-pointer font-semibold text-lg flex items-center justify-center gap-2 transition-all shadow-md"
+               >
+                 Planla
+               </button>
+             </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex flex-col bg-white overflow-hidden">

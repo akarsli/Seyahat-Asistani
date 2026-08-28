@@ -2,23 +2,19 @@ package com.holidaytrip.api.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.holidaytrip.api.dto.FlightResponseDTO;
+import com.holidaytrip.api.dto.FlightDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class FlightService {
 
-    @Value("${airlabs.api.key}")
+    @Value("${serpapi.api.key}")
     private String apiKey;
 
     private final RestTemplate restTemplate;
@@ -29,31 +25,98 @@ public class FlightService {
         this.objectMapper = new ObjectMapper();
     }
 
-    public List<FlightResponseDTO> getFlights(String depIata, String arrIata, String date) {
-        String url = "https://airlabs.co/api/v9/schedules?dep_iata=" + depIata 
-                   + "&arr_iata=" + arrIata 
+    public List<FlightDTO> getFlights(String depIata, String arrIata, String date) {
+        String url = "https://serpapi.com/search?engine=google_flights"
+                   + "&type=2"
+                   + "&currency=USD"
+                   + "&departure_id=" + depIata 
+                   + "&arrival_id=" + arrIata
+                   + "&outbound_date=" + date
                    + "&api_key=" + apiKey;
                    
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        List<FlightDTO> flights = new ArrayList<>();
         
-        List<FlightResponseDTO> flights = new ArrayList<>();
         try {
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
             JsonNode root = objectMapper.readTree(response.getBody());
-            JsonNode responseArray = root.path("response");
             
-            if (responseArray.isArray()) {
-                for (JsonNode node : responseArray) {
-                    FlightResponseDTO dto = new FlightResponseDTO();
-                    dto.setAirlineIata(node.path("airline_iata").asText(null));
-                    dto.setFlightNumber(node.path("flight_number").asText(null));
-                    
-                    String depTimeUtc = node.path("dep_time").asText(null);
-                    String arrTimeUtc = node.path("arr_time").asText(null);
-                    
-                    dto.setDepTime(convertToTurkeyTime(depTimeUtc));
-                    dto.setArrTime(convertToTurkeyTime(arrTimeUtc));
-                    
-                    flights.add(dto);
+            // Check best_flights
+            JsonNode bestFlights = root.path("best_flights");
+            if (bestFlights.isArray()) {
+                for (JsonNode node : bestFlights) {
+                    JsonNode flightsArray = node.path("flights");
+                    if (flightsArray.isArray() && flightsArray.size() > 0) {
+                        JsonNode firstFlight = flightsArray.get(0);
+                        JsonNode lastFlight = flightsArray.get(flightsArray.size() - 1);
+                        
+                        FlightDTO dto = new FlightDTO();
+                        dto.setAirline(firstFlight.path("airline").asText(null));
+                        dto.setFlightNumber(firstFlight.path("flight_number").asText(null));
+                        
+                        JsonNode depAirport = firstFlight.path("departure_airport");
+                        dto.setDepartureTime(depAirport.path("time").asText(null));
+                        
+                        JsonNode arrAirport = lastFlight.path("arrival_airport");
+                        dto.setArrivalTime(arrAirport.path("time").asText(null));
+                        
+                        dto.setPrice(node.path("price").asInt(0));
+                        
+                        JsonNode layovers = node.path("layovers");
+                        if (layovers.isArray() && layovers.size() > 0) {
+                            dto.setHasLayovers(true);
+                            dto.setLayoverCount(layovers.size());
+                            List<String> layoverNames = new ArrayList<>();
+                            for (JsonNode layover : layovers) {
+                                layoverNames.add(layover.path("id").asText(""));
+                            }
+                            dto.setLayoverAirports(String.join(", ", layoverNames));
+                        } else {
+                            dto.setHasLayovers(false);
+                            dto.setLayoverCount(0);
+                        }
+                        
+                        flights.add(dto);
+                    }
+                }
+            }
+            
+            // Optionally check other_flights if we want more
+            JsonNode otherFlights = root.path("other_flights");
+            if (otherFlights.isArray()) {
+                for (JsonNode node : otherFlights) {
+                    JsonNode flightsArray = node.path("flights");
+                    if (flightsArray.isArray() && flightsArray.size() > 0) {
+                        JsonNode firstFlight = flightsArray.get(0);
+                        JsonNode lastFlight = flightsArray.get(flightsArray.size() - 1);
+                        
+                        FlightDTO dto = new FlightDTO();
+                        dto.setAirline(firstFlight.path("airline").asText(null));
+                        dto.setFlightNumber(firstFlight.path("flight_number").asText(null));
+                        
+                        JsonNode depAirport = firstFlight.path("departure_airport");
+                        dto.setDepartureTime(depAirport.path("time").asText(null));
+                        
+                        JsonNode arrAirport = lastFlight.path("arrival_airport");
+                        dto.setArrivalTime(arrAirport.path("time").asText(null));
+                        
+                        dto.setPrice(node.path("price").asInt(0));
+                        
+                        JsonNode layovers = node.path("layovers");
+                        if (layovers.isArray() && layovers.size() > 0) {
+                            dto.setHasLayovers(true);
+                            dto.setLayoverCount(layovers.size());
+                            List<String> layoverNames = new ArrayList<>();
+                            for (JsonNode layover : layovers) {
+                                layoverNames.add(layover.path("id").asText(""));
+                            }
+                            dto.setLayoverAirports(String.join(", ", layoverNames));
+                        } else {
+                            dto.setHasLayovers(false);
+                            dto.setLayoverCount(0);
+                        }
+                        
+                        flights.add(dto);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -61,25 +124,5 @@ public class FlightService {
         }
         
         return flights;
-    }
-
-    private String convertToTurkeyTime(String utcTimeStr) {
-        if (utcTimeStr == null || utcTimeStr.isEmpty()) return null;
-        try {
-            // Usually formats are "2024-10-15 08:30"
-            String cleanStr = utcTimeStr.replace("T", " ").replace("Z", "");
-            if (cleanStr.length() > 16) {
-                cleanStr = cleanStr.substring(0, 16);
-            }
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            LocalDateTime localDateTime = LocalDateTime.parse(cleanStr, formatter);
-            
-            ZonedDateTime utcZoned = localDateTime.atZone(ZoneId.of("UTC"));
-            ZonedDateTime turkeyZoned = utcZoned.withZoneSameInstant(ZoneId.of("Europe/Istanbul"));
-            
-            return turkeyZoned.format(formatter);
-        } catch (Exception e) {
-            return utcTimeStr;
-        }
     }
 }

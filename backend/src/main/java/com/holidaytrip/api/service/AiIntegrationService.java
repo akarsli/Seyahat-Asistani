@@ -147,7 +147,9 @@ public class AiIntegrationService {
                 "6. Havalimanından şehir merkezine nasıl gidileceğini (Tren/Otobüs/Metro/HAVAŞ vb.) gösteren bir bilet/transfer önerisini de 'transportOptions' dizisine ekle. AYRICA EĞER SEYAHAT BİRDEN FAZLA ŞEHRİ İÇERİYORSA (Örn: Roma'dan Floransa'ya geçilecekse) bu şehirler arası geçiş için gereken Tren veya Otobüs biletlerini de KESİNLİKLE 'transportOptions' içerisine ekle ve 'targetDayNumber' olarak geçişin yapılacağı günü yaz.\n" +
                 "7. Tatilin son günü için dönüş uçuşunu (veya eve dönüş biletini) MUTLAKA 'transportOptions' dizisine ekle. 'type' alanı sadece 'Plane', 'Train', 'Bus' veya 'Subway' olabilir. 'targetDayNumber' alanına bu biletin hangi gün kullanılacağını yaz (Örn: Dönüş uçuşu için seyahatin son gününün numarası). EĞER bilet tatilin sonunda eve dönüş biletini temsil ediyorsa 'isReturnTicket': true ekle, diğer tüm biletler için false yap. SEYAHATTE KULLANILACAK TÜM BİLETLERİ (Gidiş, Şehirler Arası, Dönüş) EKSİKSİZ LİSTELE.\n" +
                 "8. ALTERNATİF ULAŞIM: Özellikle Avrupa içi veya birbirine yakın şehirlerarası seyahatlerde uçak biletine ek olarak DAHA UCUZ veya DAHA PRATİK bir Tren veya Otobüs bileti de ekle. ANCAK UZUN YOLCULUKLARDA uçak veya tren gibi mantıklı alternatifler varsa OTOBÜS BİLETİ GÖSTERME.\n" +
-                "9. AKTARMALI UÇUŞLAR (Layover): Eğer önerdiğin uçuş aktarmalı ise (örneğin İstanbul'dan New York'a Paris aktarmalı), mutlaka 'layoverCity' (örneğin: 'Paris (CDG)') ve 'layoverDuration' (örneğin: '2h 15m') alanlarını doldur. Eğer uçuş direkt veya tren/otobüs ise bu alanları null bırak.\n\n" +
+                "9. AKTARMALI UÇUŞLAR (Layover): Eğer önerdiğin uçuş aktarmalı ise (örneğin İstanbul'dan New York'a Paris aktarmalı), mutlaka 'layoverCity' (örneğin: 'Paris (CDG)') ve 'layoverDuration' (örneğin: '2h 15m') alanlarını doldur. Eğer uçuş direkt veya tren/otobüs ise bu alanları null bırak.\n" +
+                "10. CANLI UÇUŞ ENTEGRASYONU İÇİN IATA KODU: Eğer önerdiğin bilet bir Uçak ('Plane') biletiyse, KESİNLİKLE kalkış ve varış noktalarının 3 harfli uluslararası IATA havalimanı kodlarını 'departureIata' ve 'arrivalIata' alanlarına YAZ (Örn: 'IST', 'FCO', 'JFK'). Eğer bilet Tren veya Otobüs ise bu alanları null bırak.\n" +
+                "11. UÇUŞ NUMARASI: Eğer önerdiğin bilet bir Uçak ('Plane') biletiyse, tahmini veya gerçek bir uçuş numarasını (Örn: 'TK1993', 'LH452') 'flightNumber' alanına yaz, uçak değilse null bırak.\n\n" +
                 "Örnek JSON yapısı (transportOptions ve dailyPlans BİRER DİZİ(Array) OLMALI):\n" +
                 "{\n" +
                 "  \"destination\": \"Şehir, Ülke\",\n" +
@@ -160,6 +162,7 @@ public class AiIntegrationService {
                 "    {\n" +
                 "      \"type\": \"Plane\",\n" +
                 "      \"provider\": \"Turkish Airlines\",\n" +
+                "      \"flightNumber\": \"TK1861\",\n" +
                 "      \"departure\": \"İstanbul (IST) - 08:30\",\n" +
                 "      \"arrival\": \"Roma (FCO) - 10:15\",\n" +
                 "      \"price\": \"$150\",\n" +
@@ -168,11 +171,14 @@ public class AiIntegrationService {
                 "      \"targetDayNumber\": 1,\n" +
                 "      \"isReturnTicket\": false,\n" +
                 "      \"layoverCity\": null,\n" +
-                "      \"layoverDuration\": null\n" +
+                "      \"layoverDuration\": null,\n" +
+                "      \"departureIata\": \"IST\",\n" +
+                "      \"arrivalIata\": \"FCO\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"type\": \"Plane\",\n" +
                 "      \"provider\": \"Lufthansa\",\n" +
+                "      \"flightNumber\": \"LH1305\",\n" +
                 "      \"departure\": \"İstanbul (IST) - 08:30\",\n" +
                 "      \"arrival\": \"New York (JFK) - 16:15\",\n" +
                 "      \"price\": \"$650\",\n" +
@@ -181,11 +187,14 @@ public class AiIntegrationService {
                 "      \"targetDayNumber\": 1,\n" +
                 "      \"isReturnTicket\": false,\n" +
                 "      \"layoverCity\": \"Münih (MUC)\",\n" +
-                "      \"layoverDuration\": \"3h 20m\"\n" +
+                "      \"layoverDuration\": \"3h 20m\",\n" +
+                "      \"departureIata\": \"IST\",\n" +
+                "      \"arrivalIata\": \"JFK\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"type\": \"Train\",\n" +
                 "      \"provider\": \"Trenitalia\",\n" +
+                "      \"flightNumber\": null,\n" +
                 "      \"departure\": \"Roma Termini - 09:00\",\n" +
                 "      \"arrival\": \"Floransa S.M.N. - 10:30\",\n" +
                 "      \"price\": \"$45\",\n" +
@@ -194,11 +203,14 @@ public class AiIntegrationService {
                 "      \"targetDayNumber\": 2,\n" +
                 "      \"isReturnTicket\": false,\n" +
                 "      \"layoverCity\": null,\n" +
-                "      \"layoverDuration\": null\n" +
+                "      \"layoverDuration\": null,\n" +
+                "      \"departureIata\": null,\n" +
+                "      \"arrivalIata\": null\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"type\": \"Plane\",\n" +
                 "      \"provider\": \"Turkish Airlines\",\n" +
+                "      \"flightNumber\": \"TK1864\",\n" +
                 "      \"departure\": \"Floransa (FLR) - 18:00\",\n" +
                 "      \"arrival\": \"İstanbul (IST) - 21:30\",\n" +
                 "      \"price\": \"$160\",\n" +
@@ -207,7 +219,9 @@ public class AiIntegrationService {
                 "      \"targetDayNumber\": 3,\n" +
                 "      \"isReturnTicket\": true,\n" +
                 "      \"layoverCity\": null,\n" +
-                "      \"layoverDuration\": null\n" +
+                "      \"layoverDuration\": null,\n" +
+                "      \"departureIata\": \"FLR\",\n" +
+                "      \"arrivalIata\": \"IST\"\n" +
                 "    }\n" +
                 "  ],\n" +
                 "  \"dailyPlans\": [\n" +

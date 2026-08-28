@@ -1,9 +1,57 @@
-import React from 'react';
-import { CloudSun, Wallet, Activity, MapPin, Sparkles, Clock, Plane, Train, Bus, TrainFront, ArrowRight, Ticket } from 'lucide-react';
+import React, { useState } from 'react';
+import { CloudSun, Wallet, Activity, MapPin, Sparkles, Clock, Plane, Train, Bus, TrainFront, ArrowRight, Ticket, Loader2, Search, X } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 
 const ItineraryDetails = ({ data }) => {
   const { convertPriceText } = useCurrency();
+  
+  const [liveFlights, setLiveFlights] = useState({});
+  const [loadingFlights, setLoadingFlights] = useState({});
+  const [errorFlights, setErrorFlights] = useState({});
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const openTicketModal = (ticket, dayNumber, tIdx) => {
+    const uniqueKey = `${dayNumber}-${tIdx}-${ticket.departureIata}`;
+    setSelectedTicket({ ...ticket, uniqueKey, dayNumber, tIdx });
+    setShowModal(true);
+    
+    if (ticket.type === 'Plane' && ticket.departureIata && ticket.arrivalIata) {
+      fetchLiveFlights(uniqueKey, ticket.departureIata, ticket.arrivalIata, true);
+    }
+  };
+
+  const fetchLiveFlights = async (uniqueKey, depIata, arrIata, force = false) => {
+    if (liveFlights[uniqueKey] && !force) {
+      return;
+    }
+    
+    setLoadingFlights(prev => ({...prev, [uniqueKey]: true}));
+    setErrorFlights(prev => ({...prev, [uniqueKey]: null}));
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const response = await fetch(`http://localhost:8081/api/flights?dep_iata=${depIata}&arr_iata=${arrIata}&date=${today}`);
+      if (!response.ok) throw new Error("Canlı veriler alınamadı.");
+      const data = await response.json();
+      setLiveFlights(prev => ({...prev, [uniqueKey]: data.slice(0, 3)})); // Show top 3
+    } catch (err) {
+      setErrorFlights(prev => ({...prev, [uniqueKey]: err.message}));
+    } finally {
+      setLoadingFlights(prev => ({...prev, [uniqueKey]: false}));
+    }
+  };
+
+  const formatFlightTime = (timeStr) => {
+    if (!timeStr) return '-';
+    // Handle formats like "2024-10-15 08:30" or "2024-10-15T08:30:00"
+    try {
+      if (timeStr.includes(' ')) return timeStr.split(' ')[1].substring(0, 5);
+      if (timeStr.includes('T')) return timeStr.split('T')[1].substring(0, 5);
+      return timeStr;
+    } catch (e) {
+      return timeStr;
+    }
+  };
 
   if (!data) return null;
 
@@ -90,7 +138,14 @@ const ItineraryDetails = ({ data }) => {
                       }
 
                       return (
-                        <div key={tIdx} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col">
+                        <div 
+                          key={tIdx} 
+                          onClick={() => openTicketModal(ticket, dayNumber, tIdx)}
+                          className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col cursor-pointer hover:shadow-md hover:border-indigo-300 transition-all relative group"
+                        >
+                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                            <span className="bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm">Detayları Gör</span>
+                          </div>
                           <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                             <div className="flex items-center gap-3">
                               <div className={`w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 overflow-hidden relative group-logo`}>
@@ -107,7 +162,10 @@ const ItineraryDetails = ({ data }) => {
                                   <TransportIcon className={`w-5 h-5 ${bgClass.split(' ')[1]}`} />
                                 </div>
                               </div>
-                              <span className="font-bold text-slate-800">{ticket.provider}</span>
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold text-slate-800">{ticket.provider}</span>
+                                {ticket.flightNumber && <span className="text-sm font-semibold text-slate-400">{ticket.flightNumber}</span>}
+                              </div>
                             </div>
                             <span className="text-sm font-semibold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
                               {convertPriceText(ticket.price)}
@@ -230,6 +288,116 @@ const ItineraryDetails = ({ data }) => {
         </div>
 
       </div>
+
+      {/* Ticket Modal */}
+      {showModal && selectedTicket && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" onClick={() => setShowModal(false)}>
+          <div className="bg-white rounded-3xl w-full max-w-3xl max-h-[85vh] overflow-y-auto shadow-2xl relative" onClick={e => e.stopPropagation()}>
+            <div className="sticky top-0 bg-white/90 backdrop-blur-md p-5 flex justify-between items-center border-b border-slate-100 z-10 rounded-t-3xl">
+              <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
+                <Ticket className="w-5 h-5 text-indigo-600" /> Bilet Detayları
+              </h3>
+              <button onClick={() => setShowModal(false)} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors cursor-pointer">
+                <X className="w-5 h-5 text-slate-600" />
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-8">
+              {/* AI Suggested Ticket */}
+              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                <div className="flex justify-between items-start mb-6">
+                  <div>
+                    <p className="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-1">{selectedTicket.type === 'Plane' ? 'Önerilen Uçuş' : 'Önerilen Bilet'}</p>
+                    <div className="flex items-baseline gap-3">
+                      <p className="font-extrabold text-2xl text-slate-800">{selectedTicket.provider}</p>
+                      {selectedTicket.flightNumber && <p className="font-bold text-lg text-slate-400">{selectedTicket.flightNumber}</p>}
+                    </div>
+                  </div>
+                  <span className="font-bold text-indigo-700 bg-indigo-100 px-4 py-1.5 rounded-full shadow-sm">{convertPriceText(selectedTicket.price)}</span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-6 text-sm mb-6">
+                   <div>
+                     <p className="text-xs font-semibold text-slate-400 uppercase mb-1">Kalkış</p>
+                     <p className="font-bold text-slate-800 text-lg">{selectedTicket.departure ? selectedTicket.departure.split('-')[0].trim() : '-'}</p>
+                     <p className="text-slate-500">{selectedTicket.departure && selectedTicket.departure.includes('-') ? selectedTicket.departure.split('-')[1].trim() : ''}</p>
+                   </div>
+                   <div>
+                     <p className="text-xs font-semibold text-slate-400 uppercase mb-1">Varış</p>
+                     <p className="font-bold text-slate-800 text-lg">{selectedTicket.arrival ? selectedTicket.arrival.split('-')[0].trim() : '-'}</p>
+                     <p className="text-slate-500">{selectedTicket.arrival && selectedTicket.arrival.includes('-') ? selectedTicket.arrival.split('-')[1].trim() : ''}</p>
+                   </div>
+                </div>
+                
+                <div className="pt-4 border-t border-slate-200 flex flex-wrap gap-4 text-sm font-medium">
+                   <div className="flex items-center gap-1.5 text-slate-700 bg-white px-3 py-1.5 rounded-lg border border-slate-200">
+                     <Clock className="w-4 h-4 text-slate-400"/> {selectedTicket.duration}
+                   </div>
+                   {selectedTicket.layoverCity && (
+                     <div className="flex items-center gap-1.5 text-orange-700 bg-orange-50 px-3 py-1.5 rounded-lg border border-orange-200">
+                       <MapPin className="w-4 h-4 text-orange-500"/> Aktarma: {selectedTicket.layoverCity} ({selectedTicket.layoverDuration})
+                     </div>
+                   )}
+                </div>
+              </div>
+
+              {/* Live Flights List */}
+              {selectedTicket.type === 'Plane' && selectedTicket.departureIata && selectedTicket.arrivalIata && (
+                <div>
+                  <h4 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <Search className="w-5 h-5 text-indigo-500" /> Alternatif Canlı Uçuşlar (Bugün)
+                  </h4>
+                  
+                  {loadingFlights[selectedTicket.uniqueKey] ? (
+                    <div className="flex flex-col items-center justify-center py-10 text-slate-500 bg-slate-50 rounded-2xl border border-slate-200 border-dashed">
+                      <Loader2 className="w-8 h-8 animate-spin mb-3 text-indigo-500" />
+                      <p className="font-medium">Canlı uçuşlar AirLabs'tan getiriliyor...</p>
+                    </div>
+                  ) : errorFlights[selectedTicket.uniqueKey] ? (
+                    <div className="bg-red-50 p-5 rounded-2xl text-red-600 text-sm text-center border border-red-100">
+                      {errorFlights[selectedTicket.uniqueKey]}
+                    </div>
+                  ) : liveFlights[selectedTicket.uniqueKey] && liveFlights[selectedTicket.uniqueKey].length > 0 ? (
+                    <div className="space-y-3">
+                      {liveFlights[selectedTicket.uniqueKey].map((lf, lfIdx) => (
+                        <div key={lfIdx} className="bg-white border border-slate-200 p-4 rounded-xl shadow-sm flex items-center justify-between hover:border-indigo-300 transition-colors group">
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center font-bold text-sm border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                              {lf.airline_iata}
+                            </div>
+                            <div>
+                              <p className="font-bold text-slate-800 text-sm mb-0.5">{lf.airline_iata} {lf.flight_number}</p>
+                              <p className="text-[10px] text-green-600 font-bold flex items-center gap-1 uppercase tracking-wider">
+                                <Plane className="w-3 h-3" /> Canlı Veri
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex gap-5 text-center items-center">
+                            <div>
+                              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Kalkış</p>
+                              <p className="font-bold text-slate-800 text-base">{formatFlightTime(lf.dep_time)}</p>
+                            </div>
+                            <div className="w-6 h-px bg-slate-300"></div>
+                            <div>
+                              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Varış</p>
+                              <p className="font-bold text-slate-800 text-base">{formatFlightTime(lf.arr_time)}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="bg-slate-50 p-6 rounded-2xl text-slate-500 text-sm text-center border border-slate-200 border-dashed">
+                      Bu rota için bugün canlı uçuş bulunamadı.
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, Map, LogOut, Loader2, ArrowLeft, TrendingUp, CheckCircle2, Activity, Calendar, Zap, DollarSign, Search } from 'lucide-react';
+import { LayoutDashboard, Users, Map, LogOut, Loader2, ArrowLeft, TrendingUp, CheckCircle2, Activity, Calendar, Zap, DollarSign, Search, Trophy } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const AdminPage = () => {
   const { user, loading: authLoading } = useAuth();
@@ -21,6 +22,7 @@ const AdminPage = () => {
   const [updatingQuota, setUpdatingQuota] = useState(false);
   
   const [userSearchTerm, setUserSearchTerm] = useState('');
+  const [chartFilter, setChartFilter] = useState('all'); // 'all', 'plans', 'users'
 
   useEffect(() => {
     if (!authLoading) {
@@ -91,15 +93,22 @@ const AdminPage = () => {
 
   if (authLoading || (!user && dataLoading)) return null;
 
-  const StatCard = ({ title, value, icon, color }) => (
-    <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex items-center gap-6">
-      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-${color}-100 text-${color}-600`}>
-        {icon}
+  const StatCard = ({ title, value, icon, color, subtext, subtextColor }) => (
+    <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col">
+      <div className="flex items-center gap-6">
+        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-${color}-100 text-${color}-600 flex-shrink-0`}>
+          {icon}
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">{title}</p>
+          <p className="text-3xl font-bold text-slate-800">{value}</p>
+        </div>
       </div>
-      <div>
-        <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">{title}</p>
-        <p className="text-3xl font-bold text-slate-800">{value}</p>
-      </div>
+      {subtext && (
+        <div className={`mt-4 pt-3 border-t border-slate-50 text-sm font-bold text-${subtextColor || 'slate-500'}`}>
+          {subtext}
+        </div>
+      )}
     </div>
   );
 
@@ -185,24 +194,19 @@ const AdminPage = () => {
             <>
               {activeTab === 'dashboard' && stats && (
                 <div className="space-y-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
                     <StatCard title="Toplam Kullanıcı" value={stats.totalUsers} icon={<Users className="w-7 h-7" />} color="blue" />
                     <StatCard title="Üretilen Rotalar" value={stats.totalPlans} icon={<Map className="w-7 h-7" />} color="amber" />
                     <StatCard title="Bugün Yeni Kayıt" value={stats.usersToday} icon={<TrendingUp className="w-7 h-7" />} color="green" />
                     <StatCard title="Bugün Üretilen" value={stats.plansToday} icon={<Activity className="w-7 h-7" />} color="indigo" />
-                  </div>
-
-                  <div className="bg-red-50 p-6 rounded-2xl border border-red-100 flex items-center justify-between shadow-sm">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-red-100 text-red-600 rounded-xl">
-                        <Users className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-bold text-red-800">Limiti Dolan Kullanıcılar</h3>
-                        <p className="text-sm text-red-600">Haftalık planlama kotasını doldurmuş kullanıcı sayısı.</p>
-                      </div>
-                    </div>
-                    <div className="text-3xl font-bold text-red-700">{stats.usersOutOfQuota || 0}</div>
+                    <StatCard 
+                      title="Limiti Dolanlar" 
+                      value={stats.usersOutOfQuota || 0} 
+                      icon={<Zap className="w-7 h-7" />} 
+                      color="red" 
+                      subtext={`Toplam kullanıcıların %${stats.totalUsers > 0 ? Math.round(((stats.usersOutOfQuota || 0) / stats.totalUsers) * 100) : 0}'i`}
+                      subtextColor="red-500"
+                    />
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -220,7 +224,82 @@ const AdminPage = () => {
                     />
                   </div>
                   
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div className="flex justify-between items-center mb-6">
+                      <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                        <Activity className="w-5 h-5 text-indigo-600" />
+                        Son 7 Günlük Kullanım Trendi
+                      </h3>
+                      <select 
+                        value={chartFilter}
+                        onChange={(e) => setChartFilter(e.target.value)}
+                        className="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg px-3 py-1.5 outline-none focus:ring-2 focus:ring-indigo-100 cursor-pointer font-medium"
+                      >
+                        <option value="all">Tümü</option>
+                        <option value="plans">Sadece Rotalar</option>
+                        <option value="users">Sadece Kayıtlar</option>
+                      </select>
+                    </div>
+                    <div className="h-72">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={stats.trendData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                          <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} dy={10} />
+                          <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} />
+                          <Tooltip 
+                            contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                            cursor={{stroke: '#e2e8f0', strokeWidth: 2}}
+                          />
+                          <Legend wrapperStyle={{ paddingTop: '20px' }} />
+                          {(chartFilter === 'all' || chartFilter === 'plans') && (
+                            <Line type="monotone" name="Üretilen Rota" dataKey="newPlans" stroke="#f59e0b" strokeWidth={3} dot={{r: 4, strokeWidth: 2}} activeDot={{r: 6}} />
+                          )}
+                          {(chartFilter === 'all' || chartFilter === 'users') && (
+                            <Line type="monotone" name="Yeni Kayıt" dataKey="newUsers" stroke="#4f46e5" strokeWidth={3} dot={{r: 4, strokeWidth: 2}} activeDot={{r: 6}} />
+                          )}
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Top 5 Destinations */}
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                      <div className="p-5 border-b border-slate-100 flex justify-between items-center">
+                        <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                          <Trophy className="w-5 h-5 text-amber-500" /> 
+                          Popüler Destinasyonlar (Top 5)
+                        </h3>
+                      </div>
+                      <div className="p-5">
+                        <div className="space-y-4">
+                          {(stats.topDestinations || []).map((dest, index) => (
+                            <div key={index} className="flex items-center gap-4">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${index === 0 ? 'bg-amber-100 text-amber-600' : index === 1 ? 'bg-slate-200 text-slate-600' : index === 2 ? 'bg-orange-100 text-orange-700' : 'bg-indigo-50 text-indigo-500'}`}>
+                                {index + 1}
+                              </div>
+                              <div className="flex-1">
+                                <div className="flex justify-between items-center mb-1">
+                                  <span className="font-semibold text-slate-700 text-sm">{dest.name.split(',')[0]}</span>
+                                  <span className="text-xs font-bold text-slate-500">{dest.count} arama</span>
+                                </div>
+                                <div className="w-full bg-slate-100 rounded-full h-1.5">
+                                  <div 
+                                    className="bg-indigo-500 h-1.5 rounded-full" 
+                                    style={{ width: `${(dest.count / Math.max(...stats.topDestinations.map(d => d.count))) * 100}%` }}
+                                  ></div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                          {(!stats.topDestinations || stats.topDestinations.length === 0) && (
+                            <p className="text-slate-500 text-sm text-center py-4">Henüz veri yok</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Son Kayıt Olanlar */}
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                       <div className="p-5 border-b border-slate-100 flex justify-between items-center">
                         <h3 className="font-bold text-slate-800 flex items-center gap-2">

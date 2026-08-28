@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -51,12 +52,43 @@ public class AdminController {
 
         AiUsage aiStats = aiUsageService.getStats();
 
+        // Trend Data (Last 7 Days)
+        List<Map<String, Object>> trendData = new ArrayList<>();
+        LocalDate today = LocalDate.now();
+        for (int i = 6; i >= 0; i--) {
+            LocalDate date = today.minusDays(i);
+            long dayUsers = users.stream().filter(u -> u.getCreatedAt() != null && u.getCreatedAt().toLocalDate().isEqual(date)).count();
+            long dayPlans = itineraries.stream().filter(it -> it.getCreatedAt() != null && it.getCreatedAt().toLocalDate().isEqual(date)).count();
+            Map<String, Object> dayData = new HashMap<>();
+            dayData.put("date", date.getDayOfMonth() + "/" + date.getMonthValue());
+            dayData.put("newUsers", dayUsers);
+            dayData.put("newPlans", dayPlans);
+            trendData.add(dayData);
+        }
+
+        // Top 5 Destinations
+        List<Map<String, Object>> topDestinations = itineraries.stream()
+            .filter(it -> it.getDestination() != null)
+            .collect(Collectors.groupingBy(Itinerary::getDestination, Collectors.counting()))
+            .entrySet().stream()
+            .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+            .limit(5)
+            .map(entry -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("name", entry.getKey());
+                map.put("count", entry.getValue());
+                return map;
+            })
+            .collect(Collectors.toList());
+
         Map<String, Object> stats = new HashMap<>();
         stats.put("totalUsers", users.size());
         stats.put("totalPlans", itineraries.size());
         stats.put("usersToday", usersToday);
         stats.put("plansToday", plansToday);
         stats.put("usersOutOfQuota", usersOutOfQuota);
+        stats.put("trendData", trendData);
+        stats.put("topDestinations", topDestinations);
         
         stats.put("totalPromptTokens", aiStats.getTotalPromptTokens());
         stats.put("totalCompletionTokens", aiStats.getTotalCompletionTokens());

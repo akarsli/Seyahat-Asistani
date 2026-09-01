@@ -2,71 +2,74 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import { MapPin, Star, X, Plane, ArrowRight } from 'lucide-react';
-
-const destinations = [
-  {
-    id: 1,
-    name: 'Paris',
-    country: 'Fransa',
-    image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1000&auto=format&fit=crop',
-    description: 'Aşkın ve sanatın başkenti Paris. Eyfel Kulesi, Louvre Müzesi ve romantik kafeleriyle unutulmaz bir deneyim sunuyor.',
-    highlights: ['Eyfel Kulesi', 'Louvre Müzesi', 'Seine Nehri', 'Notre Dame Katedrali'],
-    tags: ['Romantik', 'Kültür', 'Sanat']
-  },
-  {
-    id: 2,
-    name: 'Roma',
-    country: 'İtalya',
-    image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=1000&auto=format&fit=crop',
-    description: 'Açık hava müzesi Roma. Kolezyum, Trevi Çeşmesi ve eşsiz İtalyan mutfağı ile tarihte yolculuğa çıkın.',
-    highlights: ['Kolezyum', 'Trevi Çeşmesi', 'Vatikan', 'Roma Forumu'],
-    tags: ['Tarih', 'Mimari', 'Mutfak']
-  },
-  {
-    id: 3,
-    name: 'Bali',
-    country: 'Endonezya',
-    image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1000&auto=format&fit=crop',
-    description: 'Büyüleyici plajları, mistik tapınakları ve yeşilin her tonuyla Bali, huzur ve macera arayanlar için bir cennet.',
-    highlights: ['Ubud Pirinç Terasları', 'Uluwatu Tapınağı', 'Seminyak Plajı', 'Kutsal Maymun Ormanı'],
-    tags: ['Doğa', 'Huzur', 'Tropikal']
-  },
-  {
-    id: 4,
-    name: 'Tokyo',
-    country: 'Japonya',
-    image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=1000&auto=format&fit=crop',
-    description: 'Geleneksel tapınakların ve fütüristik teknolojinin mükemmel uyumu. Sushi ve neon ışıklar şehri Tokyo.',
-    highlights: ['Shibuya Geçidi', 'Senso-ji Tapınağı', 'Akihabara', 'Tokyo Skytree'],
-    tags: ['Teknoloji', 'Kültür', 'Metropol']
-  },
-  {
-    id: 5,
-    name: 'Kapadokya',
-    country: 'Türkiye',
-    image: 'https://image.pollinations.ai/prompt/beautiful%20landscape%20cappadocia%20turkey%20hot%20air%20balloons?width=1000&height=1000&nologo=true&seed=42',
-    description: 'Peri bacaları, sıcak hava balonları ve yeraltı şehirleriyle masalsı bir Anadolu deneyimi.',
-    highlights: ['Göreme Açık Hava Müzesi', 'Balon Turu', 'Yeraltı Şehirleri', 'Uçhisar Kalesi'],
-    tags: ['Macera', 'Tarih', 'Masalsı']
-  },
-  {
-    id: 6,
-    name: 'New York',
-    country: 'ABD',
-    image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=1000&auto=format&fit=crop',
-    description: 'Hiç uyumayan şehir. Times Meydanı, Central Park ve gökdelenleriyle dünyanın merkezi.',
-    highlights: ['Özgürlük Anıtı', 'Central Park', 'Times Meydanı', 'Broadway'],
-    tags: ['Alışveriş', 'Metropol', 'Eğlence']
-  }
-];
+import { useTranslation } from 'react-i18next';
 
 const DestinationsPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [selectedDest, setSelectedDest] = useState(null);
 
+  const destinations = [
+    {
+      id: 1,
+      name: t('destinations.paris_name', { defaultValue: 'Paris' }),
+      country: t('destinations.paris_country'),
+      image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1000&auto=format&fit=crop',
+      description: t('destinations.paris_desc'),
+      highlights: [t('destinations.paris_hl_1'), t('destinations.paris_hl_2'), t('destinations.paris_hl_3'), t('destinations.paris_hl_4')],
+      tags: [t('destinations.paris_tag_1'), t('destinations.paris_tag_2'), t('destinations.paris_tag_3')]
+    },
+    {
+      id: 2,
+      name: t('destinations.rome_name', { defaultValue: 'Roma' }),
+      country: t('destinations.rome_country'),
+      image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=1000&auto=format&fit=crop',
+      description: t('destinations.rome_desc'),
+      highlights: [t('destinations.rome_hl_1'), t('destinations.rome_hl_2'), t('destinations.rome_hl_3'), t('destinations.rome_hl_4')],
+      tags: [t('destinations.rome_tag_1'), t('destinations.rome_tag_2'), t('destinations.rome_tag_3')]
+    },
+    {
+      id: 3,
+      name: t('destinations.bali_name', { defaultValue: 'Bali' }),
+      country: t('destinations.bali_country'),
+      image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1000&auto=format&fit=crop',
+      description: t('destinations.bali_desc'),
+      highlights: [t('destinations.bali_hl_1'), t('destinations.bali_hl_2'), t('destinations.bali_hl_3'), t('destinations.bali_hl_4')],
+      tags: [t('destinations.bali_tag_1'), t('destinations.bali_tag_2'), t('destinations.bali_tag_3')]
+    },
+    {
+      id: 4,
+      name: t('destinations.tokyo_name', { defaultValue: 'Tokyo' }),
+      country: t('destinations.tokyo_country'),
+      image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=1000&auto=format&fit=crop',
+      description: t('destinations.tokyo_desc'),
+      highlights: [t('destinations.tokyo_hl_1'), t('destinations.tokyo_hl_2'), t('destinations.tokyo_hl_3'), t('destinations.tokyo_hl_4')],
+      tags: [t('destinations.tokyo_tag_1'), t('destinations.tokyo_tag_2'), t('destinations.tokyo_tag_3')]
+    },
+    {
+      id: 5,
+      name: t('destinations.cap_name', { defaultValue: 'Kapadokya' }),
+      country: t('destinations.cap_country'),
+      image: 'https://image.pollinations.ai/prompt/beautiful%20landscape%20cappadocia%20turkey%20hot%20air%20balloons?width=1000&height=1000&nologo=true&seed=42',
+      description: t('destinations.cap_desc'),
+      highlights: [t('destinations.cap_hl_1'), t('destinations.cap_hl_2'), t('destinations.cap_hl_3'), t('destinations.cap_hl_4')],
+      tags: [t('destinations.cap_tag_1'), t('destinations.cap_tag_2'), t('destinations.cap_tag_3')]
+    },
+    {
+      id: 6,
+      name: t('destinations.ny_name', { defaultValue: 'New York' }),
+      country: t('destinations.ny_country'),
+      image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=1000&auto=format&fit=crop',
+      description: t('destinations.ny_desc'),
+      highlights: [t('destinations.ny_hl_1'), t('destinations.ny_hl_2'), t('destinations.ny_hl_3'), t('destinations.ny_hl_4')],
+      tags: [t('destinations.ny_tag_1'), t('destinations.ny_tag_2'), t('destinations.ny_tag_3')]
+    }
+  ];
+
   const handlePlanClick = (destinationName) => {
-    navigate('/itinerary', { state: { prompt: `${destinationName} için bana bir tatil planı hazırla.` } });
+    navigate('/itinerary', { state: { prompt: `${destinationName} ${t('destinations.prompt_text')}` } });
   };
+
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -77,10 +80,10 @@ const DestinationsPage = () => {
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1488085061387-422e29b40080?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
-            Dünyayı Keşfetmeye Hazır Mısınız?
+            {t('destinations.page_title')}
           </h1>
           <p className="text-lg md:text-xl text-blue-100 font-light max-w-2xl mx-auto">
-            Dünyanın en popüler destinasyonlarını inceleyin ve hayalinizdeki tatili saniyeler içinde planlayın.
+            {t('destinations.page_desc')}
           </p>
         </div>
       </div>
@@ -161,7 +164,7 @@ const DestinationsPage = () => {
                 </p>
                 
                 <h4 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
-                  <Star className="w-5 h-5 text-amber-500" /> Öne Çıkan Yerler
+                  <Star className="w-5 h-5 text-amber-500" /> {t('destinations.highlights')}
                 </h4>
                 <ul className="space-y-2 mb-8">
                   {selectedDest.highlights.map(hl => (
@@ -178,7 +181,7 @@ const DestinationsPage = () => {
                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-colors shadow-lg shadow-indigo-200"
               >
                 <Plane className="w-5 h-5" />
-                {selectedDest.name} İçin Plan Oluştur
+                {selectedDest.name} {t('destinations.create_plan')}
                 <ArrowRight className="w-5 h-5 ml-1" />
               </button>
             </div>

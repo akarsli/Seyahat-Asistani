@@ -273,3 +273,5 @@
 2026-09-01T12:28:57.438+03:00  INFO 61411 --- [HolidayTripAPI] [nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
 2026-09-01T12:28:57.441+03:00  INFO 61411 --- [HolidayTripAPI] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
 2026-09-01T12:28:57.448+03:00  INFO 61411 --- [HolidayTripAPI] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 7 ms
+Received prompt: Nereden: London, Nereye: Italy, Tarih: September, Bütçe: 500 pounds, Kişi: 1. Ek Detaylar: italy trip in september single from london budget is 500 pounds
+Received prompt: Nereden: London, Nereye: Italy, Tarih: September, Bütçe: 500 pounds, Kişi: 1. Ek Detaylar: italy trip in september single from london budget is 500 pounds

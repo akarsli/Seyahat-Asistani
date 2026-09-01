@@ -3,8 +3,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import { useAuth } from '../context/AuthContext';
 import { Map, Calendar, ArrowRight, Loader2, Plane, LogIn, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const HistoryPage = () => {
+  const { t, i18n } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [history, setHistory] = useState([]);
@@ -28,7 +30,7 @@ const HistoryPage = () => {
       setLoading(true);
       const response = await fetch(`http://localhost:8081/api/itinerary/history?email=${user.email}`);
       if (!response.ok) {
-        throw new Error('Geçmiş planlar alınamadı.');
+        throw new Error(t('history_page.fetch_error'));
       }
       const data = await response.json();
       setHistory(data);
@@ -41,7 +43,7 @@ const HistoryPage = () => {
 
   const handleDelete = async (e, planId) => {
     e.preventDefault(); // Prevent navigating to the itinerary
-    if (!window.confirm('Bu planı silmek istediğinize emin misiniz?')) {
+    if (!window.confirm(t('history_page.delete_confirm'))) {
       return;
     }
 
@@ -51,7 +53,7 @@ const HistoryPage = () => {
       });
       
       if (!response.ok) {
-        throw new Error('Plan silinemedi.');
+        throw new Error(t('history_page.delete_error'));
       }
       
       // Update UI
@@ -70,16 +72,16 @@ const HistoryPage = () => {
           <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mb-6">
             <LogIn className="w-10 h-10 text-amber-500" />
           </div>
-          <h2 className="text-2xl font-bold text-slate-800 mb-3">Giriş Yapmanız Gerekiyor</h2>
+          <h2 className="text-2xl font-bold text-slate-800 mb-3">{t('history_page.login_required_title')}</h2>
           <p className="text-slate-500 mb-8">
-            Geçmiş planlarınızı görüntüleyebilmek için giriş yapmalısınız.
+            {t('history_page.login_required_desc')}
           </p>
           <Link
             to="/auth"
             state={{ isLogin: true, returnTo: '/history' }}
             className="w-full bg-[#F59E0B] hover:bg-amber-600 text-white py-3.5 rounded-xl font-bold transition-all shadow-md flex justify-center items-center"
           >
-            Giriş Yap
+            {t('history_page.login_btn')}
           </Link>
         </div>
       </div>
@@ -93,15 +95,15 @@ const HistoryPage = () => {
       <div className="flex-1 max-w-7xl w-full mx-auto px-4 py-8 pt-28">
         <div className="flex justify-between items-end mb-8">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-2">Geçmiş Planlarım</h1>
-            <p className="text-slate-500">Daha önce yapay zeka ile oluşturduğunuz tüm seyahat rotalarınız burada saklanır.</p>
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-2">{t('history_page.title')}</h1>
+            <p className="text-slate-500">{t('history_page.desc')}</p>
           </div>
         </div>
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 text-slate-400">
             <Loader2 className="w-10 h-10 animate-spin text-[#1E3A8A] mb-4" />
-            <p>Planlarınız yükleniyor...</p>
+            <p>{t('history_page.loading')}</p>
           </div>
         ) : error ? (
           <div className="bg-red-50 text-red-600 p-4 rounded-xl text-center border border-red-200">
@@ -112,14 +114,14 @@ const HistoryPage = () => {
             <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6">
               <Map className="w-12 h-12 text-slate-300" />
             </div>
-            <h2 className="text-2xl font-bold text-slate-700 mb-2">Henüz Bir Planınız Yok</h2>
-            <p className="text-slate-500 mb-8 max-w-md">Görünüşe göre yapay zeka asistanımızla henüz bir rota oluşturmamışsınız. Hemen yeni bir macera planlamaya ne dersiniz?</p>
+            <h2 className="text-2xl font-bold text-slate-700 mb-2">{t('history_page.no_plan_title')}</h2>
+            <p className="text-slate-500 mb-8 max-w-md">{t('history_page.no_plan_desc')}</p>
             <Link
               to="/itinerary"
               className="bg-[#1E3A8A] text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-900 transition-colors shadow-md flex items-center gap-2"
             >
               <Plane className="w-5 h-5" />
-              İlk Planınızı Oluşturun
+              {t('history_page.create_first_plan')}
             </Link>
           </div>
         ) : (
@@ -132,23 +134,23 @@ const HistoryPage = () => {
                   <button 
                     onClick={(e) => handleDelete(e, plan.id)}
                     className="absolute top-4 right-4 bg-white/20 hover:bg-red-500 hover:text-white text-white/80 p-2 rounded-full backdrop-blur-sm transition-colors z-20 cursor-pointer"
-                    title="Planı Sil"
+                    title={t('history_page.delete_tooltip')}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
 
-                  <h3 className="text-xl font-bold text-white relative z-10 truncate">{plan.title || 'Seyahat Planı'}</h3>
+                  <h3 className="text-xl font-bold text-white relative z-10 truncate">{plan.title || t('history_page.default_plan_title')}</h3>
                 </div>
 
                 <div className="p-6 flex-1 flex flex-col">
                   <div className="flex items-center gap-2 text-slate-500 text-sm mb-4">
                     <Calendar className="w-4 h-4" />
-                    <span>Oluşturulma: {new Date(plan.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                    <span>{t('history_page.created_at')} {new Date(plan.createdAt).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                   </div>
 
                   <div className="flex items-center gap-2 text-slate-700 font-medium mb-6">
                     <Map className="w-5 h-5 text-[#F59E0B]" />
-                    <span className="truncate">{plan.destination || 'Belirtilmedi'}</span>
+                    <span className="truncate">{plan.destination || t('history_page.not_specified')}</span>
                   </div>
 
                   <div className="mt-auto pt-4 border-t border-slate-100">
@@ -156,7 +158,7 @@ const HistoryPage = () => {
                       to={`/itinerary/${plan.id}`}
                       className="flex items-center justify-between text-[#1E3A8A] font-bold hover:text-blue-700 group/btn"
                     >
-                      <span>Planı İncele</span>
+                      <span>{t('history_page.view_plan')}</span>
                       <ArrowRight className="w-5 h-5 transform group-hover/btn:translate-x-1 transition-transform" />
                     </Link>
                   </div>

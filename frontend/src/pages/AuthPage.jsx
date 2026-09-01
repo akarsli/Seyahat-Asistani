@@ -3,8 +3,10 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, User, AlertCircle } from 'lucide-react';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const AuthPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
@@ -28,7 +30,7 @@ const AuthPage = () => {
 
       if (!res.ok) {
         const errorText = await res.text();
-        throw new Error(errorText || 'Google ile giriş başarısız oldu.');
+        throw new Error(errorText || t('auth_page.google_error'));
       }
       
       const data = await res.json();
@@ -94,7 +96,7 @@ const AuthPage = () => {
             </span>
           </Link>
           <p className="text-xl text-slate-200 font-light max-w-xl">
-            Dünyayı keşfetmek için ilk adımınızı atın. Saniyeler içinde hayalinizdeki tatili planlayın.
+            {t('auth_page.slogan')}
           </p>
         </div>
       </div>
@@ -113,12 +115,12 @@ const AuthPage = () => {
 
         <div className="w-full max-w-sm mx-auto my-auto">
           <h2 className="text-3xl font-bold text-slate-800 mb-2">
-            {isLogin ? 'Hoş Geldiniz' : 'Hesap Oluştur'}
+            {isLogin ? t('auth_page.welcome') : t('auth_page.create_account')}
           </h2>
           <p className="text-slate-500 mb-6">
             {isLogin 
-              ? 'Seyahat asistanınıza erişmek için lütfen giriş yapın.' 
-              : 'Yeni maceralara atılmak için ücretsiz hesabınızı oluşturun.'}
+              ? t('auth_page.welcome_desc') 
+              : t('auth_page.create_account_desc')}
           </p>
 
           {error && (
@@ -133,7 +135,7 @@ const AuthPage = () => {
             {/* Kayıt Ol: Ad Soyad */}
             {!isLogin && (
               <div className="space-y-1">
-                <label className="text-sm font-semibold text-slate-700">Ad Soyad</label>
+                <label className="text-sm font-semibold text-slate-700">{t('auth_page.fullname')}</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <User className="h-5 w-5 text-slate-400" />
@@ -144,7 +146,7 @@ const AuthPage = () => {
                     onChange={(e) => setName(e.target.value)}
                     required={!isLogin}
                     className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
-                    placeholder="Adınız Soyadınız"
+                    placeholder={t('auth_page.fullname_ph')}
                   />
                 </div>
               </div>
@@ -152,7 +154,7 @@ const AuthPage = () => {
 
             {/* Email */}
             <div className="space-y-1">
-              <label className="text-sm font-semibold text-slate-700">E-posta Adresi</label>
+              <label className="text-sm font-semibold text-slate-700">{t('auth_page.email')}</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-slate-400" />
@@ -163,7 +165,7 @@ const AuthPage = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
-                  placeholder="ornek@mail.com"
+                  placeholder={t('auth_page.email_ph')}
                 />
               </div>
             </div>
@@ -171,10 +173,10 @@ const AuthPage = () => {
             {/* Şifre */}
             <div className="space-y-1">
               <div className="flex justify-between items-center">
-                <label className="text-sm font-semibold text-slate-700">Şifre</label>
+                <label className="text-sm font-semibold text-slate-700">{t('auth_page.password')}</label>
                 {isLogin && (
                   <button type="button" className="text-sm font-medium text-[#1E3A8A] hover:underline">
-                    Şifremi unuttum
+                    {t('auth_page.forgot_pwd')}
                   </button>
                 )}
               </div>
@@ -188,7 +190,7 @@ const AuthPage = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
-                  placeholder="••••••••"
+                  placeholder={t('auth_page.password_ph')}
                 />
               </div>
             </div>
@@ -205,7 +207,7 @@ const AuthPage = () => {
                   className="mt-1 w-4 h-4 text-[#1E3A8A] border-slate-300 rounded focus:ring-[#1E3A8A]"
                 />
                 <label htmlFor="terms" className="text-sm text-slate-600">
-                  <span className="font-semibold text-[#1E3A8A] hover:underline cursor-pointer">Kullanım Koşulları</span>'nı ve <span className="font-semibold text-[#1E3A8A] hover:underline cursor-pointer">Gizlilik Politikası</span>'nı okudum, kabul ediyorum.
+                  <span className="font-semibold text-[#1E3A8A] hover:underline cursor-pointer">{t('auth_page.terms')}</span> {t('auth_page.and')} <span className="font-semibold text-[#1E3A8A] hover:underline cursor-pointer">{t('auth_page.privacy')}</span> {t('auth_page.read_accept')}
                 </label>
               </div>
             )}
@@ -217,10 +219,10 @@ const AuthPage = () => {
               className={`w-full flex justify-center items-center gap-2 bg-[#F59E0B] text-white py-3 rounded-xl font-bold transition-colors shadow-md shadow-amber-600/20 mt-4 ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-amber-600 cursor-pointer'}`}
             >
               {loading ? (
-                'İşleniyor...'
+                t('auth_page.processing')
               ) : (
                 <>
-                  {isLogin ? 'Giriş Yap' : 'Kayıt Ol'}
+                  {isLogin ? t('auth_page.login_btn') : t('auth_page.register_btn')}
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
@@ -230,7 +232,7 @@ const AuthPage = () => {
           {/* Veya Şununla Devam Et */}
           <div className="relative flex items-center my-6">
             <div className="flex-grow border-t border-slate-200"></div>
-            <span className="flex-shrink-0 mx-4 text-slate-400 text-sm font-medium">veya şununla devam et</span>
+            <span className="flex-shrink-0 mx-4 text-slate-400 text-sm font-medium">{t('auth_page.or_continue_with')}</span>
             <div className="flex-grow border-t border-slate-200"></div>
           </div>
 
@@ -248,16 +250,16 @@ const AuthPage = () => {
           <div className="mt-8 text-center pb-8 lg:pb-0">
             {isLogin ? (
               <p className="text-slate-600 text-sm">
-                Hesabınız yok mu?{' '}
+                {t('auth_page.no_account')}{' '}
                 <button type="button" onClick={() => setIsLogin(false)} className="font-bold text-[#F59E0B] hover:underline cursor-pointer">
-                  Hemen Kayıt Ol
+                  {t('auth_page.register_now')}
                 </button>
               </p>
             ) : (
               <p className="text-slate-600 text-sm">
-                Zaten hesabınız var mı?{' '}
+                {t('auth_page.has_account')}{' '}
                 <button type="button" onClick={() => setIsLogin(true)} className="font-bold text-[#F59E0B] hover:underline cursor-pointer">
-                  Giriş Yap
+                  {t('auth_page.login_now')}
                 </button>
               </p>
             )}

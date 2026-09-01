@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Send, Map, SlidersHorizontal, User, Bot, Sparkles } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const ChatSidebar = ({ hasPlan, messages, onSendMessage, loading }) => {
+  const { t } = useTranslation();
   const [input, setInput] = useState('');
   const { user } = useAuth();
 
@@ -20,15 +22,15 @@ const ChatSidebar = ({ hasPlan, messages, onSendMessage, loading }) => {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#F59E0B] to-[#F59E0B] flex items-center justify-center text-white">
             <Sparkles className="w-4 h-4" />
           </div>
-          <span className="font-semibold text-slate-800">Seyahat Asistanı</span>
+          <span className="font-semibold text-slate-800">{t('chat_sidebar.title')}</span>
         </div>
 
         {/* Quick Actions */}
         <div className="flex gap-2">
-          <button className="p-2 text-slate-500 hover:text-[#1E3A8A] hover:bg-blue-50 rounded-lg transition-colors" title="Haritayı Görüntüle">
+          <button className="p-2 text-slate-500 hover:text-[#1E3A8A] hover:bg-blue-50 rounded-lg transition-colors" title={t('chat_sidebar.tooltip_map')}>
             <Map className="w-4 h-4" />
           </button>
-          <button className="p-2 text-slate-500 hover:text-[#1E3A8A] hover:bg-blue-50 rounded-lg transition-colors" title="Tempoyu Ayarla">
+          <button className="p-2 text-slate-500 hover:text-[#1E3A8A] hover:bg-blue-50 rounded-lg transition-colors" title={t('chat_sidebar.tooltip_tempo')}>
             <SlidersHorizontal className="w-4 h-4" />
           </button>
         </div>
@@ -73,7 +75,7 @@ const ChatSidebar = ({ hasPlan, messages, onSendMessage, loading }) => {
         <div className="relative flex items-center">
           <input
             type="text"
-            placeholder={hasPlan ? "Rotayı nasıl değiştirelim?" : "Hayalinizdeki tatili anlatın..."}
+            placeholder={hasPlan ? t('chat_sidebar.placeholder_modify') : t('chat_sidebar.placeholder_new')}
             className="w-full pl-4 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/50 transition-all text-sm disabled:opacity-50"
             value={input}
             onChange={(e) => setInput(e.target.value)}

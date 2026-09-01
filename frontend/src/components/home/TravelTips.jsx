@@ -1,38 +1,41 @@
 import React from 'react';
 import { Ticket, Map as MapIcon, Utensils } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-const tips = [
-  {
-    id: 1,
-    slug: 'ucuza-bilet-bulma',
-    title: 'Ucuza Bilet Bulma Yolları',
-    description: 'Uçak biletlerinizi daha ucuza almanın püf noktaları. Gizli sekme kullanımı, esnek tarihler ve mil puanı stratejilerini keşfedin.',
-    icon: <Ticket className="w-8 h-8 text-blue-500" />,
-    image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    color: 'from-blue-900 to-cyan-400'
-  },
-  {
-    id: 2,
-    slug: 'gizli-kalmis-rotalar',
-    title: 'Gizli Kalmış Rotalar',
-    description: 'Turist kalabalığından uzak, keşfedilmeyi bekleyen gizli cennetler. Klasik rotaların dışına çıkın ve yerel halkın sırlarını öğrenin.',
-    icon: <MapIcon className="w-8 h-8 text-indigo-500" />,
-    image: 'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    color: 'from-indigo-500 to-purple-500'
-  },
-  {
-    id: 3,
-    slug: 'yerel-lezzet-duraklari',
-    title: 'Yerel Lezzet Durakları',
-    description: 'Gittiğiniz yerin kültürünü en iyi şekilde yansıtan yerel lezzetler. Sokak yemeklerinden Michelin yıldızlı restoranlara kadar öneriler.',
-    icon: <Utensils className="w-8 h-8 text-rose-500" />,
-    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    color: 'from-rose-500 to-orange-400'
-  }
-];
+import { useTranslation } from 'react-i18next';
 
 const TravelTips = () => {
+  const { t } = useTranslation();
+
+  const tips = [
+    {
+      id: 1,
+      slug: 'ucuza-bilet-bulma',
+      title: t('tips.cheap_tickets_title'),
+      description: t('tips.cheap_tickets_desc'),
+      icon: <Ticket className="w-8 h-8 text-blue-500" />,
+      image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      color: 'from-blue-900 to-cyan-400'
+    },
+    {
+      id: 2,
+      slug: 'gizli-kalmis-rotalar',
+      title: t('tips.hidden_routes_title'),
+      description: t('tips.hidden_routes_desc'),
+      icon: <MapIcon className="w-8 h-8 text-indigo-500" />,
+      image: 'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      color: 'from-indigo-500 to-purple-500'
+    },
+    {
+      id: 3,
+      slug: 'yerel-lezzet-duraklari',
+      title: t('tips.local_tastes_title'),
+      description: t('tips.local_tastes_desc'),
+      icon: <Utensils className="w-8 h-8 text-rose-500" />,
+      image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      color: 'from-rose-500 to-orange-400'
+    }
+  ];
+
   return (
     <section className="py-24 bg-slate-50 relative overflow-hidden">
       {/* Decorative blobs */}
@@ -41,9 +44,9 @@ const TravelTips = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4 tracking-tight">Seyahat İpuçları</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4 tracking-tight">{t('tips.section_title')}</h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Bir sonraki maceranız için size ilham verecek ve bütçenizi koruyacak uzman tavsiyeleri.
+            {t('tips.section_desc')}
           </p>
         </div>
 
@@ -69,7 +72,7 @@ const TravelTips = () => {
                 </p>
                 <div className="mt-6 pt-6 border-t border-slate-100">
                   <span className={`inline-flex items-center font-semibold text-transparent bg-clip-text bg-gradient-to-r ${tip.color} group-hover:opacity-80 transition-opacity`}>
-                    Devamını Oku
+                    {t('tips.read_more')}
                     <span className="ml-2 group-hover:translate-x-1 transition-transform duration-300">→</span>
                   </span>
                 </div>

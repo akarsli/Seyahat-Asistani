@@ -3,8 +3,10 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Plane, Compass, Map, User, Menu, X, LogOut, ChevronDown, Clock, Settings as SettingsIcon } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const Navbar = () => {
+  const { t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
@@ -31,13 +33,13 @@ const Navbar = () => {
   };
 
   const navLinks = [
-    { name: 'Ana Sayfa', path: '/', icon: Map },
-    { name: 'Keşfet', path: '/destinations', icon: Compass },
-    { name: 'Planlarım', path: '/itinerary', icon: Plane },
+    { name: t('nav.home'), path: '/', icon: Map },
+    { name: t('nav.destinations'), path: '/destinations', icon: Compass },
+    { name: t('nav.my_plans'), path: '/itinerary', icon: Plane },
   ];
 
   if (user?.role === 'ADMIN') {
-    navLinks.push({ name: 'Admin Paneli', path: '/admin', icon: User });
+    navLinks.push({ name: t('nav.admin'), path: '/admin', icon: User });
   }
 
   return (
@@ -93,7 +95,7 @@ const Navbar = () => {
                     {user.fullName.charAt(0).toUpperCase()}
                   </div>
                   <span className="font-semibold text-slate-700 hidden lg:block text-sm">
-                    Merhaba, {user.fullName.split(' ')[0]}
+                    {t('nav.hello')}, {user.fullName.split(' ')[0]}
                   </span>
                   <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
@@ -107,7 +109,7 @@ const Navbar = () => {
 
                     <div className="p-3 border-b border-slate-100 bg-amber-50/50">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Kalan Planlama Hakkınız</span>
+                        <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider">{t('nav.quota')}</span>
                         <span className="text-sm font-bold text-[#F59E0B] bg-amber-100 px-2 py-0.5 rounded-md">
                           {user.role === 'ADMIN' ? '∞' : `${user.remainingQuota ?? 3} / 3`}
                         </span>
@@ -128,14 +130,14 @@ const Navbar = () => {
                         className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors font-medium text-left cursor-pointer mb-1"
                       >
                         <SettingsIcon className="w-5 h-5 text-slate-500" />
-                        <span>Ayarlar</span>
+                        <span>{t('nav.settings')}</span>
                       </Link>
                       <button
                         onClick={handleLogout}
                         className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-red-600 hover:bg-red-50 transition-colors font-medium text-left cursor-pointer"
                       >
                         <LogOut className="w-5 h-5" />
-                        <span>Çıkış Yap</span>
+                        <span>{t('nav.logout')}</span>
                       </button>
                     </div>
                   </div>
@@ -161,7 +163,7 @@ const Navbar = () => {
                       onClick={() => setIsUserMenuOpen(false)}
                       className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-[#F59E0B] text-white hover:bg-orange-400 transition-colors font-semibold mb-2 shadow-sm"
                     >
-                      <span>Giriş Yap</span>
+                      <span>{t('nav.login')}</span>
                     </Link>
                     <Link
                       to="/auth"
@@ -169,7 +171,7 @@ const Navbar = () => {
                       onClick={() => setIsUserMenuOpen(false)}
                       className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors font-semibold"
                     >
-                      <span>Kayıt Ol</span>
+                      <span>{t('nav.register')}</span>
                     </Link>
                   </div>
                 )}
@@ -238,7 +240,7 @@ const Navbar = () => {
 
                     <div className="mt-1 mb-2 bg-white rounded-lg p-3 flex flex-col border border-slate-200">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Kalan Planlama Hakkınız</span>
+                        <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider">{t('nav.quota')}</span>
                         <span className="text-sm font-bold text-[#F59E0B] bg-amber-100 px-2 py-0.5 rounded-md">
                           {user.role === 'ADMIN' ? '∞' : `${user.remainingQuota ?? 3} / 3`}
                         </span>
@@ -258,7 +260,7 @@ const Navbar = () => {
                         className="w-full flex justify-center items-center gap-2 bg-slate-200/50 text-slate-700 hover:bg-slate-200 px-5 py-3 rounded-xl font-bold transition-colors cursor-pointer"
                       >
                         <SettingsIcon className="w-5 h-5" />
-                        <span>Ayarlar</span>
+                        <span>{t('nav.settings')}</span>
                       </Link>
                     </div>
                   </div>
@@ -268,7 +270,7 @@ const Navbar = () => {
                     className="w-full flex justify-center items-center gap-2 bg-red-50 text-red-600 hover:bg-red-100 px-5 py-3.5 rounded-xl font-bold transition-colors shadow-sm cursor-pointer"
                   >
                     <LogOut className="w-5 h-5" />
-                    <span>Çıkış Yap</span>
+                    <span>{t('nav.logout')}</span>
                   </button>
                 </div>
               ) : (
@@ -279,7 +281,7 @@ const Navbar = () => {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="w-full flex justify-center items-center gap-2 bg-[#1E3A8A] text-white px-5 py-3 rounded-xl font-bold shadow-sm"
                   >
-                    <span>Giriş Yap</span>
+                    <span>{t('nav.login')}</span>
                   </Link>
                   <Link
                     to="/auth"
@@ -287,7 +289,7 @@ const Navbar = () => {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="w-full flex justify-center items-center gap-2 bg-slate-100 text-slate-700 px-5 py-3 rounded-xl font-bold"
                   >
-                    <span>Kayıt Ol</span>
+                    <span>{t('nav.register')}</span>
                   </Link>
                 </div>
               )}

@@ -4,8 +4,10 @@ import Navbar from '../components/layout/Navbar';
 import ItineraryDetails from '../components/itinerary/ItineraryDetails';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const ViewItineraryPage = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -31,7 +33,7 @@ const ViewItineraryPage = () => {
       setLoading(true);
       const response = await fetch(`http://localhost:8081/api/itinerary/${id}`);
       if (!response.ok) {
-        throw new Error('Plan bulunamadı veya bir hata oluştu.');
+        throw new Error(t('view_itinerary_page.fetch_error'));
       }
       const rawData = await response.json();
       setData(rawData);
@@ -54,7 +56,7 @@ const ViewItineraryPage = () => {
            className="flex items-center gap-2 text-slate-500 hover:text-slate-800 font-medium transition-colors bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 cursor-pointer"
          >
            <ArrowLeft className="w-5 h-5" />
-           Geçmiş Planlara Dön
+           {t('view_itinerary_page.back_to_history')}
          </button>
       </div>
 
@@ -62,12 +64,12 @@ const ViewItineraryPage = () => {
         {loading ? (
           <div className="h-full flex flex-col items-center justify-center p-20">
             <Loader2 className="w-12 h-12 animate-spin text-[#1E3A8A] mb-4" />
-            <p className="text-slate-500 font-medium text-lg">Plan detayları yükleniyor...</p>
+            <p className="text-slate-500 font-medium text-lg">{t('view_itinerary_page.loading')}</p>
           </div>
         ) : error ? (
           <div className="h-full flex flex-col items-center justify-center p-20 text-center">
              <div className="bg-red-50 text-red-600 p-6 rounded-2xl max-w-md w-full border border-red-200">
-               <h2 className="text-xl font-bold mb-2">Hata Oluştu</h2>
+               <h2 className="text-xl font-bold mb-2">{t('view_itinerary_page.error_title')}</h2>
                <p>{error}</p>
              </div>
           </div>

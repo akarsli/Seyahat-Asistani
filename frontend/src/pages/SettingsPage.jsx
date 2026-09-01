@@ -4,13 +4,14 @@ import { useAuth } from '../context/AuthContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { Settings, User, Bell, Globe, Shield, Moon, Monitor, Sun, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const SettingsPage = () => {
+  const { t, i18n } = useTranslation();
   const { user, logout, updateUser } = useAuth();
   const { currency, setCurrency } = useCurrency();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('account');
-  const [language, setLanguage] = useState('tr'); // Dil seçeneği stateti
   const [notifications, setNotifications] = useState(true); // Placeholder state
 
   const [editedName, setEditedName] = useState(user?.fullName || '');
@@ -87,8 +88,8 @@ const SettingsPage = () => {
         <Navbar />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-slate-800 mb-2">Ayarları Görmek İçin Giriş Yapın</h2>
-            <button onClick={() => navigate('/auth')} className="mt-4 bg-[#F59E0B] text-white px-6 py-2 rounded-xl font-bold">Giriş Yap</button>
+            <h2 className="text-2xl font-bold text-slate-800 mb-2">{t('settings.login_prompt_title')}</h2>
+            <button onClick={() => navigate('/auth')} className="mt-4 bg-[#F59E0B] text-white px-6 py-2 rounded-xl font-bold">{t('nav.login')}</button>
           </div>
         </div>
       </div>
@@ -101,13 +102,13 @@ const SettingsPage = () => {
         return (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-bold text-slate-800 mb-1">Hesap Bilgileri</h3>
-              <p className="text-sm text-slate-500 mb-4">Kişisel bilgilerinizi buradan görüntüleyebilirsiniz.</p>
+              <h3 className="text-lg font-bold text-slate-800 mb-1">{t('settings.account_title')}</h3>
+              <p className="text-sm text-slate-500 mb-4">{t('settings.account_desc')}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-slate-600 mb-2">Ad Soyad</label>
+                <label className="block text-sm font-semibold text-slate-600 mb-2">{t('settings.fullname')}</label>
                 <input
                   type="text"
                   value={editedName}
@@ -116,7 +117,7 @@ const SettingsPage = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-600 mb-2">E-Posta Adresi</label>
+                <label className="block text-sm font-semibold text-slate-600 mb-2">{t('settings.email')}</label>
                 <input
                   type="email"
                   value={user.email}
@@ -125,19 +126,19 @@ const SettingsPage = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-600 mb-2">Rol / Yetki</label>
+                <label className="block text-sm font-semibold text-slate-600 mb-2">{t('settings.role')}</label>
                 <input
                   type="text"
-                  value={user.role === 'ADMIN' ? 'Yönetici (Sınırsız Kullanım)' : 'Standart Kullanıcı'}
+                  value={user.role === 'ADMIN' ? t('settings.role_admin') : t('settings.role_user')}
                   disabled
                   className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 font-medium cursor-not-allowed"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-600 mb-2">Kalan Planlama Hakkı</label>
+                <label className="block text-sm font-semibold text-slate-600 mb-2">{t('settings.quota_title')}</label>
                 <input
                   type="text"
-                  value={user.role === 'ADMIN' ? 'Sınırsız' : `${user.remainingQuota ?? 3} / 3`}
+                  value={user.role === 'ADMIN' ? t('nav.unlimited') : `${user.remainingQuota ?? 3} / 3`}
                   disabled
                   className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 font-medium cursor-not-allowed"
                 />
@@ -158,7 +159,7 @@ const SettingsPage = () => {
                   disabled={isSavingProfile || editedName === user?.fullName}
                   className="flex items-center gap-2 bg-[#F59E0B] hover:bg-amber-600 text-white px-6 py-2.5 rounded-xl shadow-sm font-bold transition-colors"
                 >
-                  {isSavingProfile ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
+                  {isSavingProfile ? t('settings.saving') : t('settings.save')}
                 </button>
               </div>
             </div>
@@ -169,15 +170,15 @@ const SettingsPage = () => {
         return (
           <div className="space-y-8">
             <div>
-              <h3 className="text-lg font-bold text-slate-800 mb-1">Uygulama Tercihleri</h3>
-              <p className="text-sm text-slate-500 mb-4">Para birimi, tema ve dil ayarlarınızı yönetin.</p>
+              <h3 className="text-lg font-bold text-slate-800 mb-1">{t('settings.pref_title')}</h3>
+              <p className="text-sm text-slate-500 mb-4">{t('settings.pref_desc')}</p>
             </div>
 
             {/* Currency Setting */}
             <div className="p-5 bg-white border border-slate-100 shadow-sm rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h4 className="font-semibold text-slate-800 mb-1">Para Birimi</h4>
-                <p className="text-sm text-slate-500">Planlamalarda gösterilecek varsayılan para birimi.</p>
+                <h4 className="font-semibold text-slate-800 mb-1">{t('settings.currency_title')}</h4>
+                <p className="text-sm text-slate-500">{t('settings.currency_desc')}</p>
               </div>
               <select
                 value={currency}
@@ -194,16 +195,16 @@ const SettingsPage = () => {
             {/* Language Setting */}
             <div className="p-5 bg-white border border-slate-100 shadow-sm rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h4 className="font-semibold text-slate-800 mb-1">Dil Seçimi</h4>
-                <p className="text-sm text-slate-500">Uygulamanın arayüz dilini belirleyin.</p>
+                <h4 className="font-semibold text-slate-800 mb-1">{t('settings.lang_title')}</h4>
+                <p className="text-sm text-slate-500">{t('settings.lang_desc')}</p>
               </div>
               <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
+                value={i18n.language}
+                onChange={(e) => i18n.changeLanguage(e.target.value)}
                 className="w-full md:w-48 bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-xl focus:ring-[#F59E0B] focus:border-[#F59E0B] p-3 cursor-pointer outline-none font-medium"
               >
-                <option value="tr">Türkçe</option>
-                <option value="en">English</option>
+                <option value="tr">{t('settings.lang_tr')}</option>
+                <option value="en">{t('settings.lang_en')}</option>
               </select>
             </div>
           </div>
@@ -213,14 +214,14 @@ const SettingsPage = () => {
         return (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-bold text-slate-800 mb-1">Bildirim Ayarları</h3>
-              <p className="text-sm text-slate-500 mb-4">Hangi konularda bildirim almak istediğinizi seçin.</p>
+              <h3 className="text-lg font-bold text-slate-800 mb-1">{t('settings.notif_title')}</h3>
+              <p className="text-sm text-slate-500 mb-4">{t('settings.notif_desc')}</p>
             </div>
 
             <div className="p-5 bg-white border border-slate-100 shadow-sm rounded-2xl flex items-center justify-between">
               <div>
-                <h4 className="font-semibold text-slate-800 mb-1">Uçuş Fiyatı Alarmları</h4>
-                <p className="text-sm text-slate-500">Kayıtlı rotalarınızda fiyat düşüşü olduğunda haber ver.</p>
+                <h4 className="font-semibold text-slate-800 mb-1">{t('settings.notif_flight')}</h4>
+                <p className="text-sm text-slate-500">{t('settings.notif_flight_desc')}</p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" checked={notifications} onChange={() => setNotifications(!notifications)} className="sr-only peer" />
@@ -230,8 +231,8 @@ const SettingsPage = () => {
 
             <div className="p-5 bg-white border border-slate-100 shadow-sm rounded-2xl flex items-center justify-between opacity-60">
               <div>
-                <h4 className="font-semibold text-slate-800 mb-1">E-Posta Bülteni</h4>
-                <p className="text-sm text-slate-500">Yeni seyahat ipuçları ve gizli rotalardan haberdar olun.</p>
+                <h4 className="font-semibold text-slate-800 mb-1">{t('settings.notif_email')}</h4>
+                <p className="text-sm text-slate-500">{t('settings.notif_email_desc')}</p>
               </div>
               <label className="relative inline-flex items-center cursor-not-allowed">
                 <input type="checkbox" disabled className="sr-only peer" />
@@ -245,30 +246,30 @@ const SettingsPage = () => {
         return (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-bold text-slate-800 mb-1">Güvenlik</h3>
-              <p className="text-sm text-slate-500 mb-4">Şifre ve hesap güvenliği ayarları.</p>
+              <h3 className="text-lg font-bold text-slate-800 mb-1">{t('settings.sec_title')}</h3>
+              <p className="text-sm text-slate-500 mb-4">{t('settings.sec_desc')}</p>
             </div>
 
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-6">
-              <h4 className="font-bold text-amber-900 mb-2">Şifre Değiştirme</h4>
+              <h4 className="font-bold text-amber-900 mb-2">{t('settings.sec_pwd_title')}</h4>
               <p className="text-sm text-amber-700 mb-4">
-                Hesap güvenliğiniz için şifrenizi düzenli aralıklarla değiştirmenizi öneririz.
+                {t('settings.sec_pwd_desc')}
               </p>
               <button className="px-4 py-2 bg-white text-amber-600 font-bold rounded-lg border border-amber-200 hover:bg-amber-100 transition-colors">
-                Şifre Sıfırlama Bağlantısı Gönder
+                {t('settings.sec_pwd_btn')}
               </button>
             </div>
 
             <div className="bg-red-50 border border-red-200 rounded-2xl p-6">
-              <h4 className="font-bold text-red-900 mb-2">Hesabı Sil</h4>
+              <h4 className="font-bold text-red-900 mb-2">{t('settings.sec_del_title')}</h4>
               <p className="text-sm text-red-700 mb-4">
-                Hesabınızı sildiğinizde, tüm kayıtlı seyahat planlarınız ve verileriniz kalıcı olarak silinecektir. Bu işlem geri alınamaz.
+                {t('settings.sec_del_desc')}
               </p>
               <button
                 onClick={() => setIsDeleteModalOpen(true)}
                 className="px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors shadow-sm"
               >
-                Hesabımı Sil
+                {t('settings.sec_del_btn')}
               </button>
             </div>
           </div>
@@ -290,8 +291,8 @@ const SettingsPage = () => {
               <Settings className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Ayarlar</h1>
-              <p className="text-slate-500 text-sm">Hesap bilgilerinizi ve uygulama tercihlerinizi yönetin.</p>
+              <h1 className="text-2xl md:text-3xl font-bold text-slate-900">{t('settings.title')}</h1>
+              <p className="text-slate-500 text-sm">{t('settings.desc')}</p>
             </div>
           </div>
 
@@ -303,25 +304,25 @@ const SettingsPage = () => {
                   onClick={() => setActiveTab('account')}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors whitespace-nowrap ${activeTab === 'account' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200/50'}`}
                 >
-                  <User className="w-5 h-5" /> Hesap Bilgileri
+                  <User className="w-5 h-5" /> {t('settings.tab_account')}
                 </button>
                 <button
                   onClick={() => setActiveTab('preferences')}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors whitespace-nowrap ${activeTab === 'preferences' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200/50'}`}
                 >
-                  <Globe className="w-5 h-5" /> Tercihler
+                  <Globe className="w-5 h-5" /> {t('settings.tab_preferences')}
                 </button>
                 <button
                   onClick={() => setActiveTab('notifications')}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors whitespace-nowrap ${activeTab === 'notifications' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200/50'}`}
                 >
-                  <Bell className="w-5 h-5" /> Bildirimler
+                  <Bell className="w-5 h-5" /> {t('settings.tab_notifications')}
                 </button>
                 <button
                   onClick={() => setActiveTab('security')}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors whitespace-nowrap ${activeTab === 'security' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200/50'}`}
                 >
-                  <Shield className="w-5 h-5" /> Güvenlik
+                  <Shield className="w-5 h-5" /> {t('settings.tab_security')}
                 </button>
               </nav>
             </aside>
@@ -340,12 +341,12 @@ const SettingsPage = () => {
       {isDeleteModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
           <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in-95 duration-200">
-            <h3 className="text-xl font-bold text-slate-900 mb-2">Hesabı Sil</h3>
+            <h3 className="text-xl font-bold text-slate-900 mb-2">{t('settings.modal_del_title')}</h3>
             <p className="text-slate-600 mb-4 text-sm">
-              Bu işlem geri alınamaz. <b>Tüm verileriniz ve planlarınız kalıcı olarak silinecektir.</b> Onaylamak için lütfen şifrenizi girin.
+              {t('settings.modal_del_desc')}
               <br /><br />
               <span className="text-xs text-amber-600 bg-amber-50 p-2 rounded-lg block">
-                Not: Eğer hesabınızı Google ile oluşturduysanız şifre alanını boş bırakabilirsiniz.
+                {t('settings.modal_del_note')}
               </span>
             </p>
 
@@ -356,12 +357,12 @@ const SettingsPage = () => {
             )}
 
             <div className="mb-6">
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Şifreniz</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">{t('settings.pwd_label')}</label>
               <input
                 type="password"
                 value={deletePassword}
                 onChange={(e) => setDeletePassword(e.target.value)}
-                placeholder="Şifrenizi girin"
+                placeholder={t('settings.pwd_ph')}
                 className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-[#F59E0B] focus:border-[#F59E0B] outline-none"
               />
             </div>
@@ -376,14 +377,14 @@ const SettingsPage = () => {
                 className="px-4 py-2 font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors"
                 disabled={isDeleting}
               >
-                İptal
+                {t('settings.cancel')}
               </button>
               <button
                 onClick={handleDeleteAccount}
                 className="px-4 py-2 font-bold bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors flex items-center gap-2"
                 disabled={isDeleting}
               >
-                {isDeleting ? 'Siliniyor...' : 'Evet, Hesabımı Sil'}
+                {isDeleting ? t('settings.saving') : t('settings.confirm_del')}
               </button>
             </div>
           </div>

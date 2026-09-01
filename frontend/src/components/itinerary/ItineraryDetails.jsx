@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CloudSun, Wallet, Activity, MapPin, Sparkles, Clock, Plane, Train, Bus, TrainFront, ArrowRight, Ticket, Loader2, Search, X } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
+import { useTranslation } from 'react-i18next';
 
 const DESTINATION_IMAGES = {
   // Türkiye
@@ -66,6 +67,7 @@ const getDestinationImage = (destination) => {
 };
 
 const ItineraryDetails = ({ data }) => {
+  const { t } = useTranslation();
   const { convertPriceText } = useCurrency();
   
   const [liveFlights, setLiveFlights] = useState({});
@@ -87,9 +89,11 @@ const ItineraryDetails = ({ data }) => {
       tomorrow.setDate(tomorrow.getDate() + 2); // Search 2 days ahead to ensure full day availability
       const searchDate = tomorrow.toISOString().split('T')[0];
       const response = await fetch(`http://localhost:8081/api/flights?dep_iata=${depIata}&arr_iata=${arrIata}&date=${searchDate}`);
-      if (!response.ok) throw new Error("Canlı veriler alınamadı.");
+      if (!response.ok) throw new Error(t('itinerary_details.fetch_live_error'));
       const data = await response.json();
-      setLiveFlights(prev => ({...prev, [routeKey]: data.slice(0, 5)}));
+      // Sort by price ascending and take top 5
+      const sortedData = data.sort((a, b) => a.price - b.price).slice(0, 5);
+      setLiveFlights(prev => ({...prev, [routeKey]: sortedData}));
     } catch (err) {
       setErrorFlights(prev => ({...prev, [routeKey]: err.message}));
     } finally {
@@ -148,7 +152,7 @@ const ItineraryDetails = ({ data }) => {
               {data.destination}
             </span>
             <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold">
-              {data.durationDays} Gün
+              {data.durationDays} {t('itinerary_details.days')}
             </span>
           </div>
           <h1 className="text-4xl font-bold">{data.title}</h1>
@@ -165,8 +169,8 @@ const ItineraryDetails = ({ data }) => {
               <CloudSun className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm text-slate-500 font-medium">Hava Durumu</p>
-              <p className="text-lg font-bold text-slate-800">{data.weather || 'Bilinmiyor'}</p>
+              <p className="text-sm text-slate-500 font-medium">{t('itinerary_details.weather')}</p>
+              <p className="text-lg font-bold text-slate-800">{data.weather || t('itinerary_details.weather_unknown')}</p>
             </div>
           </div>
 
@@ -175,7 +179,7 @@ const ItineraryDetails = ({ data }) => {
               <Wallet className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm text-slate-500 font-medium">Tahmini Bütçe</p>
+              <p className="text-sm text-slate-500 font-medium">{t('itinerary_details.estimated_budget')}</p>
               <p className="text-lg font-bold text-slate-800">{convertPriceText(data.estimatedBudget)}</p>
             </div>
           </div>
@@ -183,7 +187,7 @@ const ItineraryDetails = ({ data }) => {
 
         {/* Itinerary Timeline */}
         <div className="space-y-8">
-          <h2 className="text-2xl font-bold text-slate-800">Gün Gün Rota</h2>
+          <h2 className="text-2xl font-bold text-slate-800">{t('itinerary_details.day_by_day_title')}</h2>
 
           {(() => {
             // Reusable component for rendering ticket cards
@@ -232,8 +236,8 @@ const ItineraryDetails = ({ data }) => {
                           className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col cursor-pointer hover:shadow-md hover:border-indigo-300 transition-all relative group"
                         >
                           <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                            {realFlight && <span className="bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm flex items-center gap-1"><Sparkles className="w-3 h-3"/> Canlı Veri</span>}
-                            <span className="bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm">Detayları Gör</span>
+                            {realFlight && <span className="bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm flex items-center gap-1"><Sparkles className="w-3 h-3"/> {t('itinerary_details.live_data')}</span>}
+                            <span className="bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm">{t('itinerary_details.view_details')}</span>
                           </div>
                           <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                             <div className="flex items-center gap-3">
@@ -268,7 +272,7 @@ const ItineraryDetails = ({ data }) => {
 
                             <div className="flex items-center justify-between mb-4 px-4">
                               <div className="text-center">
-                                <p className="text-xs text-slate-500 font-medium mb-1">Kalkış</p>
+                                <p className="text-xs text-slate-500 font-medium mb-1">{t('itinerary_details.departure')}</p>
                                 <p className="font-bold text-slate-800 truncate max-w-[100px]">{displayDepCity}</p>
                                 <p className="text-sm text-slate-500 font-bold">{displayDepTime}</p>
                               </div>
@@ -279,13 +283,13 @@ const ItineraryDetails = ({ data }) => {
                                   
                                   {realFlight && realFlight.hasLayovers ? (
                                     <div className="flex flex-col items-center text-slate-500 px-1 mt-1">
-                                      <p className="text-[10px] font-bold text-green-600 uppercase leading-none">{realFlight.layoverCount} Aktarma</p>
+                                      <p className="text-[10px] font-bold text-green-600 uppercase leading-none">{realFlight.layoverCount} {t('itinerary_details.layover')}</p>
                                       <p className="text-[9px] font-medium whitespace-nowrap mt-0.5 text-slate-400 truncate max-w-[60px]" title={realFlight.layoverAirports}>{realFlight.layoverAirports}</p>
                                     </div>
                                   ) : ticket.layoverCity && !realFlight ? (
                                     <div className="flex flex-col items-center text-slate-500 px-1 mt-1">
                                       <p className="text-[10px] font-bold text-orange-500 uppercase leading-none">{ticket.layoverCity}</p>
-                                      <p className="text-[9px] whitespace-nowrap mt-0.5">{ticket.layoverDuration} Bekleme</p>
+                                      <p className="text-[9px] whitespace-nowrap mt-0.5">{ticket.layoverDuration} {t('itinerary_details.layover_wait')}</p>
                                     </div>
                                   ) : (
                                     <TransportIcon className={`w-4 h-4 ${realFlight ? 'text-green-500' : 'text-slate-400'}`} />
@@ -295,7 +299,7 @@ const ItineraryDetails = ({ data }) => {
                                 </div>
                               </div>
                               <div className="text-center">
-                                <p className="text-xs text-slate-500 font-medium mb-1">Varış</p>
+                                <p className="text-xs text-slate-500 font-medium mb-1">{t('itinerary_details.arrival')}</p>
                                 <p className="font-bold text-slate-800 truncate max-w-[100px]">{displayArrCity}</p>
                                 <p className="text-sm text-slate-500 font-bold">{displayArrTime}</p>
                               </div>
@@ -333,12 +337,12 @@ const ItineraryDetails = ({ data }) => {
                     <div key={idx} className="space-y-4">
 
                       {/* Render Arrival/Transfer Tickets for this day (at the top) */}
-                      {renderTickets(topTickets, "Ulaşım", day.dayNumber)}
+                      {renderTickets(topTickets, t('itinerary_details.transport_title'), day.dayNumber)}
 
                       {/* Day Itinerary */}
                       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                         <div className="bg-slate-50 px-6 py-4 border-b border-slate-200">
-                          <h3 className="text-lg font-bold text-slate-800">{day.dayNumber}. Gün: {day.dayTitle}</h3>
+                          <h3 className="text-lg font-bold text-slate-800">{t('itinerary_details.day_title', { dayNumber: day.dayNumber, dayTitle: day.dayTitle })}</h3>
                         </div>
 
                         <div className="p-6 space-y-6">
@@ -354,7 +358,7 @@ const ItineraryDetails = ({ data }) => {
                                     </span>
                                     {(act.isAiSuggestion || act.aiSuggestion) && (
                                       <span className="ml-2 bg-indigo-50 text-blue-900 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 border border-indigo-100">
-                                        <Sparkles className="w-3 h-3" /> AI Önerisi
+                                        <Sparkles className="w-3 h-3" /> {t('itinerary_details.ai_suggestion')}
                                       </span>
                                     )}
                                   </div>
@@ -370,7 +374,7 @@ const ItineraryDetails = ({ data }) => {
                       {/* Render Return/Last Day Tickets at the bottom of the day */}
                       {bottomTickets.length > 0 && (
                         <div className="pt-4">
-                          {renderTickets(bottomTickets, "Dönüş Yolculuğu (Eve Dönüş)")}
+                          {renderTickets(bottomTickets, t('itinerary_details.return_transport_title'))}
                         </div>
                       )}
                     </div>
@@ -390,7 +394,7 @@ const ItineraryDetails = ({ data }) => {
           <div className="bg-white rounded-3xl w-full max-w-3xl max-h-[85vh] overflow-y-auto shadow-2xl relative" onClick={e => e.stopPropagation()}>
             <div className="sticky top-0 bg-white/90 backdrop-blur-md p-5 flex justify-between items-center border-b border-slate-100 z-10 rounded-t-3xl">
               <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
-                <Ticket className="w-5 h-5 text-indigo-600" /> Bilet Detayları
+                <Ticket className="w-5 h-5 text-indigo-600" /> {t('itinerary_details.ticket_details')}
               </h3>
               <button onClick={() => setShowModal(false)} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors cursor-pointer">
                 <X className="w-5 h-5 text-slate-600" />
@@ -398,55 +402,78 @@ const ItineraryDetails = ({ data }) => {
             </div>
             
             <div className="p-6 space-y-8">
-              {/* AI Suggested Ticket */}
-              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
-                <div className="flex justify-between items-start mb-6">
-                  <div>
-                    <p className="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-1">{selectedTicket.type === 'Plane' ? 'Önerilen Uçuş' : 'Önerilen Bilet'}</p>
-                    <div className="flex items-baseline gap-3">
-                      <p className="font-extrabold text-2xl text-slate-800">{selectedTicket.provider}</p>
-                      {selectedTicket.flightNumber && <p className="font-bold text-lg text-slate-400">{selectedTicket.flightNumber}</p>}
+              {/* Header Ticket (Shows Real Flight if available, else AI Suggestion) */}
+              {(() => {
+                const modalRouteKey = selectedTicket.routeKey;
+                const modalRealFlight = modalRouteKey && liveFlights[modalRouteKey] && liveFlights[modalRouteKey].length > 0 ? liveFlights[modalRouteKey][0] : null;
+
+                const displayProvider = modalRealFlight ? modalRealFlight.airline : selectedTicket.provider;
+                const displayFlightNo = modalRealFlight ? modalRealFlight.flightNumber : selectedTicket.flightNumber;
+                const displayDepTime = modalRealFlight ? formatFlightTime(modalRealFlight.departureTime) : (selectedTicket.departure && selectedTicket.departure.includes('-') ? selectedTicket.departure.split('-')[1].trim() : '');
+                const displayArrTime = modalRealFlight ? formatFlightTime(modalRealFlight.arrivalTime) : (selectedTicket.arrival && selectedTicket.arrival.includes('-') ? selectedTicket.arrival.split('-')[1].trim() : '');
+                const displayDepCity = selectedTicket.departure ? selectedTicket.departure.split('-')[0].trim() : '-';
+                const displayArrCity = selectedTicket.arrival ? selectedTicket.arrival.split('-')[0].trim() : '-';
+                const displayPrice = modalRealFlight && modalRealFlight.price ? `$${modalRealFlight.price}` : selectedTicket.price;
+
+                return (
+                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <div className="flex justify-between items-start mb-6">
+                      <div>
+                        <p className="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-1">
+                          {modalRealFlight ? t('itinerary_details.live_data') : (selectedTicket.type === 'Plane' ? t('itinerary_details.recommended_flight') : t('itinerary_details.recommended_ticket'))}
+                        </p>
+                        <div className="flex items-baseline gap-3">
+                          <p className="font-extrabold text-2xl text-slate-800">{displayProvider}</p>
+                          {displayFlightNo && <p className="font-bold text-lg text-slate-400">{displayFlightNo}</p>}
+                        </div>
+                      </div>
+                      <span className="font-bold text-indigo-700 bg-indigo-100 px-4 py-1.5 rounded-full shadow-sm">
+                        {convertPriceText(displayPrice)}
+                      </span>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-6 text-sm mb-6">
+                       <div>
+                         <p className="text-xs font-semibold text-slate-400 uppercase mb-1">{t('itinerary_details.departure')}</p>
+                         <p className="font-bold text-slate-800 text-lg">{displayDepCity}</p>
+                         <p className="text-slate-500">{displayDepTime}</p>
+                       </div>
+                       <div>
+                         <p className="text-xs font-semibold text-slate-400 uppercase mb-1">{t('itinerary_details.arrival')}</p>
+                         <p className="font-bold text-slate-800 text-lg">{displayArrCity}</p>
+                         <p className="text-slate-500">{displayArrTime}</p>
+                       </div>
+                    </div>
+                    
+                    <div className="pt-4 border-t border-slate-200 flex flex-wrap gap-4 text-sm font-medium">
+                       <div className="flex items-center gap-1.5 text-slate-700 bg-white px-3 py-1.5 rounded-lg border border-slate-200">
+                         <Clock className="w-4 h-4 text-slate-400"/> {selectedTicket.duration}
+                       </div>
+                       {modalRealFlight && modalRealFlight.hasLayovers ? (
+                         <div className="flex items-center gap-1.5 text-orange-700 bg-orange-50 px-3 py-1.5 rounded-lg border border-orange-200">
+                           <MapPin className="w-4 h-4 text-orange-500"/> {modalRealFlight.layoverCount} {t('itinerary_details.layover')}: {modalRealFlight.layoverAirports}
+                         </div>
+                       ) : selectedTicket.layoverCity && !modalRealFlight ? (
+                         <div className="flex items-center gap-1.5 text-orange-700 bg-orange-50 px-3 py-1.5 rounded-lg border border-orange-200">
+                           <MapPin className="w-4 h-4 text-orange-500"/> {t('itinerary_details.layover')}: {selectedTicket.layoverCity} ({selectedTicket.layoverDuration})
+                         </div>
+                       ) : null}
                     </div>
                   </div>
-                  <span className="font-bold text-indigo-700 bg-indigo-100 px-4 py-1.5 rounded-full shadow-sm">{convertPriceText(selectedTicket.price)}</span>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-6 text-sm mb-6">
-                   <div>
-                     <p className="text-xs font-semibold text-slate-400 uppercase mb-1">Kalkış</p>
-                     <p className="font-bold text-slate-800 text-lg">{selectedTicket.departure ? selectedTicket.departure.split('-')[0].trim() : '-'}</p>
-                     <p className="text-slate-500">{selectedTicket.departure && selectedTicket.departure.includes('-') ? selectedTicket.departure.split('-')[1].trim() : ''}</p>
-                   </div>
-                   <div>
-                     <p className="text-xs font-semibold text-slate-400 uppercase mb-1">Varış</p>
-                     <p className="font-bold text-slate-800 text-lg">{selectedTicket.arrival ? selectedTicket.arrival.split('-')[0].trim() : '-'}</p>
-                     <p className="text-slate-500">{selectedTicket.arrival && selectedTicket.arrival.includes('-') ? selectedTicket.arrival.split('-')[1].trim() : ''}</p>
-                   </div>
-                </div>
-                
-                <div className="pt-4 border-t border-slate-200 flex flex-wrap gap-4 text-sm font-medium">
-                   <div className="flex items-center gap-1.5 text-slate-700 bg-white px-3 py-1.5 rounded-lg border border-slate-200">
-                     <Clock className="w-4 h-4 text-slate-400"/> {selectedTicket.duration}
-                   </div>
-                   {selectedTicket.layoverCity && (
-                     <div className="flex items-center gap-1.5 text-orange-700 bg-orange-50 px-3 py-1.5 rounded-lg border border-orange-200">
-                       <MapPin className="w-4 h-4 text-orange-500"/> Aktarma: {selectedTicket.layoverCity} ({selectedTicket.layoverDuration})
-                     </div>
-                   )}
-                </div>
-              </div>
+                );
+              })()}
 
               {/* Live Flights List */}
               {selectedTicket.type === 'Plane' && selectedTicket.departureIata && selectedTicket.arrivalIata && (
                 <div>
                   <h4 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                    <Search className="w-5 h-5 text-indigo-500" /> Alternatif Canlı Uçuşlar
+                    <Search className="w-5 h-5 text-indigo-500" /> {t('itinerary_details.alt_live_flights')}
                   </h4>
                   
                   {loadingFlights[selectedTicket.routeKey] ? (
                     <div className="flex flex-col items-center justify-center py-10 text-slate-500 bg-slate-50 rounded-2xl border border-slate-200 border-dashed">
                       <Loader2 className="w-8 h-8 animate-spin mb-3 text-indigo-500" />
-                      <p className="font-medium">Canlı uçuşlar AirLabs'tan getiriliyor...</p>
+                      <p className="font-medium">{t('itinerary_details.loading_flights')}</p>
                     </div>
                   ) : errorFlights[selectedTicket.routeKey] ? (
                     <div className="bg-red-50 p-5 rounded-2xl text-red-600 text-sm text-center border border-red-100">
@@ -463,19 +490,19 @@ const ItineraryDetails = ({ data }) => {
                             <div>
                               <p className="font-bold text-slate-800 text-sm mb-0.5">{lf.airline} {lf.flightNumber}</p>
                               <p className="text-[10px] text-green-600 font-bold flex items-center gap-1 uppercase tracking-wider">
-                                <Plane className="w-3 h-3" /> Canlı Veri {lfIdx === 0 && ' (Önerilen)'}
+                                <Plane className="w-3 h-3" /> {t('itinerary_details.live_data')} {lfIdx === 0 && ` ${t('itinerary_details.recommended')}`}
                               </p>
                             </div>
                           </div>
                           
                           <div className="flex gap-5 text-center items-center">
                             <div>
-                              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Kalkış</p>
+                              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">{t('itinerary_details.departure')}</p>
                               <p className="font-bold text-slate-800 text-base">{formatFlightTime(lf.departureTime)}</p>
                             </div>
                             {lf.hasLayovers ? (
                               <div className="flex flex-col items-center justify-center px-3">
-                                <p className="text-[9px] font-bold text-green-600 uppercase mb-0.5">{lf.layoverCount} Aktarma</p>
+                                <p className="text-[9px] font-bold text-green-600 uppercase mb-0.5">{lf.layoverCount} {t('itinerary_details.layover')}</p>
                                 <div className="w-12 h-px bg-slate-300 relative">
                                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-slate-300 rounded-full"></div>
                                 </div>
@@ -483,17 +510,17 @@ const ItineraryDetails = ({ data }) => {
                               </div>
                             ) : (
                               <div className="flex flex-col items-center justify-center px-3">
-                                <p className="text-[9px] font-bold text-slate-400 uppercase mb-0.5">Direkt</p>
+                                <p className="text-[9px] font-bold text-slate-400 uppercase mb-0.5">{t('itinerary_details.direct')}</p>
                                 <div className="w-12 h-px bg-slate-300"></div>
                               </div>
                             )}
                             <div>
-                              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Varış</p>
+                              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">{t('itinerary_details.arrival')}</p>
                               <p className="font-bold text-slate-800 text-base">{formatFlightTime(lf.arrivalTime)}</p>
                             </div>
                             {lf.price > 0 && (
                               <div className="ml-4 pl-4 border-l border-slate-200">
-                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Fiyat</p>
+                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">{t('itinerary_details.price')}</p>
                                 <p className="font-bold text-indigo-600 text-base">{convertPriceText(`$${lf.price}`)}</p>
                               </div>
                             )}
@@ -503,7 +530,7 @@ const ItineraryDetails = ({ data }) => {
                     </div>
                   ) : (
                     <div className="bg-slate-50 p-6 rounded-2xl text-slate-500 text-sm text-center border border-slate-200 border-dashed">
-                      Bu rota için bugün canlı uçuş bulunamadı.
+                      {t('itinerary_details.no_live_flights')}
                     </div>
                   )}
                 </div>

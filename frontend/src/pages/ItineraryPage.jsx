@@ -6,19 +6,20 @@ import ItineraryDetails from '../components/itinerary/ItineraryDetails';
 import { Loader2, Map, Check, MapPin, Clock, Wallet, User, Calendar, Plane, LogIn, Sparkles, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-const RequirementsChecklist = ({ params }) => {
+const RequirementsChecklist = ({ params, t }) => {
   const reqs = [
-    { key: 'departureLocation', label: 'Nereden Gidilecek?', icon: <MapPin className="w-5 h-5" /> },
-    { key: 'destination', label: 'Nereye Gidilecek?', icon: <Plane className="w-5 h-5" /> },
-    { key: 'travelDate', label: 'Ne Zaman & Kaç Gün?', icon: <Calendar className="w-5 h-5" /> },
-    { key: 'budget', label: 'Bütçe Ne Kadar?', icon: <Wallet className="w-5 h-5" /> },
-    { key: 'numberOfPeople', label: 'Kaç Kişi Gidilecek?', icon: <User className="w-5 h-5" /> },
+    { key: 'departureLocation', label: t('itinerary_page.req_dep'), icon: <MapPin className="w-5 h-5" /> },
+    { key: 'destination', label: t('itinerary_page.req_dest'), icon: <Plane className="w-5 h-5" /> },
+    { key: 'travelDate', label: t('itinerary_page.req_date'), icon: <Calendar className="w-5 h-5" /> },
+    { key: 'budget', label: t('itinerary_page.req_budget'), icon: <Wallet className="w-5 h-5" /> },
+    { key: 'numberOfPeople', label: t('itinerary_page.req_people'), icon: <User className="w-5 h-5" /> },
   ];
   return (
     <div className="h-full flex flex-col items-center justify-center bg-slate-50 p-8 text-center">
-       <h2 className="text-3xl font-bold text-slate-800 mb-2">Planlama İçin Birkaç Detay Eksik</h2>
-       <p className="text-slate-500 mb-8 max-w-md mx-auto">Harika bir rota çıkarabilmemiz için aşağıdaki bilgilerin tamamlanması gerekiyor. Lütfen eksik olanları sol taraftaki asistana yazın.</p>
+       <h2 className="text-3xl font-bold text-slate-800 mb-2">{t('itinerary_page.missing_title')}</h2>
+       <p className="text-slate-500 mb-8 max-w-md mx-auto">{t('itinerary_page.missing_desc')}</p>
        
        <div className="w-full max-w-md bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 text-left">
          {reqs.map(r => {
@@ -33,7 +34,7 @@ const RequirementsChecklist = ({ params }) => {
                  {isFilled ? (
                    <p className="text-sm text-green-600 font-medium">{params[r.key]}</p>
                  ) : (
-                   <p className="text-sm text-slate-400">Bekleniyor...</p>
+                   <p className="text-sm text-slate-400">{t('itinerary_page.waiting')}</p>
                  )}
                </div>
              </div>
@@ -45,6 +46,7 @@ const RequirementsChecklist = ({ params }) => {
 };
 
 const ItineraryPage = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const { user, decrementQuota, loading: authLoading } = useAuth();
@@ -76,7 +78,7 @@ const ItineraryPage = () => {
       });
       
       if (!response.ok) {
-        throw new Error('Parametre çıkarımı başarısız oldu.');
+        throw new Error(t('itinerary_page.error_extract'));
       }
       
       const data = await response.json();
@@ -89,15 +91,15 @@ const ItineraryPage = () => {
          if (!user) {
            setTimeout(() => {
              setShowAuthPopup(true);
-             setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Tüm detayları aldım! Planlamaya başlayabilmemiz için giriş yapmanız gerekiyor.' }]);
+             setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: t('itinerary_page.ai_login_required') }]);
            }, 1500);
            // Burada generatePlan çağırmıyoruz, kullanıcı giriş yapmalı
          } else if (user.remainingQuota <= 0) {
-           setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Haftalık plan kotanız dolmuştur. Yeni rotalar oluşturabilmek için planınızı yükseltmeniz gerekmektedir.' }]);
+           setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: t('itinerary_page.ai_quota_exceeded') }]);
            setTimeout(() => setShowQuotaPopup(true), 1500);
            setLoading(false);
          } else {
-           setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Harika! Tüm detayları aldım. Şimdi sizin için en uygun rotayı hazırlıyorum, lütfen bekleyin...' }]);
+           setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: t('itinerary_page.ai_generating') }]);
            const fullPrompt = `Nereden: ${data.departureLocation}, Nereye: ${data.destination}, Tarih: ${data.travelDate}, Bütçe: ${data.budget}, Kişi: ${data.numberOfPeople}. Ek Detaylar: ${text}`;
            
            // 1.5 saniyelik gecikme ile checklistin onaylı halini ekranda tutuyoruz
@@ -107,7 +109,7 @@ const ItineraryPage = () => {
            }, 1500);
          }
       } else {
-         setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Teşekkürler. Lütfen sağ taraftaki listede eksik kalan (bekleniyor) bilgileri de bana söyler misiniz?' }]);
+         setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: t('itinerary_page.ai_missing_info') }]);
          setLoading(false);
       }
       
@@ -126,7 +128,7 @@ const ItineraryPage = () => {
       });
       
       if (!response.ok) {
-        let errorMessage = 'API yanıt vermedi veya hata oluştu.';
+        let errorMessage = t('itinerary_page.error_api');
         try {
           const errorData = await response.text();
           if (errorData) errorMessage = errorData;
@@ -137,7 +139,7 @@ const ItineraryPage = () => {
       const data = await response.json();
       setItineraryData(data);
       decrementQuota();
-      setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Rotanız hazır! Sağ taraftan tüm detayları inceleyebilirsiniz.' }]);
+      setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: t('itinerary_page.ai_ready') }]);
       setMobileView('plan');
     } catch (err) {
       setError(err.message);
@@ -154,7 +156,7 @@ const ItineraryPage = () => {
       extractParams(text, parameters);
     } else {
       // Future: refinement logic
-      setMessages(prev => [...prev, { id: Date.now()+1, sender: 'ai', text: 'Rotayı güncelleme özelliği yakında eklenecek!' }]);
+      setMessages(prev => [...prev, { id: Date.now()+1, sender: 'ai', text: t('itinerary_page.ai_update_soon') }]);
     }
   };
 
@@ -171,12 +173,12 @@ const ItineraryPage = () => {
     // Eğer sayfaya giriş yaptıktan sonra dönüldüyse ve liste tamamsa otomatik başlat
     if (user && isComplete && !isGenerating && !itineraryData && !loading) {
        if (user.remainingQuota <= 0) {
-           setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Haftalık plan kotanız dolmuştur. Yeni rotalar oluşturabilmek için planınızı yükseltmeniz gerekmektedir.' }]);
+           setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: t('itinerary_page.ai_quota_exceeded') }]);
            setTimeout(() => setShowQuotaPopup(true), 1000);
            return;
        }
        const fullPrompt = `Nereden: ${parameters.departureLocation}, Nereye: ${parameters.destination}, Tarih: ${parameters.travelDate}, Bütçe: ${parameters.budget}, Kişi: ${parameters.numberOfPeople}. Ek Detaylar: ${prompt || ''}`;
-       setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: 'Harika! Tüm detayları aldım. Şimdi sizin için en uygun rotayı hazırlıyorum, lütfen bekleyin...' }]);
+       setMessages(prev => [...prev, { id: Date.now(), sender: 'ai', text: t('itinerary_page.ai_generating') }]);
        setTimeout(() => {
          setIsGenerating(true);
          generatePlan(fullPrompt);
@@ -206,7 +208,7 @@ const ItineraryPage = () => {
             <div className="absolute top-6 right-6 md:top-8 md:right-8 z-20">
                <Link to="/history" className="flex items-center gap-2 bg-white px-4 py-2 md:px-5 md:py-2.5 rounded-xl shadow-sm border border-slate-200 text-slate-700 font-bold hover:bg-slate-50 hover:shadow-md transition-all text-sm md:text-base">
                   <Clock className="w-4 h-4 md:w-5 md:h-5 text-[#1E3A8A]" />
-                  Geçmiş Planlarım
+                  {t('itinerary_page.history_btn')}
                </Link>
             </div>
           )}
@@ -214,10 +216,10 @@ const ItineraryPage = () => {
           {/* Input UI */}
           <div className="relative z-10 w-full max-w-3xl">
              <h1 className="text-3xl md:text-5xl font-extrabold text-slate-800 text-center mb-6 drop-shadow-sm">
-               Nereyi Keşfetmek İstersiniz?
+               {t('itinerary_page.hero_title')}
              </h1>
              <p className="text-slate-500 text-center mb-10 text-lg max-w-xl mx-auto">
-               Aklınızdaki rotayı veya tatil fikrini yazın, saniyeler içinde sizin için en ideal seyahat planını çıkaralım.
+               {t('itinerary_page.hero_desc')}
              </p>
              
              <div className="bg-white p-2 rounded-[25px] border border-slate-200 shadow-xl flex flex-col md:flex-row items-center gap-2 transition-all focus-within:shadow-[#1E3A8A]/10 focus-within:border-blue-300">
@@ -225,7 +227,7 @@ const ItineraryPage = () => {
                  <Sparkles className="w-6 h-6 text-[#F59E0B] hidden md:block" />
                  <input
                    type="text"
-                   placeholder="Örn: Ekim'de İtalya gezisi..."
+                   placeholder={t('itinerary_page.hero_ph')}
                    className="w-full bg-transparent text-slate-800 placeholder-slate-400 focus:outline-none text-lg h-full"
                    value={initialInput}
                    onChange={(e) => setInitialInput(e.target.value)}
@@ -243,7 +245,7 @@ const ItineraryPage = () => {
                  }}
                  className="w-full md:w-auto bg-[#F59E0B] hover:bg-[#d97706] text-black px-8 py-4 md:py-0 md:h-14 rounded-[15px] cursor-pointer font-semibold text-lg flex items-center justify-center gap-2 transition-all shadow-md"
                >
-                 Planla
+                 {t('itinerary_page.plan_btn')}
                </button>
              </div>
           </div>
@@ -277,15 +279,15 @@ const ItineraryPage = () => {
                 <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
                   <LogIn className="w-10 h-10 text-amber-500" />
                 </div>
-                <h2 className="text-2xl font-bold text-slate-800 mb-3">Giriş Yapmanız Gerekiyor</h2>
+                <h2 className="text-2xl font-bold text-slate-800 mb-3">{t('itinerary_page.popup_login_title')}</h2>
                 <p className="text-slate-500 mb-8">
-                  Yapay zeka asistanını kullanabilmek ve harika rotalar oluşturabilmek için hesabınıza giriş yapmalısınız.
+                  {t('itinerary_page.popup_login_desc')}
                 </p>
                 <button
                   onClick={() => navigate('/auth', { state: { returnTo: '/itinerary', prompt: location.state?.prompt } })}
                   className="w-full bg-[#F59E0B] hover:bg-amber-600 text-white py-3.5 rounded-xl font-bold transition-all shadow-md shadow-amber-600/20 flex justify-center items-center gap-2"
                 >
-                  Giriş Yap / Kayıt Ol
+                  {t('itinerary_page.popup_login_btn')}
                 </button>
               </div>
             </div>
@@ -298,26 +300,26 @@ const ItineraryPage = () => {
                 <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
                   <AlertTriangle className="w-10 h-10 text-red-500" />
                 </div>
-                <h2 className="text-2xl font-bold text-slate-800 mb-3">Kotanız Dolmuştur!</h2>
+                <h2 className="text-2xl font-bold text-slate-800 mb-3">{t('itinerary_page.popup_quota_title')}</h2>
                 <p className="text-slate-500 mb-8">
-                  Haftalık ücretsiz plan oluşturma kotanızı doldurdunuz. Hemen planınızı yükselterek sınırsız yapay zeka gücünden faydalanmaya devam edebilirsiniz.
+                  {t('itinerary_page.popup_quota_desc')}
                 </p>
                 <div className="flex gap-3 w-full">
                   <button
                     onClick={() => setShowQuotaPopup(false)}
                     className="flex-1 px-5 py-3.5 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
                   >
-                    Kapat
+                    {t('itinerary_page.close')}
                   </button>
                   <button
                     onClick={() => {
                       setShowQuotaPopup(false);
                       // navigate('/pricing') veya benzeri eklenebilir gelecekte
-                      alert('Plan yükseltme sayfası yakında eklenecektir!');
+                      alert(t('itinerary_page.upgrade_soon'));
                     }}
                     className="flex-1 bg-[#F59E0B] hover:bg-amber-600 text-white py-3.5 rounded-xl font-bold transition-all shadow-md shadow-amber-600/20"
                   >
-                    Plan Yükselt
+                    {t('itinerary_page.upgrade')}
                   </button>
                 </div>
               </div>
@@ -331,13 +333,13 @@ const ItineraryPage = () => {
                 <div className="w-24 h-24 border-4 border-[#1E3A8A] rounded-full animate-spin absolute top-0 left-0 border-t-transparent"></div>
                 <Loader2 className="w-8 h-8 text-[#1E3A8A] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-pulse" />
               </div>
-              <h2 className="mt-8 text-2xl font-bold text-slate-800 animate-pulse">Yapay Zeka Rotanızı Planlıyor...</h2>
-              <p className="text-slate-500 mt-2">Bu işlem birkaç saniye sürebilir, arkanıza yaslanın.</p>
+              <h2 className="mt-8 text-2xl font-bold text-slate-800 animate-pulse">{t('itinerary_page.loading_title')}</h2>
+              <p className="text-slate-500 mt-2">{t('itinerary_page.loading_desc')}</p>
             </div>
           ) : error ? (
             <div className="h-full flex flex-col items-center justify-center bg-slate-50 text-red-500 p-8 text-center">
-              <h2 className="text-2xl font-bold mb-2">Bir Hata Oluştu!</h2>
-              <p className="mb-4 text-slate-600">Geliştirici Detayları:</p>
+              <h2 className="text-2xl font-bold mb-2">{t('itinerary_page.error_title')}</h2>
+              <p className="mb-4 text-slate-600">{t('itinerary_page.dev_details')}</p>
               <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg w-full max-w-2xl max-h-64 overflow-auto text-left text-xs sm:text-sm mt-2 mb-4 font-mono whitespace-pre-wrap shadow-inner">
                 {error}
               </div>
@@ -345,7 +347,7 @@ const ItineraryPage = () => {
           ) : itineraryData ? (
             <ItineraryDetails data={itineraryData} />
           ) : (
-            <RequirementsChecklist params={parameters} />
+            <RequirementsChecklist params={parameters} t={t} />
           )}
         </div>
 
@@ -355,13 +357,13 @@ const ItineraryPage = () => {
             onClick={() => setMobileView('chat')}
             className={`px-5 py-2.5 rounded-full font-bold text-sm transition-all ${mobileView === 'chat' ? 'bg-[#1E3A8A] text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
           >
-            Sohbet
+            {t('itinerary_page.tab_chat')}
           </button>
           <button 
             onClick={() => setMobileView('plan')}
             className={`px-5 py-2.5 rounded-full font-bold text-sm transition-all ${mobileView === 'plan' ? 'bg-[#F59E0B] text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
           >
-            Plan
+            {t('itinerary_page.tab_plan')}
           </button>
         </div>
       </div>

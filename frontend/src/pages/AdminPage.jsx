@@ -4,8 +4,10 @@ import { useAuth } from '../context/AuthContext';
 import { LayoutDashboard, Users, Map, LogOut, Loader2, ArrowLeft, TrendingUp, CheckCircle2, Activity, Calendar, Zap, DollarSign, Search, Trophy } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
 const AdminPage = () => {
+  const { t, i18n } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   
@@ -44,7 +46,7 @@ const AdminPage = () => {
         fetch(`http://localhost:8081/api/admin/plans?email=${user.email}`)
       ]);
 
-      if (!statsRes.ok || !usersRes.ok || !plansRes.ok) throw new Error('Veriler çekilirken hata oluştu.');
+      if (!statsRes.ok || !usersRes.ok || !plansRes.ok) throw new Error(t('admin_page.fetch_error'));
 
       setStats(await statsRes.json());
       
@@ -79,7 +81,7 @@ const AdminPage = () => {
         method: 'PUT'
       });
       
-      if (!response.ok) throw new Error('Kota güncellenemedi.');
+      if (!response.ok) throw new Error(t('admin_page.quota_error'));
       
       // Update local state
       setUsers(users.map(u => u.id === selectedUserForQuota.id ? { ...u, remainingQuota: parseInt(newQuotaValue) } : u));
@@ -119,9 +121,9 @@ const AdminPage = () => {
         <div className="p-6">
           <div className="flex items-center gap-2 mb-2 text-amber-500">
             <LayoutDashboard className="w-8 h-8" />
-            <h1 className="text-2xl font-bold tracking-tight text-white">Yönetim Paneli</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-white">{t('admin_page.dashboard_title')}</h1>
           </div>
-          <p className="text-xs text-slate-400 font-medium">HolidayTrip Admin Console</p>
+          <p className="text-xs text-slate-400 font-medium">{t('admin_page.dashboard_subtitle')}</p>
         </div>
 
         <nav className="flex-1 px-4 py-4 space-y-2">
@@ -130,21 +132,21 @@ const AdminPage = () => {
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${activeTab === 'dashboard' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
           >
             <Activity className="w-5 h-5" />
-            Genel Bakış
+            {t('admin_page.tab_overview')}
           </button>
           <button
             onClick={() => setActiveTab('users')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${activeTab === 'users' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
           >
             <Users className="w-5 h-5" />
-            Kullanıcılar
+            {t('admin_page.tab_users')}
           </button>
           <button
             onClick={() => setActiveTab('plans')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${activeTab === 'plans' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
           >
             <Map className="w-5 h-5" />
-            Üretilen Rotalar
+            {t('admin_page.tab_plans')}
           </button>
         </nav>
 
@@ -154,7 +156,7 @@ const AdminPage = () => {
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-colors font-medium"
           >
             <ArrowLeft className="w-5 h-5" />
-            Siteye Dön
+            {t('admin_page.back_to_site')}
           </button>
         </div>
       </div>
@@ -164,15 +166,15 @@ const AdminPage = () => {
         <header className="bg-white border-b border-slate-200 px-8 py-5 flex justify-between items-center sticky top-0 z-10">
           <div>
             <h2 className="text-xl font-bold text-slate-800 capitalize">
-              {activeTab === 'dashboard' && 'Genel İstatistikler'}
-              {activeTab === 'users' && 'Kullanıcı Yönetimi'}
-              {activeTab === 'plans' && 'Platformdaki Rotalar'}
+              {activeTab === 'dashboard' && t('admin_page.header_overview')}
+              {activeTab === 'users' && t('admin_page.header_users')}
+              {activeTab === 'plans' && t('admin_page.header_plans')}
             </h2>
           </div>
           <div className="flex items-center gap-4">
              <div className="text-right hidden sm:block">
                <p className="text-sm font-bold text-slate-800">{user.fullName}</p>
-               <p className="text-xs text-slate-500 font-medium">Sistem Yöneticisi</p>
+               <p className="text-xs text-slate-500 font-medium">{t('admin_page.system_admin')}</p>
              </div>
              <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold border-2 border-white shadow-sm">
                {user.fullName.charAt(0).toUpperCase()}
@@ -184,7 +186,7 @@ const AdminPage = () => {
           {dataLoading ? (
             <div className="flex flex-col items-center justify-center py-32 text-indigo-600">
               <Loader2 className="w-12 h-12 animate-spin mb-4" />
-              <p className="font-semibold text-slate-500">Veriler Yükleniyor...</p>
+              <p className="font-semibold text-slate-500">{t('admin_page.loading')}</p>
             </div>
           ) : error ? (
             <div className="bg-red-50 text-red-600 p-6 rounded-2xl border border-red-200 text-center font-medium">
@@ -195,29 +197,29 @@ const AdminPage = () => {
               {activeTab === 'dashboard' && stats && (
                 <div className="space-y-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-                    <StatCard title="Toplam Kullanıcı" value={stats.totalUsers} icon={<Users className="w-7 h-7" />} color="blue" />
-                    <StatCard title="Üretilen Rotalar" value={stats.totalPlans} icon={<Map className="w-7 h-7" />} color="amber" />
-                    <StatCard title="Bugün Yeni Kayıt" value={stats.usersToday} icon={<TrendingUp className="w-7 h-7" />} color="green" />
-                    <StatCard title="Bugün Üretilen" value={stats.plansToday} icon={<Activity className="w-7 h-7" />} color="indigo" />
+                    <StatCard title={t('admin_page.stat_total_users')} value={stats.totalUsers} icon={<Users className="w-7 h-7" />} color="blue" />
+                    <StatCard title={t('admin_page.stat_total_plans')} value={stats.totalPlans} icon={<Map className="w-7 h-7" />} color="amber" />
+                    <StatCard title={t('admin_page.stat_users_today')} value={stats.usersToday} icon={<TrendingUp className="w-7 h-7" />} color="green" />
+                    <StatCard title={t('admin_page.stat_plans_today')} value={stats.plansToday} icon={<Activity className="w-7 h-7" />} color="indigo" />
                     <StatCard 
-                      title="Limiti Dolanlar" 
+                      title={t('admin_page.stat_quota_limit')} 
                       value={stats.usersOutOfQuota || 0} 
                       icon={<Zap className="w-7 h-7" />} 
                       color="red" 
-                      subtext={`Toplam kullanıcıların %${stats.totalUsers > 0 ? Math.round(((stats.usersOutOfQuota || 0) / stats.totalUsers) * 100) : 0}'i`}
+                      subtext={t('admin_page.stat_quota_subtext', { percent: stats.totalUsers > 0 ? Math.round(((stats.usersOutOfQuota || 0) / stats.totalUsers) * 100) : 0 })}
                       subtextColor="red-500"
                     />
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <StatCard 
-                      title="AI Token Kullanımı" 
-                      value={stats.totalTokens?.toLocaleString('tr-TR') || 0} 
+                      title={t('admin_page.stat_ai_tokens')} 
+                      value={stats.totalTokens?.toLocaleString(i18n.language === 'en' ? 'en-US' : 'tr-TR') || 0} 
                       icon={<Zap className="w-7 h-7" />} 
                       color="purple" 
                     />
                     <StatCard 
-                      title="AI Tahmini Maliyet" 
+                      title={t('admin_page.stat_ai_cost')} 
                       value={`$${(stats.totalCostUsd || 0).toFixed(4)}`} 
                       icon={<DollarSign className="w-7 h-7" />} 
                       color="emerald" 
@@ -228,16 +230,16 @@ const AdminPage = () => {
                     <div className="flex justify-between items-center mb-6">
                       <h3 className="font-bold text-slate-800 flex items-center gap-2">
                         <Activity className="w-5 h-5 text-indigo-600" />
-                        Son 7 Günlük Kullanım Trendi
+                        {t('admin_page.trend_title')}
                       </h3>
                       <select 
                         value={chartFilter}
                         onChange={(e) => setChartFilter(e.target.value)}
                         className="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg px-3 py-1.5 outline-none focus:ring-2 focus:ring-indigo-100 cursor-pointer font-medium"
                       >
-                        <option value="all">Tümü</option>
-                        <option value="plans">Sadece Rotalar</option>
-                        <option value="users">Sadece Kayıtlar</option>
+                        <option value="all">{t('admin_page.filter_all')}</option>
+                        <option value="plans">{t('admin_page.filter_plans')}</option>
+                        <option value="users">{t('admin_page.filter_users')}</option>
                       </select>
                     </div>
                     <div className="h-72">
@@ -252,10 +254,10 @@ const AdminPage = () => {
                           />
                           <Legend wrapperStyle={{ paddingTop: '20px' }} />
                           {(chartFilter === 'all' || chartFilter === 'plans') && (
-                            <Line type="monotone" name="Üretilen Rota" dataKey="newPlans" stroke="#f59e0b" strokeWidth={3} dot={{r: 4, strokeWidth: 2}} activeDot={{r: 6}} />
+                            <Line type="monotone" name={t('admin_page.trend_plan_label')} dataKey="newPlans" stroke="#f59e0b" strokeWidth={3} dot={{r: 4, strokeWidth: 2}} activeDot={{r: 6}} />
                           )}
                           {(chartFilter === 'all' || chartFilter === 'users') && (
-                            <Line type="monotone" name="Yeni Kayıt" dataKey="newUsers" stroke="#4f46e5" strokeWidth={3} dot={{r: 4, strokeWidth: 2}} activeDot={{r: 6}} />
+                            <Line type="monotone" name={t('admin_page.trend_user_label')} dataKey="newUsers" stroke="#4f46e5" strokeWidth={3} dot={{r: 4, strokeWidth: 2}} activeDot={{r: 6}} />
                           )}
                         </LineChart>
                       </ResponsiveContainer>
@@ -268,7 +270,7 @@ const AdminPage = () => {
                       <div className="p-5 border-b border-slate-100 flex justify-between items-center">
                         <h3 className="font-bold text-slate-800 flex items-center gap-2">
                           <Trophy className="w-5 h-5 text-amber-500" /> 
-                          Popüler Destinasyonlar (Top 5)
+                          {t('admin_page.top_dest_title')}
                         </h3>
                       </div>
                       <div className="p-5">
@@ -281,7 +283,7 @@ const AdminPage = () => {
                               <div className="flex-1">
                                 <div className="flex justify-between items-center mb-1">
                                   <span className="font-semibold text-slate-700 text-sm">{dest.name.split(',')[0]}</span>
-                                  <span className="text-xs font-bold text-slate-500">{dest.count} arama</span>
+                                  <span className="text-xs font-bold text-slate-500">{dest.count} {t('admin_page.searches')}</span>
                                 </div>
                                 <div className="w-full bg-slate-100 rounded-full h-1.5">
                                   <div 
@@ -293,7 +295,7 @@ const AdminPage = () => {
                             </div>
                           ))}
                           {(!stats.topDestinations || stats.topDestinations.length === 0) && (
-                            <p className="text-slate-500 text-sm text-center py-4">Henüz veri yok</p>
+                            <p className="text-slate-500 text-sm text-center py-4">{t('admin_page.no_data')}</p>
                           )}
                         </div>
                       </div>
@@ -304,7 +306,7 @@ const AdminPage = () => {
                       <div className="p-5 border-b border-slate-100 flex justify-between items-center">
                         <h3 className="font-bold text-slate-800 flex items-center gap-2">
                           <Users className="w-5 h-5 text-indigo-600" /> 
-                          Son Kayıt Olanlar
+                          {t('admin_page.recent_users_title')}
                         </h3>
                       </div>
                       <div className="divide-y divide-slate-100">
@@ -315,7 +317,7 @@ const AdminPage = () => {
                               <p className="text-xs text-slate-500">{u.email}</p>
                             </div>
                             <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-1 rounded-md">
-                                {new Date(u.createdAt).toLocaleDateString()}
+                                {new Date(u.createdAt).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'tr-TR')}
                             </span>
                           </div>
                         ))}
@@ -326,7 +328,7 @@ const AdminPage = () => {
                       <div className="p-5 border-b border-slate-100 flex justify-between items-center">
                         <h3 className="font-bold text-slate-800 flex items-center gap-2">
                           <Map className="w-5 h-5 text-amber-500" /> 
-                          Son Üretilen Rotalar
+                          {t('admin_page.recent_plans_title')}
                         </h3>
                       </div>
                       <div className="divide-y divide-slate-100">
@@ -335,10 +337,10 @@ const AdminPage = () => {
                             <div className="flex justify-between items-start">
                               <p className="font-bold text-slate-800 truncate pr-4">{p.title || p.destination}</p>
                               <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-1 rounded-md whitespace-nowrap">
-                                {new Date(p.createdAt).toLocaleDateString()}
+                                {new Date(p.createdAt).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'tr-TR')}
                               </span>
                             </div>
-                            <p className="text-xs text-slate-500">Hazırlatan: {p.userName}</p>
+                            <p className="text-xs text-slate-500">{t('admin_page.plan_owner', { name: p.userName })}</p>
                           </div>
                         ))}
                       </div>
@@ -353,7 +355,7 @@ const AdminPage = () => {
                     <Search className="w-5 h-5 text-slate-400 ml-2" />
                     <input 
                       type="text" 
-                      placeholder="İsim veya e-posta ile ara..." 
+                      placeholder={t('admin_page.search_placeholder')}
                       value={userSearchTerm}
                       onChange={(e) => setUserSearchTerm(e.target.value)}
                       className="w-full bg-transparent border-none outline-none px-3 py-1.5 text-slate-700 placeholder:text-slate-400"
@@ -365,12 +367,12 @@ const AdminPage = () => {
                       <table className="w-full text-left text-sm">
                         <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase text-xs">
                         <tr>
-                          <th className="px-6 py-4">ID</th>
-                          <th className="px-6 py-4">İsim & E-posta</th>
-                          <th className="px-6 py-4">Yetki</th>
-                          <th className="px-6 py-4 text-center">Kalan Kota</th>
-                          <th className="px-6 py-4 text-right">Kayıt Tarihi</th>
-                          <th className="px-6 py-4 text-center">İşlemler</th>
+                          <th className="px-6 py-4">{t('admin_page.col_id')}</th>
+                          <th className="px-6 py-4">{t('admin_page.col_name_email')}</th>
+                          <th className="px-6 py-4">{t('admin_page.col_role')}</th>
+                          <th className="px-6 py-4 text-center">{t('admin_page.col_quota')}</th>
+                          <th className="px-6 py-4 text-right">{t('admin_page.col_date')}</th>
+                          <th className="px-6 py-4 text-center">{t('admin_page.col_actions')}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
@@ -395,7 +397,7 @@ const AdminPage = () => {
                               </span>
                             </td>
                             <td className="px-6 py-4 text-right text-slate-500 whitespace-nowrap">
-                              {new Date(u.createdAt).toLocaleString('tr-TR')}
+                              {new Date(u.createdAt).toLocaleString(i18n.language === 'en' ? 'en-US' : 'tr-TR')}
                             </td>
                             <td className="px-6 py-4 text-center">
                               {u.role !== 'ADMIN' && (
@@ -403,7 +405,7 @@ const AdminPage = () => {
                                   onClick={() => openQuotaModal(u)}
                                   className="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:text-indigo-800 px-4 py-2 rounded-lg text-sm font-bold transition-colors cursor-pointer border border-indigo-200"
                                 >
-                                  Kota Güncelle
+                                  {t('admin_page.btn_update_quota')}
                                 </button>
                               )}
                             </td>
@@ -415,7 +417,7 @@ const AdminPage = () => {
                         ).length === 0 && (
                           <tr>
                             <td colSpan="5" className="px-6 py-8 text-center text-slate-500 font-medium">
-                              Aramanızla eşleşen kullanıcı bulunamadı.
+                              {t('admin_page.no_user_found')}
                             </td>
                           </tr>
                         )}
@@ -432,10 +434,10 @@ const AdminPage = () => {
                     <table className="w-full text-left text-sm">
                       <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase text-xs">
                         <tr>
-                          <th className="px-6 py-4">ID</th>
-                          <th className="px-6 py-4">Rota Başlığı & Hedef</th>
-                          <th className="px-6 py-4">Kullanıcı</th>
-                          <th className="px-6 py-4 text-right">Oluşturulma Tarihi</th>
+                          <th className="px-6 py-4">{t('admin_page.col_id')}</th>
+                          <th className="px-6 py-4">{t('admin_page.col_plan_title')}</th>
+                          <th className="px-6 py-4">{t('admin_page.col_plan_user')}</th>
+                          <th className="px-6 py-4 text-right">{t('admin_page.col_plan_date')}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
@@ -443,7 +445,7 @@ const AdminPage = () => {
                           <tr key={p.id} className="hover:bg-slate-50 transition-colors">
                             <td className="px-6 py-4 text-slate-500 font-medium">#{p.id}</td>
                             <td className="px-6 py-4">
-                              <p className="font-bold text-slate-800">{p.title || 'İsimsiz Rota'}</p>
+                              <p className="font-bold text-slate-800">{p.title || t('admin_page.untitled_plan')}</p>
                               <p className="text-xs font-medium text-amber-600">{p.destination}</p>
                             </td>
                             <td className="px-6 py-4">
@@ -451,7 +453,7 @@ const AdminPage = () => {
                               <p className="text-xs text-slate-500">{p.userEmail}</p>
                             </td>
                             <td className="px-6 py-4 text-right text-slate-500 whitespace-nowrap">
-                              {new Date(p.createdAt).toLocaleString('tr-TR')}
+                              {new Date(p.createdAt).toLocaleString(i18n.language === 'en' ? 'en-US' : 'tr-TR')}
                             </td>
                           </tr>
                         ))}
@@ -468,20 +470,20 @@ const AdminPage = () => {
         {isQuotaModalOpen && selectedUserForQuota && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm">
             <div className="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl flex flex-col">
-              <h2 className="text-2xl font-bold text-slate-800 mb-2">Kota Güncelle</h2>
+              <h2 className="text-2xl font-bold text-slate-800 mb-2">{t('admin_page.modal_update_quota_title')}</h2>
               <p className="text-slate-500 mb-6">
-                <strong className="text-slate-700">{selectedUserForQuota.fullName}</strong> adlı kullanıcının kotasını düzenliyorsunuz.
+                {t('admin_page.modal_quota_desc')} <strong className="text-slate-700">{selectedUserForQuota.fullName}</strong>.
               </p>
               
               <div className="mb-6">
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Yeni Kota Sayısı</label>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">{t('admin_page.modal_quota_label')}</label>
                 <input 
                   type="number" 
                   min="0"
                   value={newQuotaValue}
                   onChange={(e) => setNewQuotaValue(e.target.value)}
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all font-medium text-slate-700"
-                  placeholder="Sayı girin..."
+                  placeholder={t('admin_page.modal_quota_ph')}
                 />
               </div>
 
@@ -490,14 +492,14 @@ const AdminPage = () => {
                   onClick={closeQuotaModal}
                   className="flex-1 px-5 py-3 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
                 >
-                  İptal
+                  {t('admin_page.cancel')}
                 </button>
                 <button
                   onClick={handleUpdateQuota}
                   disabled={updatingQuota}
                   className="flex-1 px-5 py-3 rounded-xl font-bold text-white bg-[#F59E0B] hover:bg-amber-600 shadow-md shadow-amber-600/20 transition-all disabled:opacity-50 flex items-center justify-center"
                 >
-                  {updatingQuota ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Kaydet'}
+                  {updatingQuota ? <Loader2 className="w-5 h-5 animate-spin" /> : t('admin_page.save')}
                 </button>
               </div>
             </div>

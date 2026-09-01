@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, MapPin, Calendar, ArrowRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const HeroSection = () => {
+  const { t } = useTranslation();
   const [prompt, setPrompt] = useState('');
   const [currentText, setCurrentText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -11,11 +13,11 @@ const HeroSection = () => {
   const navigate = useNavigate();
 
   const placeholders = [
-    "Ekim'de İtalya turu, romantik ve bol makarnalı...",
-    "Hafta sonu Kapadokya kaçamağı, sıcak hava balonu...",
-    "Bütçe dostu Balkan turu, tarihi ve yöresel...",
-    "Kışın Uludağ'da kayak tatili...",
-    "Arkadaşlarla yazın Bodrum, deniz kum güneş..."
+    t('home.hero_placeholder_1'),
+    t('home.hero_placeholder_2'),
+    t('home.hero_placeholder_3'),
+    t('home.hero_placeholder_4'),
+    t('home.hero_placeholder_5')
   ];
 
   useEffect(() => {
@@ -54,14 +56,14 @@ const HeroSection = () => {
       // Pass the prompt to the itinerary page via state
       navigate('/itinerary', { state: { prompt } });
     } else {
-      alert('Lütfen planınızı girin');
+      alert(t('home.hero_empty_prompt'));
     }
   };
 
   const suggestions = [
-    { label: 'Vizesiz Rotalar' },
-    { label: 'Hafta Sonu Kaçamağı' },
-    { label: 'Bütçe Dostu Tatil' },
+    { label: t('home.hero_sugg_1') },
+    { label: t('home.hero_sugg_2') },
+    { label: t('home.hero_sugg_3') },
   ];
 
   return (
@@ -81,12 +83,12 @@ const HeroSection = () => {
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto mt-20 pb-24">
         <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight drop-shadow-lg">
-          Hayalindeki Seyahati <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-800 to-blue-400">Planlamak Artık Çok Kolay</span>
+          {t('home.hero_title_1')} <br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-800 to-blue-400">{t('home.hero_title_2')}</span>
         </h1>
 
         <p className="text-base md:text-lg text-slate-200 mb-10 max-w-2xl mx-auto font-light drop-shadow-md">
-          Nereye gitmek istediğini, ne zaman gideceğini veya sadece aklındaki tatil fikrini yaz. Yapay zeka senin için mükemmel rotayı saniyeler içinde hazırlasın.
+          {t('home.hero_desc')}
         </p>
 
         {/* Input Area */}
@@ -106,7 +108,7 @@ const HeroSection = () => {
             onClick={handlePlan}
             className="w-full md:w-auto bg-[#F59E0B] hover:bg-[#d97706] text-black px-8 py-4 md:py-0 md:h-14 rounded-[15px] cursor-pointer font-semibold text-lg flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-[#F59E0B]/50"
           >
-            <span>Planla</span>
+            <span>{t('home.hero_plan_btn')}</span>
           </button>
         </div>
 

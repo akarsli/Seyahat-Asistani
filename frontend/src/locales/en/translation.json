@@ -175,8 +175,17 @@
     "no_account": "Don't have an account?",
     "register_now": "Register Now",
     "has_account": "Already have an account?",
-    "login_now": "Login",
-    "google_error": "Google login failed."
+    "login_now": "Log In",
+    "google_error": "Google login failed.",
+    "forgot_password": "Forgot your password?",
+    "reset_password": "Reset Password",
+    "reset_password_desc": "Enter your email and we'll generate a new temporary password for you.",
+    "btn_reset": "Reset My Password",
+    "loading_reset": "Resetting...",
+    "back_to_login": "Back to Login",
+    "new_password_title": "Password Reset Successful!",
+    "new_password_desc": "Here is your new temporary password. Please copy it and log in.",
+    "btn_copy_login": "Copy & Log In"
   },
   "itinerary_page": {
     "req_dep": "Where to go from?",

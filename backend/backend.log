@@ -275,3 +275,251 @@
 2026-09-01T12:28:57.448+03:00  INFO 61411 --- [HolidayTripAPI] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 7 ms
 Received prompt: Nereden: London, Nereye: Italy, Tarih: September, Bütçe: 500 pounds, Kişi: 1. Ek Detaylar: italy trip in september single from london budget is 500 pounds
 Received prompt: Nereden: London, Nereye: Italy, Tarih: September, Bütçe: 500 pounds, Kişi: 1. Ek Detaylar: italy trip in september single from london budget is 500 pounds
+2026-09-01T13:10:51.019+03:00  INFO 61411 --- [HolidayTripAPI] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 1 class path change (1 addition, 0 deletions, 0 modifications)
+2026-09-01T13:10:51.044+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-18] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-01T13:10:51.047+03:00  INFO 61411 --- [HolidayTripAPI] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-09-01T13:10:51.050+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-18] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-01T13:10:51.052+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-18] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Shutdown initiated...
+2026-09-01T13:10:51.103+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-18] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.0)
+
+2026-09-01T13:10:51.168+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] c.h.api.HolidayTripApplication           : Starting HolidayTripApplication using Java 17.0.14 with PID 61411 (/Users/abdulkadirkarsli/Desktop/Üniversite/Staj/Seyahat-Asistani/backend/target/classes started by abdulkadirkarsli in /Users/abdulkadirkarsli/Desktop/Üniversite/Staj/Seyahat-Asistani/backend)
+2026-09-01T13:10:51.169+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] c.h.api.HolidayTripApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-09-01T13:10:51.228+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-01T13:10:51.232+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 3 ms. Found 3 JPA repository interfaces.
+2026-09-01T13:10:51.265+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-09-01T13:10:51.265+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-01T13:10:51.265+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-01T13:10:51.270+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 100 ms
+2026-09-01T13:10:51.282+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-09-01T13:10:51.290+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-01T13:10:51.290+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Starting...
+2026-09-01T13:10:51.292+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-6 - Added connection conn61: url=jdbc:h2:file:./data/holidaytripdb user=SA
+2026-09-01T13:10:51.292+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Start completed.
+2026-09-01T13:10:51.293+03:00  WARN 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-09-01T13:10:51.293+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:file:./data/holidaytripdb]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: HOLIDAYTRIPDB/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-01T13:10:51.316+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-01T13:10:51.317+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-01T13:10:51.352+03:00  WARN 61411 --- [HolidayTripAPI] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-01T13:10:51.357+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-09-01T13:10:51.393+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8081 (http) with context path '/'
+2026-09-01T13:10:51.395+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] c.h.api.HolidayTripApplication           : Started HolidayTripApplication in 0.235 seconds (process running for 3350.117)
+2026-09-01T13:10:51.406+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-09-01T13:10:53.813+03:00  INFO 61411 --- [HolidayTripAPI] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 1 class path change (1 addition, 0 deletions, 0 modifications)
+2026-09-01T13:10:53.814+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-22] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-01T13:10:53.816+03:00  INFO 61411 --- [HolidayTripAPI] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-09-01T13:10:53.818+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-22] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-01T13:10:53.819+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-22] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Shutdown initiated...
+2026-09-01T13:10:53.904+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-22] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.0)
+
+2026-09-01T13:10:53.939+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] c.h.api.HolidayTripApplication           : Starting HolidayTripApplication using Java 17.0.14 with PID 61411 (/Users/abdulkadirkarsli/Desktop/Üniversite/Staj/Seyahat-Asistani/backend/target/classes started by abdulkadirkarsli in /Users/abdulkadirkarsli/Desktop/Üniversite/Staj/Seyahat-Asistani/backend)
+2026-09-01T13:10:53.939+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] c.h.api.HolidayTripApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-09-01T13:10:53.979+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-01T13:10:53.983+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 2 ms. Found 3 JPA repository interfaces.
+2026-09-01T13:10:54.005+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-09-01T13:10:54.006+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-01T13:10:54.006+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-01T13:10:54.009+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 70 ms
+2026-09-01T13:10:54.020+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-09-01T13:10:54.026+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-01T13:10:54.026+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Starting...
+2026-09-01T13:10:54.028+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-7 - Added connection conn71: url=jdbc:h2:file:./data/holidaytripdb user=SA
+2026-09-01T13:10:54.028+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Start completed.
+2026-09-01T13:10:54.029+03:00  WARN 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-09-01T13:10:54.029+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:file:./data/holidaytripdb]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: HOLIDAYTRIPDB/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-01T13:10:54.047+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-01T13:10:54.047+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-01T13:10:54.078+03:00  WARN 61411 --- [HolidayTripAPI] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-01T13:10:54.083+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-09-01T13:10:54.116+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8081 (http) with context path '/'
+2026-09-01T13:10:54.117+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] c.h.api.HolidayTripApplication           : Started HolidayTripApplication in 0.185 seconds (process running for 3352.839)
+2026-09-01T13:10:54.126+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-09-01T13:11:09.683+03:00  INFO 61411 --- [HolidayTripAPI] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 3 class path changes (0 additions, 0 deletions, 3 modifications)
+2026-09-01T13:11:09.684+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-26] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-01T13:11:09.684+03:00  INFO 61411 --- [HolidayTripAPI] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-09-01T13:11:09.685+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-26] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-01T13:11:09.685+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-26] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Shutdown initiated...
+2026-09-01T13:11:09.764+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-26] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.0)
+
+2026-09-01T13:11:09.791+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] c.h.api.HolidayTripApplication           : Starting HolidayTripApplication using Java 17.0.14 with PID 61411 (/Users/abdulkadirkarsli/Desktop/Üniversite/Staj/Seyahat-Asistani/backend/target/classes started by abdulkadirkarsli in /Users/abdulkadirkarsli/Desktop/Üniversite/Staj/Seyahat-Asistani/backend)
+2026-09-01T13:11:09.791+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] c.h.api.HolidayTripApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-09-01T13:11:09.832+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-01T13:11:09.835+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 2 ms. Found 3 JPA repository interfaces.
+2026-09-01T13:11:09.862+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-09-01T13:11:09.862+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-01T13:11:09.862+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-01T13:11:09.866+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 75 ms
+2026-09-01T13:11:09.876+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-09-01T13:11:09.883+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-01T13:11:09.883+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Starting...
+2026-09-01T13:11:09.885+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-8 - Added connection conn81: url=jdbc:h2:file:./data/holidaytripdb user=SA
+2026-09-01T13:11:09.885+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Start completed.
+2026-09-01T13:11:09.885+03:00  WARN 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-09-01T13:11:09.885+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:file:./data/holidaytripdb]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: HOLIDAYTRIPDB/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-01T13:11:09.903+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-01T13:11:09.903+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-01T13:11:09.959+03:00  WARN 61411 --- [HolidayTripAPI] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-01T13:11:09.963+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-09-01T13:11:09.995+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8081 (http) with context path '/'
+2026-09-01T13:11:09.995+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] c.h.api.HolidayTripApplication           : Started HolidayTripApplication in 0.21 seconds (process running for 3368.717)
+2026-09-01T13:11:10.005+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-09-01T13:11:11.413+03:00  INFO 61411 --- [HolidayTripAPI] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2026-09-01T13:11:11.414+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-30] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-01T13:11:11.415+03:00  INFO 61411 --- [HolidayTripAPI] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-09-01T13:11:11.416+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-30] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-01T13:11:11.416+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-30] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Shutdown initiated...
+2026-09-01T13:11:11.496+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-30] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.0)
+
+2026-09-01T13:11:11.525+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] c.h.api.HolidayTripApplication           : Starting HolidayTripApplication using Java 17.0.14 with PID 61411 (/Users/abdulkadirkarsli/Desktop/Üniversite/Staj/Seyahat-Asistani/backend/target/classes started by abdulkadirkarsli in /Users/abdulkadirkarsli/Desktop/Üniversite/Staj/Seyahat-Asistani/backend)
+2026-09-01T13:11:11.525+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] c.h.api.HolidayTripApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-09-01T13:11:11.565+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-01T13:11:11.568+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 2 ms. Found 3 JPA repository interfaces.
+2026-09-01T13:11:11.593+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-09-01T13:11:11.594+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-01T13:11:11.594+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-01T13:11:11.597+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 72 ms
+2026-09-01T13:11:11.608+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-09-01T13:11:11.614+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-01T13:11:11.614+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Starting...
+2026-09-01T13:11:11.617+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-9 - Added connection conn91: url=jdbc:h2:file:./data/holidaytripdb user=SA
+2026-09-01T13:11:11.617+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Start completed.
+2026-09-01T13:11:11.617+03:00  WARN 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-09-01T13:11:11.617+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:file:./data/holidaytripdb]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: HOLIDAYTRIPDB/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-01T13:11:11.632+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-01T13:11:11.636+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-01T13:11:11.664+03:00  WARN 61411 --- [HolidayTripAPI] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-01T13:11:11.668+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-09-01T13:11:11.699+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8081 (http) with context path '/'
+2026-09-01T13:11:11.700+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] c.h.api.HolidayTripApplication           : Started HolidayTripApplication in 0.182 seconds (process running for 3370.422)
+2026-09-01T13:11:11.709+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-09-01T13:11:22.225+03:00  INFO 61411 --- [HolidayTripAPI] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2026-09-01T13:11:22.226+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-34] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-01T13:11:22.228+03:00  INFO 61411 --- [HolidayTripAPI] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-09-01T13:11:22.229+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-34] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-01T13:11:22.229+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-34] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Shutdown initiated...
+2026-09-01T13:11:22.328+03:00  INFO 61411 --- [HolidayTripAPI] [      Thread-34] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.0)
+
+2026-09-01T13:11:22.381+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] c.h.api.HolidayTripApplication           : Starting HolidayTripApplication using Java 17.0.14 with PID 61411 (/Users/abdulkadirkarsli/Desktop/Üniversite/Staj/Seyahat-Asistani/backend/target/classes started by abdulkadirkarsli in /Users/abdulkadirkarsli/Desktop/Üniversite/Staj/Seyahat-Asistani/backend)
+2026-09-01T13:11:22.381+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] c.h.api.HolidayTripApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-09-01T13:11:22.437+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-01T13:11:22.440+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 2 ms. Found 3 JPA repository interfaces.
+2026-09-01T13:11:22.470+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-09-01T13:11:22.471+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-01T13:11:22.471+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-01T13:11:22.475+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 94 ms
+2026-09-01T13:11:22.486+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-09-01T13:11:22.492+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-01T13:11:22.492+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-10 - Starting...
+2026-09-01T13:11:22.494+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-10 - Added connection conn101: url=jdbc:h2:file:./data/holidaytripdb user=SA
+2026-09-01T13:11:22.494+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-10 - Start completed.
+2026-09-01T13:11:22.494+03:00  WARN 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-09-01T13:11:22.494+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:file:./data/holidaytripdb]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: HOLIDAYTRIPDB/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-01T13:11:22.512+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-01T13:11:22.513+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-01T13:11:22.544+03:00  WARN 61411 --- [HolidayTripAPI] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-01T13:11:22.548+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-09-01T13:11:22.582+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8081 (http) with context path '/'
+2026-09-01T13:11:22.583+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] c.h.api.HolidayTripApplication           : Started HolidayTripApplication in 0.209 seconds (process running for 3381.304)
+2026-09-01T13:11:22.593+03:00  INFO 61411 --- [HolidayTripAPI] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-09-01T13:13:43.407+03:00  INFO 61411 --- [HolidayTripAPI] [nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-01T13:13:43.409+03:00  INFO 61411 --- [HolidayTripAPI] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-01T13:13:43.416+03:00  INFO 61411 --- [HolidayTripAPI] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 7 ms

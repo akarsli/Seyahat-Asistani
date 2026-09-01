@@ -11,8 +11,10 @@ const AuthPage = () => {
   const location = useLocation();
   const { login } = useAuth();
   const [isLogin, setIsLogin] = useState(location.state?.isLogin !== false);
+  const [forgotPasswordMode, setForgotPasswordMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [newPassword, setNewPassword] = useState(null);
 
   // Form States
   const [name, setName] = useState('');
@@ -77,6 +79,40 @@ const AuthPage = () => {
     }
   };
 
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setNewPassword(null);
+
+    try {
+      const response = await fetch('http://localhost:8081/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Bir hata oluştu.');
+      }
+
+      const data = await response.json();
+      setNewPassword(data.newPassword);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetToLogin = () => {
+    setForgotPasswordMode(false);
+    setNewPassword(null);
+    setError(null);
+    setPassword('');
+  };
+
   return (
     <div className="min-h-screen flex bg-white">
       {/* Sol Kısım - Doğa Resmi (Sadece masaüstünde görünür, mobilde gizlenir) */}
@@ -114,14 +150,81 @@ const AuthPage = () => {
         </div>
 
         <div className="w-full max-w-sm mx-auto my-auto">
-          <h2 className="text-3xl font-bold text-slate-800 mb-2">
-            {isLogin ? t('auth_page.welcome') : t('auth_page.create_account')}
-          </h2>
-          <p className="text-slate-500 mb-6">
-            {isLogin 
-              ? t('auth_page.welcome_desc') 
-              : t('auth_page.create_account_desc')}
-          </p>
+          {newPassword ? (
+             <div className="text-center">
+               <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                 <Lock className="w-8 h-8" />
+               </div>
+               <h2 className="text-3xl font-bold text-slate-800 mb-2">{t('auth_page.new_password_title')}</h2>
+               <p className="text-slate-500 mb-6">{t('auth_page.new_password_desc')}</p>
+               <div className="bg-slate-100 p-4 rounded-xl mb-8 border border-slate-200">
+                 <p className="text-2xl font-mono font-bold tracking-widest text-slate-800">{newPassword}</p>
+               </div>
+               <button
+                 onClick={() => {
+                   navigator.clipboard.writeText(newPassword);
+                   resetToLogin();
+                 }}
+                 className="w-full flex justify-center items-center gap-2 bg-[#1E3A8A] text-white py-3 rounded-xl font-bold transition-colors hover:bg-blue-900 shadow-md shadow-blue-900/20"
+               >
+                 {t('auth_page.btn_copy_login')}
+               </button>
+             </div>
+          ) : forgotPasswordMode ? (
+             <>
+               <h2 className="text-3xl font-bold text-slate-800 mb-2">{t('auth_page.reset_password')}</h2>
+               <p className="text-slate-500 mb-6">{t('auth_page.reset_password_desc')}</p>
+
+               {error && (
+                 <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl flex items-start gap-2">
+                   <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                   <span>{error}</span>
+                 </div>
+               )}
+
+               <form onSubmit={handleResetPassword} className="space-y-4">
+                 <div className="space-y-1">
+                   <label className="text-sm font-semibold text-slate-700">{t('auth_page.email')}</label>
+                   <div className="relative">
+                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                       <Mail className="h-5 w-5 text-slate-400" />
+                     </div>
+                     <input
+                       type="email"
+                       value={email}
+                       onChange={(e) => setEmail(e.target.value)}
+                       required
+                       className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
+                       placeholder={t('auth_page.email_ph')}
+                     />
+                   </div>
+                 </div>
+
+                 <button
+                   type="submit"
+                   disabled={loading}
+                   className={`w-full flex justify-center items-center gap-2 bg-[#F59E0B] text-white py-3 rounded-xl font-bold transition-colors shadow-md shadow-amber-600/20 mt-4 ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-amber-600 cursor-pointer'}`}
+                 >
+                   {loading ? t('auth_page.loading_reset') : t('auth_page.btn_reset')}
+                 </button>
+               </form>
+
+               <div className="mt-8 text-center pb-8 lg:pb-0">
+                 <button type="button" onClick={resetToLogin} className="text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors">
+                   {t('auth_page.back_to_login')}
+                 </button>
+               </div>
+             </>
+          ) : (
+            <>
+              <h2 className="text-3xl font-bold text-slate-800 mb-2">
+                {isLogin ? t('auth_page.welcome') : t('auth_page.create_account')}
+              </h2>
+              <p className="text-slate-500 mb-6">
+                {isLogin 
+                  ? t('auth_page.welcome_desc') 
+                  : t('auth_page.create_account_desc')}
+              </p>
 
           {error && (
             <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl flex items-start gap-2">
@@ -175,7 +278,7 @@ const AuthPage = () => {
               <div className="flex justify-between items-center">
                 <label className="text-sm font-semibold text-slate-700">{t('auth_page.password')}</label>
                 {isLogin && (
-                  <button type="button" className="text-sm font-medium text-[#1E3A8A] hover:underline">
+                  <button type="button" onClick={() => { setForgotPasswordMode(true); setError(null); }} className="text-sm font-medium text-[#1E3A8A] hover:underline cursor-pointer">
                     {t('auth_page.forgot_pwd')}
                   </button>
                 )}
@@ -264,6 +367,8 @@ const AuthPage = () => {
               </p>
             )}
           </div>
+          </>
+          )}
         </div>
       </div>
     </div>

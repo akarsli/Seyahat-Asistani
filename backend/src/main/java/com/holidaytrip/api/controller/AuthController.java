@@ -6,6 +6,8 @@ import com.holidaytrip.api.dto.DeleteAccountRequest;
 import com.holidaytrip.api.dto.UpdateProfileRequest;
 import com.holidaytrip.api.dto.GoogleLoginRequest;
 import com.holidaytrip.api.dto.RegisterRequestDto;
+import com.holidaytrip.api.dto.ResetPasswordRequest;
+import com.holidaytrip.api.dto.ResetPasswordResponse;
 import com.holidaytrip.api.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -67,6 +69,16 @@ public class AuthController {
     public ResponseEntity<?> updateProfile(@RequestBody UpdateProfileRequest request) {
         try {
             AuthResponseDto response = authService.updateProfile(request);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+        try {
+            ResetPasswordResponse response = authService.resetPassword(request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

@@ -12,6 +12,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import com.holidaytrip.api.dto.ResetPasswordRequest;
+import com.holidaytrip.api.dto.ResetPasswordResponse;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -189,8 +191,29 @@ public class AuthService {
 
         user = userRepository.save(user);
 
-        // Generate fake simple token for MVP to return in response
         String fakeToken = UUID.randomUUID().toString();
         return new AuthResponseDto(fakeToken, user.getFullName(), user.getEmail(), user.getRemainingQuota(), user.getRole());
+    }
+
+    public ResetPasswordResponse resetPassword(ResetPasswordRequest request) {
+        if (request.getEmail() == null || request.getEmail().isEmpty()) {
+            throw new RuntimeException("E-posta adresi gerekli.");
+        }
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı."));
+
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            throw new RuntimeException("Google ile giriş yapmışsınız, şifreniz bulunmamaktadır.");
+        }
+
+        // Generate a random 8-character password
+        String newPassword = UUID.randomUUID().toString().substring(0, 8);
+        String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+        
+        user.setPassword(hashedPassword);
+        userRepository.save(user);
+
+        return new ResetPasswordResponse("Şifreniz başarıyla sıfırlandı.", newPassword);
     }
 }

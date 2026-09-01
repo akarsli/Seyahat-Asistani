@@ -176,7 +176,16 @@
     "register_now": "Hemen Kayıt Ol",
     "has_account": "Zaten hesabınız var mı?",
     "login_now": "Giriş Yap",
-    "google_error": "Google ile giriş başarısız oldu."
+    "google_error": "Google ile giriş başarısız oldu.",
+    "forgot_password": "Şifrenizi mi unuttunuz?",
+    "reset_password": "Şifre Sıfırlama",
+    "reset_password_desc": "E-posta adresinizi girin, size yeni bir geçici şifre oluşturalım.",
+    "btn_reset": "Şifremi Sıfırla",
+    "loading_reset": "Sıfırlanıyor...",
+    "back_to_login": "Giriş Ekranına Dön",
+    "new_password_title": "Şifreniz Sıfırlandı!",
+    "new_password_desc": "Yeni geçici şifreniz aşağıdadır. Lütfen kopyalayıp giriş yapınız.",
+    "btn_copy_login": "Kopyala ve Giriş Yap"
   },
   "itinerary_page": {
     "req_dep": "Nereden Gidilecek?",

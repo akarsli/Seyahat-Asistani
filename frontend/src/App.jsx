@@ -8,6 +8,8 @@ import AuthPage from './pages/AuthPage'
 import HistoryPage from './pages/HistoryPage'
 import ViewItineraryPage from './pages/ViewItineraryPage'
 import AdminPage from './pages/AdminPage'
+import TipPage from './pages/TipPage'
+import SettingsPage from './pages/SettingsPage'
 import { CurrencyProvider } from './context/CurrencyContext'
 import { AuthProvider } from './context/AuthContext'
 
@@ -25,8 +27,10 @@ function App() {
               <Route path="/itinerary/:id" element={<ViewItineraryPage />} />
               <Route path="/destinations" element={<DestinationsPage />} />
               <Route path="/history" element={<HistoryPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/admin" element={<AdminPage />} />
+              <Route path="/tips/:slug" element={<TipPage />} />
             </Routes>
           </Router>
         </CurrencyProvider>

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Plane, Compass, Map, User, Menu, X, LogOut, ChevronDown, Clock } from 'lucide-react';
+import { Plane, Compass, Map, User, Menu, X, LogOut, ChevronDown, Clock, Settings as SettingsIcon } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
 
@@ -138,6 +138,14 @@ const Navbar = () => {
                     </div>
 
                     <div className="p-2 border-t border-slate-100">
+                      <Link
+                        to="/settings"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors font-medium text-left cursor-pointer mb-1"
+                      >
+                        <SettingsIcon className="w-5 h-5 text-slate-500" />
+                        <span>Ayarlar</span>
+                      </Link>
                       <button
                         onClick={handleLogout}
                         className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-red-600 hover:bg-red-50 transition-colors font-medium text-left cursor-pointer"
@@ -264,13 +272,22 @@ const Navbar = () => {
                       <select
                         value={currency}
                         onChange={(e) => setCurrency(e.target.value)}
-                        className="w-full bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#F59E0B] focus:border-[#F59E0B] block p-2.5 cursor-pointer outline-none font-medium"
+                        className="w-full bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#F59E0B] focus:border-[#F59E0B] block p-2.5 cursor-pointer outline-none font-medium mb-3"
                       >
                         <option value="USD">USD ($)</option>
                         <option value="EUR">EUR (€)</option>
                         <option value="GBP">GBP (£)</option>
                         <option value="TRY">TRY (₺)</option>
                       </select>
+                      
+                      <Link
+                        to="/settings"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="w-full flex justify-center items-center gap-2 bg-slate-200/50 text-slate-700 hover:bg-slate-200 px-5 py-3 rounded-xl font-bold transition-colors cursor-pointer"
+                      >
+                        <SettingsIcon className="w-5 h-5" />
+                        <span>Ayarlar</span>
+                      </Link>
                     </div>
                   </div>
                   

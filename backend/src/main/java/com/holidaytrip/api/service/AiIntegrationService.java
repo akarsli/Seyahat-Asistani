@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.holidaytrip.api.dto.ItineraryResponse;
 import com.holidaytrip.api.dto.ParameterExtractionResponse;
-import com.holidaytrip.api.dto.ParameterExtractionRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -39,41 +38,41 @@ public class AiIntegrationService {
         this.restTemplate = restTemplate;
         this.aiUsageService = aiUsageService;
         this.objectMapper = new ObjectMapper();
-        this.objectMapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        this.objectMapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+                false);
     }
 
-    @Retryable(
-        value = { RuntimeException.class }, 
-        maxAttempts = 3, 
-        backoff = @Backoff(delay = 2000, multiplier = 2)
-    )
+    @Retryable(value = { RuntimeException.class }, maxAttempts = 3, backoff = @Backoff(delay = 2000, multiplier = 2))
     public ParameterExtractionResponse extractParameters(String userPrompt, ParameterExtractionResponse currentParams) {
         if (apiKey == null || apiKey.contains("BURAYA_YAZIN")) {
             throw new RuntimeException("Lütfen application.properties dosyasına Gemini API anahtarınızı girin.");
         }
 
-        String systemInstruction = "Sen bir seyahat asistanısın. Görevin kullanıcının metninden aşağıdaki 5 parametreyi çıkarmaktır:\n" +
+        String systemInstruction = "Sen bir seyahat asistanısın. Görevin kullanıcının metninden aşağıdaki 5 parametreyi çıkarmaktır:\n"
+                +
                 "1. numberOfPeople (Integer: Kaç kişi gidilecek, sadece rakam veya null)\n" +
                 "2. departureLocation (String: Nereden yola çıkılacak, şehir ismi veya null)\n" +
                 "3. destination (String: Nereye gidilecek, ülke veya şehir ismi veya null)\n" +
-                "4. travelDate (String: Ne zaman ve kaç gün gidilecek, örn: 'Bu cuma, 5 gün', 'haftaya', '3 günlük' veya null)\n" +
+                "4. travelDate (String: Ne zaman ve kaç gün gidilecek, örn: 'Bu cuma, 5 gün', 'haftaya', '3 günlük' veya null)\n"
+                +
                 "5. budget (String: Bütçe ne kadar, örn: '1000$' veya null)\n\n" +
-                "Eğer önceki parametreler sana sağlanmışsa (currentParams), kullanıcının yeni metniyle bunları HARMANLA. " +
+                "Eğer önceki parametreler sana sağlanmışsa (currentParams), kullanıcının yeni metniyle bunları HARMANLA. "
+                +
                 "Sadece ve sadece JSON döndür, hiçbir açıklama veya markdown (```json) yapma.\n" +
                 "Örnek format: { \"numberOfPeople\": 2, \"departureLocation\": \"İstanbul\", \"destination\": \"İtalya\", \"travelDate\": \"Bu cuma, 5 gün\", \"budget\": \"2000 USD\" }";
 
         if (currentParams != null) {
-            systemInstruction += "\n\nŞu anki bilinen parametreler: " + 
-                "numberOfPeople=" + currentParams.getNumberOfPeople() + ", " +
-                "departureLocation=" + currentParams.getDepartureLocation() + ", " +
-                "destination=" + currentParams.getDestination() + ", " +
-                "travelDate=" + currentParams.getTravelDate() + ", " +
-                "budget=" + currentParams.getBudget();
+            systemInstruction += "\n\nŞu anki bilinen parametreler: " +
+                    "numberOfPeople=" + currentParams.getNumberOfPeople() + ", " +
+                    "departureLocation=" + currentParams.getDepartureLocation() + ", " +
+                    "destination=" + currentParams.getDestination() + ", " +
+                    "travelDate=" + currentParams.getTravelDate() + ", " +
+                    "budget=" + currentParams.getBudget();
         }
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", apiModel);
-        
+
         Map<String, String> responseFormat = new HashMap<>();
         responseFormat.put("type", "json_object");
         requestBody.put("response_format", responseFormat);
@@ -105,7 +104,7 @@ public class AiIntegrationService {
 
     private ParameterExtractionResponse parseGeminiExtractionResponse(String responseBody) throws Exception {
         JsonNode root = objectMapper.readTree(responseBody);
-        
+
         // Track Token Usage
         JsonNode usage = root.path("usage");
         if (!usage.isMissingNode()) {
@@ -117,39 +116,51 @@ public class AiIntegrationService {
         JsonNode choices = root.path("choices");
         if (choices.isArray() && choices.size() > 0) {
             String aiText = choices.get(0).path("message").path("content").asText().trim();
-            if (aiText.startsWith("```json")) aiText = aiText.substring(7);
-            if (aiText.startsWith("```")) aiText = aiText.substring(3);
-            if (aiText.endsWith("```")) aiText = aiText.substring(0, aiText.length() - 3);
-            
+            if (aiText.startsWith("```json"))
+                aiText = aiText.substring(7);
+            if (aiText.startsWith("```"))
+                aiText = aiText.substring(3);
+            if (aiText.endsWith("```"))
+                aiText = aiText.substring(0, aiText.length() - 3);
+
             return objectMapper.readValue(aiText.trim(), ParameterExtractionResponse.class);
         }
         throw new RuntimeException("API'den beklenen formatta veri gelmedi.");
     }
 
-    @Retryable(
-        value = { RuntimeException.class }, 
-        maxAttempts = 3, 
-        backoff = @Backoff(delay = 2000, multiplier = 2)
-    )
+    @Retryable(value = { RuntimeException.class }, maxAttempts = 3, backoff = @Backoff(delay = 2000, multiplier = 2))
     public ItineraryResponse generateItinerary(String userPrompt) {
         if (apiKey == null || apiKey.contains("BURAYA_YAZIN")) {
             throw new RuntimeException("Lütfen application.properties dosyasına Gemini API anahtarınızı girin.");
         }
 
-        String systemInstruction = "Sen uzman bir seyahat asistanısın. Aşağıdaki kullanıcı isteğine uygun bir seyahat planı hazırla. " +
-                "Kullanıcıya açıklama yapma. Sadece ve sadece aşağıdaki tam JSON formatında bir veri döndür, markdown formatı (```json vs) KULLANMA. JSON diziliminin hatasız olmasına KESİNLİKLE dikkat et.\n\n" +
+        String systemInstruction = "Sen uzman bir seyahat asistanısın. Aşağıdaki kullanıcı isteğine uygun bir seyahat planı hazırla. "
+                +
+                "Kullanıcıya açıklama yapma. Sadece ve sadece aşağıdaki tam JSON formatında bir veri döndür, markdown formatı (```json vs) KULLANMA. JSON diziliminin hatasız olmasına KESİNLİKLE dikkat et.\n\n"
+                +
                 "LÜTFEN DİKKAT:\n" +
-                "1. Kullanıcının sana verdiği parametrelerde (Nereye: ..., Nereden: ...) yazan Rota/Hedef ülke-şehre KESİNLİKLE uy. Başka bir ülke için plan oluşturma.\n" +
-                "2. ÇOK ÖNEMLİ: Kullanıcı kaç gün kalacağını belirtmişse (Örn: 7 günlük, 1 hafta, 5 gün), 'dailyPlans' dizisine TAM OLARAK VE KESİNLİKLE O KADAR GÜN EKLE (1. Gün, 2. Gün ... 7. Gün gibi). KISA KESMEK VEYA GÜNLERİ ATLAMAK YASAKTIR. Örneğin 5 gün denmişse dizide tam 5 tane gün objesi olmak ZORUNDADIR. Örnek JSON'da sadece formatı anlaman için 2 gün verilmiştir, sen istenen gün sayısı kadar obje üreteceksin!\n" +
-                "3. 'estimatedBudget' kısmında seyahat edilecek ülkeye, gün sayısına ve kişi sayısına göre GERÇEKÇİ bir tahmini uçuş + konaklama + harcama bütçesi hesapla. Uçuk veya aşırı düşük rakamlar yazma.\n" +
-                "4. 'weather' alanı için kullanıcının belirttiği tarihe (Ne zaman gidilecek?) ve o bölgeye ait ORTALAMA hava durumunu (Örn: '24°C, Güneşli') yaz.\n" +
-                "5. 'transportOptions' dizisine kullanıcının çıkış noktasından hedef ülkeye/şehre gitmesi için MANTIKLI, GERÇEKÇİ ve UCUZ BİLET ÖNERİLERİ (Uçak, Tren veya Otobüs) ekle. Örneğin İstanbul'dan İtalya'ya gidiliyorsa bir Uçak bileti koy.\n" +
-                "6. Havalimanından şehir merkezine nasıl gidileceğini (Tren/Otobüs/Metro/HAVAŞ vb.) gösteren bir bilet/transfer önerisini de 'transportOptions' dizisine ekle. AYRICA EĞER SEYAHAT BİRDEN FAZLA ŞEHRİ İÇERİYORSA (Örn: Roma'dan Floransa'ya geçilecekse) bu şehirler arası geçiş için gereken Tren veya Otobüs biletlerini de KESİNLİKLE 'transportOptions' içerisine ekle ve 'targetDayNumber' olarak geçişin yapılacağı günü yaz.\n" +
-                "7. Tatilin son günü için dönüş uçuşunu (veya eve dönüş biletini) MUTLAKA 'transportOptions' dizisine ekle. 'type' alanı sadece 'Plane', 'Train', 'Bus' veya 'Subway' olabilir. 'targetDayNumber' alanına bu biletin hangi gün kullanılacağını yaz (Örn: Dönüş uçuşu için seyahatin son gününün numarası). EĞER bilet tatilin sonunda eve dönüş biletini temsil ediyorsa 'isReturnTicket': true ekle, diğer tüm biletler için false yap. SEYAHATTE KULLANILACAK TÜM BİLETLERİ (Gidiş, Şehirler Arası, Dönüş) EKSİKSİZ LİSTELE.\n" +
-                "8. ALTERNATİF ULAŞIM: Özellikle Avrupa içi veya birbirine yakın şehirlerarası seyahatlerde uçak biletine ek olarak DAHA UCUZ veya DAHA PRATİK bir Tren veya Otobüs bileti de ekle. ANCAK UZUN YOLCULUKLARDA uçak veya tren gibi mantıklı alternatifler varsa OTOBÜS BİLETİ GÖSTERME.\n" +
-                "9. AKTARMALI UÇUŞLAR (Layover): Eğer önerdiğin uçuş aktarmalı ise (örneğin İstanbul'dan New York'a Paris aktarmalı), mutlaka 'layoverCity' (örneğin: 'Paris (CDG)') ve 'layoverDuration' (örneğin: '2h 15m') alanlarını doldur. Eğer uçuş direkt veya tren/otobüs ise bu alanları null bırak.\n" +
-                "10. CANLI UÇUŞ ENTEGRASYONU İÇİN IATA KODU: Eğer önerdiğin bilet bir Uçak ('Plane') biletiyse, KESİNLİKLE kalkış ve varış noktalarının 3 harfli uluslararası IATA havalimanı kodlarını 'departureIata' ve 'arrivalIata' alanlarına YAZ (Örn: 'IST', 'FCO', 'JFK'). Eğer bilet Tren veya Otobüs ise bu alanları null bırak.\n" +
-                "11. UÇUŞ NUMARASI: Eğer önerdiğin bilet bir Uçak ('Plane') biletiyse, tahmini veya gerçek bir uçuş numarasını (Örn: 'TK1993', 'LH452') 'flightNumber' alanına yaz, uçak değilse null bırak.\n\n" +
+                "1. Kullanıcının sana verdiği parametrelerde (Nereye: ..., Nereden: ...) yazan Rota/Hedef ülke-şehre KESİNLİKLE uy. Başka bir ülke için plan oluşturma.\n"
+                +
+                "2. ÇOK ÖNEMLİ: Kullanıcı kaç gün kalacağını belirtmişse (Örn: 7 günlük, 1 hafta, 5 gün), 'dailyPlans' dizisine TAM OLARAK VE KESİNLİKLE O KADAR GÜN EKLE (1. Gün, 2. Gün ... 7. Gün gibi). KISA KESMEK VEYA GÜNLERİ ATLAMAK YASAKTIR. Örneğin 5 gün denmişse dizide tam 5 tane gün objesi olmak ZORUNDADIR. Örnek JSON'da sadece formatı anlaman için 2 gün verilmiştir, sen istenen gün sayısı kadar obje üreteceksin!\n"
+                +
+                "3. 'estimatedBudget' kısmında seyahat edilecek ülkeye, gün sayısına ve kişi sayısına göre GERÇEKÇİ bir tahmini uçuş + konaklama + harcama bütçesi hesapla. Uçuk veya aşırı düşük rakamlar yazma.\n"
+                +
+                "4. 'weather' alanı için kullanıcının belirttiği tarihe (Ne zaman gidilecek?) ve o bölgeye ait ORTALAMA hava durumunu (Örn: '24°C, Güneşli') yaz.\n"
+                +
+                "5. 'transportOptions' dizisine kullanıcının çıkış noktasından hedef ülkeye/şehre gitmesi için MANTIKLI, GERÇEKÇİ ve UCUZ BİLET ÖNERİLERİ (Uçak, Tren veya Otobüs) ekle. Örneğin İstanbul'dan İtalya'ya gidiliyorsa bir Uçak bileti koy.\n"
+                +
+                "6. Havalimanından şehir merkezine nasıl gidileceğini (Tren/Otobüs/Metro/HAVAŞ vb.) gösteren bir bilet/transfer önerisini de 'transportOptions' dizisine ekle. AYRICA EĞER SEYAHAT BİRDEN FAZLA ŞEHRİ İÇERİYORSA (Örn: Roma'dan Floransa'ya geçilecekse) bu şehirler arası geçiş için gereken Tren veya Otobüs biletlerini de KESİNLİKLE 'transportOptions' içerisine ekle ve 'targetDayNumber' olarak geçişin yapılacağı günü yaz.\n"
+                +
+                "7. Tatilin son günü için dönüş uçuşunu (veya eve dönüş biletini) MUTLAKA 'transportOptions' dizisine ekle. 'type' alanı sadece 'Plane', 'Train', 'Bus' veya 'Subway' olabilir. 'targetDayNumber' alanına bu biletin hangi gün kullanılacağını yaz (Örn: Dönüş uçuşu için seyahatin son gününün numarası). EĞER bilet tatilin sonunda eve dönüş biletini temsil ediyorsa 'isReturnTicket': true ekle, diğer tüm biletler için false yap. SEYAHATTE KULLANILACAK TÜM BİLETLERİ (Gidiş, Şehirler Arası, Dönüş) EKSİKSİZ LİSTELE.\n"
+                +
+                "8. ALTERNATİF ULAŞIM: Özellikle Avrupa içi veya birbirine yakın şehirlerarası seyahatlerde uçak biletine ek olarak DAHA UCUZ veya DAHA PRATİK bir Tren veya Otobüs bileti de ekle. ANCAK UZUN YOLCULUKLARDA uçak veya tren gibi mantıklı alternatifler varsa OTOBÜS BİLETİ GÖSTERME.\n"
+                +
+                "9. AKTARMALI UÇUŞLAR (Layover): Eğer önerdiğin uçuş aktarmalı ise (örneğin İstanbul'dan New York'a Paris aktarmalı), mutlaka 'layoverCity' (örneğin: 'Paris (CDG)') ve 'layoverDuration' (örneğin: '2h 15m') alanlarını doldur. Eğer uçuş direkt veya tren/otobüs ise bu alanları null bırak.\n"
+                +
+                "10. CANLI UÇUŞ ENTEGRASYONU İÇİN IATA KODU: Eğer önerdiğin bilet bir Uçak ('Plane') biletiyse, KESİNLİKLE kalkış ve varış noktalarının 3 harfli uluslararası IATA havalimanı kodlarını 'departureIata' ve 'arrivalIata' alanlarına YAZ (Örn: 'IST', 'FCO', 'JFK'). Eğer bilet Tren veya Otobüs ise bu alanları null bırak.\n"
+                +
+                "11. UÇUŞ NUMARASI: Eğer önerdiğin bilet bir Uçak ('Plane') biletiyse, tahmini veya gerçek bir uçuş numarasını (Örn: 'TK1993', 'LH452') 'flightNumber' alanına yaz, uçak değilse null bırak.\n\n"
+                +
                 "Örnek JSON yapısı (transportOptions ve dailyPlans BİRER DİZİ(Array) OLMALI):\n" +
                 "{\n" +
                 "  \"destination\": \"Şehir, Ülke\",\n" +
@@ -254,7 +265,7 @@ public class AiIntegrationService {
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", apiModel);
-        
+
         // Gemini/OpenAI JSON mode
         Map<String, String> responseFormat = new HashMap<>();
         responseFormat.put("type", "json_object");
@@ -284,13 +295,14 @@ public class AiIntegrationService {
             throw new RuntimeException("API Hatası (" + e.getStatusCode() + "): " + e.getResponseBodyAsString());
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Yapay Zeka servisi ile iletişim kurulamadı veya API limitine ulaşıldı: " + e.getMessage());
+            throw new RuntimeException(
+                    "Yapay Zeka servisi ile iletişim kurulamadı veya API limitine ulaşıldı: " + e.getMessage());
         }
     }
 
     private ItineraryResponse parseGeminiResponse(String responseBody) throws Exception {
         JsonNode root = objectMapper.readTree(responseBody);
-        
+
         // Track Token Usage
         JsonNode usage = root.path("usage");
         if (!usage.isMissingNode()) {
@@ -303,7 +315,7 @@ public class AiIntegrationService {
         if (choices.isArray() && choices.size() > 0) {
             JsonNode message = choices.get(0).path("message");
             String aiText = message.path("content").asText();
-            
+
             // Markdown formatında geldiyse temizle
             aiText = aiText.trim();
             if (aiText.startsWith("```json")) {
@@ -315,7 +327,7 @@ public class AiIntegrationService {
             if (aiText.endsWith("```")) {
                 aiText = aiText.substring(0, aiText.length() - 3);
             }
-            
+
             return objectMapper.readValue(aiText.trim(), ItineraryResponse.class);
         }
         throw new RuntimeException("API'den beklenen formatta veri gelmedi.");

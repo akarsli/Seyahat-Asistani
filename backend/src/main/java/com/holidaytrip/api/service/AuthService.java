@@ -2,9 +2,12 @@ package com.holidaytrip.api.service;
 
 import com.holidaytrip.api.dto.AuthRequestDto;
 import com.holidaytrip.api.dto.AuthResponseDto;
+import com.holidaytrip.api.dto.DeleteAccountRequest;
+import com.holidaytrip.api.dto.UpdateProfileRequest;
 import com.holidaytrip.api.dto.RegisterRequestDto;
 import com.holidaytrip.api.model.User;
 import com.holidaytrip.api.repository.UserRepository;
+import com.holidaytrip.api.repository.ItineraryRepository;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -25,10 +28,12 @@ public class AuthService {
     private static final String GOOGLE_CLIENT_ID = "194841576713-6d6kc3irf2h2jnr8sl3ip539o99m6v6n.apps.googleusercontent.com";
 
     private final UserRepository userRepository;
+    private final ItineraryRepository itineraryRepository;
 
     @Autowired
-    public AuthService(UserRepository userRepository) {
+    public AuthService(UserRepository userRepository, ItineraryRepository itineraryRepository) {
         this.userRepository = userRepository;
+        this.itineraryRepository = itineraryRepository;
     }
 
     public User checkAndResetQuota(User user) {
@@ -141,5 +146,51 @@ public class AuthService {
         } catch (Exception e) {
             throw new RuntimeException("Google doğrulaması başarısız: " + e.getMessage());
         }
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public void deleteAccount(DeleteAccountRequest request) {
+        if (request.getEmail() == null || request.getEmail().isEmpty()) {
+            throw new RuntimeException("E-posta adresi gerekli.");
+        }
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı."));
+
+        // Eğer kullanıcının şifresi yoksa (Google Login ile kaydolmuşsa), şifre doğrulamayı atla.
+        // Eğer şifresi varsa, request'teki şifreyle eşleşmeli.
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            if (request.getPassword() == null || request.getPassword().isEmpty()) {
+                throw new RuntimeException("Lütfen şifrenizi girin.");
+            }
+            if (!BCrypt.checkpw(request.getPassword(), user.getPassword())) {
+                throw new RuntimeException("Şifreniz hatalı.");
+            }
+        }
+
+        // Önce kullanıcının ilişkili olduğu seyahat planlarını sil
+        itineraryRepository.deleteByUser(user);
+
+        // Sonra kullanıcıyı sil
+        userRepository.delete(user);
+    }
+
+    public AuthResponseDto updateProfile(UpdateProfileRequest request) {
+        if (request.getEmail() == null || request.getEmail().isEmpty()) {
+            throw new RuntimeException("E-posta adresi gerekli.");
+        }
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı."));
+
+        if (request.getFullName() != null && !request.getFullName().trim().isEmpty()) {
+            user.setFullName(request.getFullName().trim());
+        }
+
+        user = userRepository.save(user);
+
+        // Generate fake simple token for MVP to return in response
+        String fakeToken = UUID.randomUUID().toString();
+        return new AuthResponseDto(fakeToken, user.getFullName(), user.getEmail(), user.getRemainingQuota(), user.getRole());
     }
 }

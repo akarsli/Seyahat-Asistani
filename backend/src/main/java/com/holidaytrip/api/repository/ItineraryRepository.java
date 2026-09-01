@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface ItineraryRepository extends JpaRepository<Itinerary, Long> {
     List<Itinerary> findByUserEmailOrderByCreatedAtDesc(String email);
+    void deleteByUser(com.holidaytrip.api.model.User user);
 }

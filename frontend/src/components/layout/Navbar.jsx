@@ -121,22 +121,6 @@ const Navbar = () => {
                     </div>
 
 
-                    <div className="p-2">
-                      <div className="px-3 py-2">
-                        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 block">Para Birimi</label>
-                        <select
-                          value={currency}
-                          onChange={(e) => setCurrency(e.target.value)}
-                          className="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#F59E0B] focus:border-[#F59E0B] block p-2.5 cursor-pointer outline-none font-medium"
-                        >
-                          <option value="USD">USD ($)</option>
-                          <option value="EUR">EUR (€)</option>
-                          <option value="GBP">GBP (£)</option>
-                          <option value="TRY">TRY (₺)</option>
-                        </select>
-                      </div>
-                    </div>
-
                     <div className="p-2 border-t border-slate-100">
                       <Link
                         to="/settings"
@@ -268,18 +252,6 @@ const Navbar = () => {
                     </div>
 
                     <div className="mt-2 pt-3 border-t border-slate-200">
-                      <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 block">Para Birimi</label>
-                      <select
-                        value={currency}
-                        onChange={(e) => setCurrency(e.target.value)}
-                        className="w-full bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#F59E0B] focus:border-[#F59E0B] block p-2.5 cursor-pointer outline-none font-medium mb-3"
-                      >
-                        <option value="USD">USD ($)</option>
-                        <option value="EUR">EUR (€)</option>
-                        <option value="GBP">GBP (£)</option>
-                        <option value="TRY">TRY (₺)</option>
-                      </select>
-                      
                       <Link
                         to="/settings"
                         onClick={() => setIsMobileMenuOpen(false)}

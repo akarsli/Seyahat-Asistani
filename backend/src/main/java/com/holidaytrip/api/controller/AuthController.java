@@ -2,6 +2,8 @@ package com.holidaytrip.api.controller;
 
 import com.holidaytrip.api.dto.AuthRequestDto;
 import com.holidaytrip.api.dto.AuthResponseDto;
+import com.holidaytrip.api.dto.DeleteAccountRequest;
+import com.holidaytrip.api.dto.UpdateProfileRequest;
 import com.holidaytrip.api.dto.GoogleLoginRequest;
 import com.holidaytrip.api.dto.RegisterRequestDto;
 import com.holidaytrip.api.service.AuthService;
@@ -45,6 +47,26 @@ public class AuthController {
     public ResponseEntity<?> googleLogin(@RequestBody GoogleLoginRequest request) {
         try {
             AuthResponseDto response = authService.googleLogin(request.getToken());
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteAccount(@RequestBody DeleteAccountRequest request) {
+        try {
+            authService.deleteAccount(request);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<?> updateProfile(@RequestBody UpdateProfileRequest request) {
+        try {
+            AuthResponseDto response = authService.updateProfile(request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

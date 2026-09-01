@@ -6,12 +6,16 @@ import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 
 const AuthPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
   const [isLogin, setIsLogin] = useState(location.state?.isLogin !== false);
   const [forgotPasswordMode, setForgotPasswordMode] = useState(false);
+  const [forceChangePasswordMode, setForceChangePasswordMode] = useState(false);
+  const [tempUserData, setTempUserData] = useState(null);
+  const [newPasswordValue, setNewPasswordValue] = useState('');
+  const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [newPassword, setNewPassword] = useState(null);
@@ -68,6 +72,13 @@ const AuthPage = () => {
       }
 
       const data = await response.json();
+
+      if (data.requiresPasswordChange) {
+        setForceChangePasswordMode(true);
+        setTempUserData(data);
+        return; // wait for password change
+      }
+
       login(data); // context update
       
       const returnTo = location.state?.returnTo || '/';
@@ -106,11 +117,48 @@ const AuthPage = () => {
     }
   };
 
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    if (newPasswordValue !== newPasswordConfirm) {
+      setError(t('auth_page.pwd_mismatch'));
+      return;
+    }
+    
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('http://localhost:8081/api/auth/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email, // from state
+          currentPassword: password, // from state
+          newPassword: newPasswordValue
+        }),
+      });
+      if (!response.ok) {
+        const errTxt = await response.text();
+        throw new Error(errTxt || 'Bir hata oluştu.');
+      }
+      const data = await response.json();
+      login(data);
+      const returnTo = location.state?.returnTo || '/';
+      navigate(returnTo, { state: { prompt: location.state?.prompt } });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const resetToLogin = () => {
     setForgotPasswordMode(false);
+    setForceChangePasswordMode(false);
     setNewPassword(null);
     setError(null);
     setPassword('');
+    setNewPasswordValue('');
+    setNewPasswordConfirm('');
   };
 
   return (
@@ -150,7 +198,63 @@ const AuthPage = () => {
         </div>
 
         <div className="w-full max-w-sm mx-auto my-auto">
-          {newPassword ? (
+          {forceChangePasswordMode ? (
+             <>
+               <h2 className="text-3xl font-bold text-slate-800 mb-2">{t('auth_page.force_change_title')}</h2>
+               <p className="text-slate-500 mb-6">{t('auth_page.force_change_desc')}</p>
+
+               {error && (
+                 <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl flex items-start gap-2">
+                   <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                   <span>{error}</span>
+                 </div>
+               )}
+
+               <form onSubmit={handleChangePassword} className="space-y-4">
+                 <div className="space-y-1">
+                   <label className="text-sm font-semibold text-slate-700">{t('auth_page.new_pwd')}</label>
+                   <div className="relative">
+                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                       <Lock className="h-5 w-5 text-slate-400" />
+                     </div>
+                     <input
+                       type="password"
+                       value={newPasswordValue}
+                       onChange={(e) => setNewPasswordValue(e.target.value)}
+                       required
+                       className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
+                       placeholder={t('auth_page.new_pwd_ph')}
+                     />
+                   </div>
+                 </div>
+
+                 <div className="space-y-1">
+                   <label className="text-sm font-semibold text-slate-700">{t('auth_page.new_pwd_confirm')}</label>
+                   <div className="relative">
+                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                       <Lock className="h-5 w-5 text-slate-400" />
+                     </div>
+                     <input
+                       type="password"
+                       value={newPasswordConfirm}
+                       onChange={(e) => setNewPasswordConfirm(e.target.value)}
+                       required
+                       className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
+                       placeholder={t('auth_page.new_pwd_confirm_ph')}
+                     />
+                   </div>
+                 </div>
+
+                 <button
+                   type="submit"
+                   disabled={loading}
+                   className={`w-full flex justify-center items-center gap-2 bg-[#F59E0B] text-white py-3 rounded-xl font-bold transition-colors shadow-md shadow-amber-600/20 mt-4 ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-amber-600 cursor-pointer'}`}
+                 >
+                   {loading ? t('auth_page.processing') : t('auth_page.btn_update_pwd')}
+                 </button>
+               </form>
+             </>
+          ) : newPassword ? (
              <div className="text-center">
                <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
                  <Lock className="w-8 h-8" />
@@ -342,10 +446,12 @@ const AuthPage = () => {
           {/* Google Giriş/Kayıt Butonu */}
           <div className="flex justify-center w-full">
             <GoogleLogin
+              key={`${i18n.language}-${isLogin ? 'login' : 'register'}`}
               onSuccess={handleGoogleSuccess}
-              onError={() => setError('Google ile giriş sırasında bir hata oluştu.')}
+              onError={() => setError(t('auth_page.google_error'))}
               text={isLogin ? "signin_with" : "signup_with"}
               width="100%"
+              locale={i18n.language?.startsWith('en') ? 'en_US' : 'tr_TR'}
             />
           </div>
 

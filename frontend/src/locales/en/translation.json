@@ -185,7 +185,15 @@
     "back_to_login": "Back to Login",
     "new_password_title": "Password Reset Successful!",
     "new_password_desc": "Here is your new temporary password. Please copy it and log in.",
-    "btn_copy_login": "Copy & Log In"
+    "btn_copy_login": "Copy & Log In",
+    "force_change_title": "Set a New Password",
+    "force_change_desc": "For your security, please change the temporary password to a new one you choose.",
+    "new_pwd": "New Password",
+    "new_pwd_ph": "At least 6 characters",
+    "new_pwd_confirm": "Confirm New Password",
+    "new_pwd_confirm_ph": "Verify your new password",
+    "btn_update_pwd": "Update Password & Log In",
+    "pwd_mismatch": "Passwords do not match."
   },
   "itinerary_page": {
     "req_dep": "Where to go from?",

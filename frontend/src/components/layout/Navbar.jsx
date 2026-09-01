@@ -4,9 +4,10 @@ import { Plane, Compass, Map, User, Menu, X, LogOut, ChevronDown, Clock, Setting
 import { useCurrency } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import logoImg from './h-logo.png';
 
 const Navbar = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
@@ -48,6 +49,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex-shrink-0 flex items-center gap-2 cursor-pointer">
+            <img src={logoImg} alt="HolidayTrip Logo" className="w-12 h-12 md:w-16 md:h-16 object-contain" />
             <span className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-[#1E3A8A] to-[#1E3A8A]">
               HolidayTrip
             </span>
@@ -74,14 +76,12 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-6">
             {!user && (
               <select
-                value={currency}
-                onChange={(e) => setCurrency(e.target.value)}
+                value={i18n.language}
+                onChange={(e) => i18n.changeLanguage(e.target.value)}
                 className="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#F59E0B] focus:border-[#F59E0B] block p-2 cursor-pointer outline-none font-medium"
               >
-                <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="GBP">GBP (£)</option>
-                <option value="TRY">TRY (₺)</option>
+                <option value="tr">Türkçe</option>
+                <option value="en">English</option>
               </select>
             )}
 
@@ -115,8 +115,8 @@ const Navbar = () => {
                         </span>
                       </div>
                       <div className="w-full bg-amber-200/50 rounded-full h-1.5">
-                        <div 
-                          className="bg-[#F59E0B] h-1.5 rounded-full transition-all duration-500" 
+                        <div
+                          className="bg-[#F59E0B] h-1.5 rounded-full transition-all duration-500"
                           style={{ width: user.role === 'ADMIN' ? '100%' : `${((user.remainingQuota ?? 3) / 3) * 100}%` }}
                         ></div>
                       </div>
@@ -214,14 +214,12 @@ const Navbar = () => {
             <div className="px-4 pt-4 border-t border-slate-200 flex flex-col gap-4">
               {!user && (
                 <select
-                  value={currency}
-                  onChange={(e) => setCurrency(e.target.value)}
+                  value={i18n.language}
+                  onChange={(e) => i18n.changeLanguage(e.target.value)}
                   className="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#F59E0B] focus:border-[#F59E0B] block p-3 cursor-pointer font-medium"
                 >
-                  <option value="USD">USD ($)</option>
-                  <option value="EUR">EUR (€)</option>
-                  <option value="GBP">GBP (£)</option>
-                  <option value="TRY">TRY (₺)</option>
+                  <option value="tr">Türkçe</option>
+                  <option value="en">English</option>
                 </select>
               )}
 
@@ -246,8 +244,8 @@ const Navbar = () => {
                         </span>
                       </div>
                       <div className="w-full bg-slate-100 rounded-full h-1.5">
-                        <div 
-                          className="bg-[#F59E0B] h-1.5 rounded-full transition-all duration-500" 
+                        <div
+                          className="bg-[#F59E0B] h-1.5 rounded-full transition-all duration-500"
                           style={{ width: user.role === 'ADMIN' ? '100%' : `${((user.remainingQuota ?? 3) / 3) * 100}%` }}
                         ></div>
                       </div>
@@ -264,7 +262,7 @@ const Navbar = () => {
                       </Link>
                     </div>
                   </div>
-                  
+
                   <button
                     onClick={handleLogout}
                     className="w-full flex justify-center items-center gap-2 bg-red-50 text-red-600 hover:bg-red-100 px-5 py-3.5 rounded-xl font-bold transition-colors shadow-sm cursor-pointer"

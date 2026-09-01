@@ -12,6 +12,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import com.holidaytrip.api.dto.ChangePasswordRequest;
 import com.holidaytrip.api.dto.ResetPasswordRequest;
 import com.holidaytrip.api.dto.ResetPasswordResponse;
 import org.mindrot.jbcrypt.BCrypt;
@@ -90,7 +91,7 @@ public class AuthService {
         // Generate fake simple token for MVP
         String fakeToken = UUID.randomUUID().toString();
 
-        return new AuthResponseDto(fakeToken, user.getFullName(), user.getEmail(), user.getRemainingQuota(), user.getRole());
+        return new AuthResponseDto(fakeToken, user.getFullName(), user.getEmail(), user.getRemainingQuota(), user.getRole(), user.getRequiresPasswordChange());
     }
 
     public AuthResponseDto login(AuthRequestDto request) {
@@ -112,7 +113,7 @@ public class AuthService {
         // Generate fake simple token for MVP
         String fakeToken = UUID.randomUUID().toString();
 
-        return new AuthResponseDto(fakeToken, user.getFullName(), user.getEmail(), user.getRemainingQuota(), user.getRole());
+        return new AuthResponseDto(fakeToken, user.getFullName(), user.getEmail(), user.getRemainingQuota(), user.getRole(), user.getRequiresPasswordChange());
     }
 
     public AuthResponseDto googleLogin(String tokenString) {
@@ -141,7 +142,7 @@ public class AuthService {
                 user = checkAndResetQuota(user);
 
                 String fakeToken = UUID.randomUUID().toString();
-                return new AuthResponseDto(fakeToken, user.getFullName(), user.getEmail(), user.getRemainingQuota(), user.getRole());
+                return new AuthResponseDto(fakeToken, user.getFullName(), user.getEmail(), user.getRemainingQuota(), user.getRole(), user.getRequiresPasswordChange());
             } else {
                 throw new RuntimeException("Geçersiz Google Token'ı.");
             }
@@ -192,7 +193,7 @@ public class AuthService {
         user = userRepository.save(user);
 
         String fakeToken = UUID.randomUUID().toString();
-        return new AuthResponseDto(fakeToken, user.getFullName(), user.getEmail(), user.getRemainingQuota(), user.getRole());
+        return new AuthResponseDto(fakeToken, user.getFullName(), user.getEmail(), user.getRemainingQuota(), user.getRole(), user.getRequiresPasswordChange());
     }
 
     public ResetPasswordResponse resetPassword(ResetPasswordRequest request) {
@@ -212,8 +213,34 @@ public class AuthService {
         String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
         
         user.setPassword(hashedPassword);
+        user.setRequiresPasswordChange(true);
         userRepository.save(user);
 
         return new ResetPasswordResponse("Şifreniz başarıyla sıfırlandı.", newPassword);
+    }
+
+    public AuthResponseDto changePassword(ChangePasswordRequest request) {
+        if (request.getEmail() == null || request.getEmail().isEmpty()) {
+            throw new RuntimeException("E-posta adresi gerekli.");
+        }
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı."));
+
+        if (!BCrypt.checkpw(request.getCurrentPassword(), user.getPassword())) {
+            throw new RuntimeException("Mevcut şifreniz hatalı.");
+        }
+
+        if (request.getNewPassword() == null || request.getNewPassword().length() < 6) {
+            throw new RuntimeException("Yeni şifre en az 6 karakter olmalıdır.");
+        }
+
+        String hashedPassword = BCrypt.hashpw(request.getNewPassword(), BCrypt.gensalt());
+        user.setPassword(hashedPassword);
+        user.setRequiresPasswordChange(false);
+        userRepository.save(user);
+
+        String fakeToken = UUID.randomUUID().toString();
+        return new AuthResponseDto(fakeToken, user.getFullName(), user.getEmail(), user.getRemainingQuota(), user.getRole(), user.getRequiresPasswordChange());
     }
 }

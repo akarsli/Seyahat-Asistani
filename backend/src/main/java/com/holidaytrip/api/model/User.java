@@ -27,6 +27,8 @@ public class User {
     private Integer remainingQuota = 3;
     private LocalDateTime lastQuotaReset;
     
+    private Boolean requiresPasswordChange = false;
+    
     private String role = "USER";
     private LocalDateTime createdAt = LocalDateTime.now();
 }

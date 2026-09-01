@@ -11,4 +11,5 @@ public class AuthResponseDto {
     private String email;
     private Integer remainingQuota;
     private String role;
+    private Boolean requiresPasswordChange;
 }

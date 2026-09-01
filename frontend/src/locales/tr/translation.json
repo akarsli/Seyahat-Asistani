@@ -185,7 +185,15 @@
     "back_to_login": "Giriş Ekranına Dön",
     "new_password_title": "Şifreniz Sıfırlandı!",
     "new_password_desc": "Yeni geçici şifreniz aşağıdadır. Lütfen kopyalayıp giriş yapınız.",
-    "btn_copy_login": "Kopyala ve Giriş Yap"
+    "btn_copy_login": "Kopyala ve Giriş Yap",
+    "force_change_title": "Yeni Şifre Belirleyin",
+    "force_change_desc": "Güvenliğiniz için lütfen size verilen geçici şifreyi kendi belirleyeceğiniz yeni bir şifre ile değiştirin.",
+    "new_pwd": "Yeni Şifre",
+    "new_pwd_ph": "En az 6 karakter",
+    "new_pwd_confirm": "Yeni Şifre (Tekrar)",
+    "new_pwd_confirm_ph": "Şifrenizi doğrulayın",
+    "btn_update_pwd": "Şifremi Güncelle ve Giriş Yap",
+    "pwd_mismatch": "Şifreler eşleşmiyor."
   },
   "itinerary_page": {
     "req_dep": "Nereden Gidilecek?",

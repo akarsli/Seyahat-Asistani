@@ -1,0 +1,6 @@
+#FileLock
+#Tue Sep 01 13:56:47 TRT 2026
+hostName=localhost
+id=1a05c9d430ca205a04424571b74774cfbcfcc2f5611
+method=file
+server=localhost\:51070

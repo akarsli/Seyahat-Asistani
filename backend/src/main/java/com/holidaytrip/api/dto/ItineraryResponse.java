@@ -25,6 +25,9 @@ public class ItineraryResponse {
         @com.fasterxml.jackson.annotation.JsonAlias({"company", "brand"})
         private String provider; // e.g., "Turkish Airlines", "Trenitalia"
         
+        @com.fasterxml.jackson.annotation.JsonAlias({"flightNo", "number"})
+        private String flightNumber; // e.g., "TK1993"
+        
         @com.fasterxml.jackson.annotation.JsonAlias({"departureTime", "from"})
         private String departure; // e.g., "Istanbul (IST) - 08:30"
         
@@ -51,6 +54,12 @@ public class ItineraryResponse {
         
         @com.fasterxml.jackson.annotation.JsonAlias({"layoverTime", "waitTime"})
         private String layoverDuration; // e.g., "2h 15m"
+
+        @com.fasterxml.jackson.annotation.JsonAlias({"depIata", "departureIataCode"})
+        private String departureIata; // e.g., "IST"
+        
+        @com.fasterxml.jackson.annotation.JsonAlias({"arrIata", "arrivalIataCode"})
+        private String arrivalIata; // e.g., "FCO"
     }
 
     @Data

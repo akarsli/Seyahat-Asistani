@@ -1,0 +1,1168 @@
+{
+  "search_metadata": {
+    "id": "6a9171a57bf2f928ffb6fee9",
+    "status": "Success",
+    "json_endpoint": "https://serpapi.com/searches/79GrHFmRMGSmd_qAzuWoGQ/6a9171a57bf2f928ffb6fee9.json",
+    "markdown_endpoint": "https://serpapi.com/searches/79GrHFmRMGSmd_qAzuWoGQ/6a9171a57bf2f928ffb6fee9.md",
+    "created_at": "2026-08-28 11:31:49 UTC",
+    "processed_at": "2026-08-28 11:31:49 UTC",
+    "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=us&tfs=CBwQAhoeEgoyMDI2LTA5LTAxagcIARIDSVNUcgcIARIDTEhSQAFIAXABmAEC&tfu=EgIIAQ",
+    "raw_html_file": "https://serpapi.com/searches/79GrHFmRMGSmd_qAzuWoGQ/6a9171a57bf2f928ffb6fee9.html",
+    "prettify_html_file": "https://serpapi.com/searches/79GrHFmRMGSmd_qAzuWoGQ/6a9171a57bf2f928ffb6fee9.prettify",
+    "total_time_taken": 3.87
+  },
+  "search_parameters": {
+    "engine": "google_flights",
+    "hl": "en",
+    "gl": "us",
+    "type": "2",
+    "departure_id": "IST",
+    "arrival_id": "LHR",
+    "outbound_date": "2026-09-01"
+  },
+  "best_flights": [
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Istanbul Airport",
+            "id": "IST",
+            "time": "2026-09-01 14:35"
+          },
+          "arrival_airport": {
+            "name": "Heathrow Airport",
+            "id": "LHR",
+            "time": "2026-09-01 16:45"
+          },
+          "duration": 250,
+          "airplane": "Airbus A320",
+          "airline": "British Airways",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/BA.png",
+          "travel_class": "Economy",
+          "flight_number": "BA 717",
+          "legroom": "29 in",
+          "extensions": [
+            "Below average legroom (29 in)",
+            "Wi-Fi for a fee",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 192 kg"
+          ]
+        }
+      ],
+      "total_duration": 250,
+      "carbon_emissions": {
+        "this_flight": 193000,
+        "typical_for_this_route": 207000,
+        "difference_percent": -7
+      },
+      "price": 975,
+      "type": "One way",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/BA.png",
+      "booking_token": "WyJDalJJT1hoM1FWQmZjbWRKWmsxQlFuSmZiWGRDUnkwdExTMHRMUzB0Y0daaVpuQXhNVUZCUVVGQlIzRlNZMkZqVDFaU1dXbEJFZ1ZDUVRjeE54b0xDTkw1QlJBQ0dnTlZVMFE0SEhEUytRVT0iLFtbIklTVCIsIjIwMjYtMDktMDEiLCJMSFIiLG51bGwsIkJBIiwiNzE3Il1dXQ=="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Istanbul Airport",
+            "id": "IST",
+            "time": "2026-09-01 14:50"
+          },
+          "arrival_airport": {
+            "name": "Heathrow Airport",
+            "id": "LHR",
+            "time": "2026-09-01 16:40"
+          },
+          "duration": 230,
+          "airplane": "Airbus A350",
+          "airline": "Turkish Airlines",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+          "travel_class": "Economy",
+          "flight_number": "TK 1971",
+          "legroom": "31 in",
+          "extensions": [
+            "Average legroom (31 in)",
+            "Wi-Fi for a fee",
+            "In-seat USB outlet",
+            "On-demand video",
+            "Carbon emissions estimate: 169 kg"
+          ],
+          "often_delayed_by_over_30_min": true
+        }
+      ],
+      "total_duration": 230,
+      "carbon_emissions": {
+        "this_flight": 170000,
+        "typical_for_this_route": 207000,
+        "difference_percent": -18
+      },
+      "price": 1095,
+      "type": "One way",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+      "booking_token": "WyJDalJJT1hoM1FWQmZjbWRKWmsxQlFuSmZiWGRDUnkwdExTMHRMUzB0Y0daaVpuQXhNVUZCUVVGQlIzRlNZMkZqVDFaU1dXbEJFZ1pVU3pFNU56RWFDd2l5MXdZUUFob0RWVk5FT0J4d3N0Y0ciLFtbIklTVCIsIjIwMjYtMDktMDEiLCJMSFIiLG51bGwsIlRLIiwiMTk3MSJdXV0="
+    }
+  ],
+  "other_flights": [
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Istanbul Airport",
+            "id": "IST",
+            "time": "2026-09-01 21:00"
+          },
+          "arrival_airport": {
+            "name": "Athens International Airport \"Eleftherios Venizelos\"",
+            "id": "ATH",
+            "time": "2026-09-01 22:30"
+          },
+          "duration": 90,
+          "airplane": "Airbus A321neo",
+          "airline": "Aegean",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/A3.png",
+          "travel_class": "Economy",
+          "flight_number": "A3 995",
+          "legroom": "28 in",
+          "extensions": [
+            "Below average legroom (28 in)",
+            "Free Wi-Fi",
+            "In-seat USB outlet",
+            "Stream media to your device",
+            "Carbon emissions estimate: 58 kg"
+          ],
+          "often_delayed_by_over_30_min": true
+        },
+        {
+          "departure_airport": {
+            "name": "Athens International Airport \"Eleftherios Venizelos\"",
+            "id": "ATH",
+            "time": "2026-09-02 13:30"
+          },
+          "arrival_airport": {
+            "name": "Heathrow Airport",
+            "id": "LHR",
+            "time": "2026-09-02 15:30"
+          },
+          "duration": 240,
+          "airplane": "Airbus A321neo",
+          "airline": "Aegean",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/A3.png",
+          "travel_class": "Economy",
+          "flight_number": "A3 602",
+          "legroom": "28 in",
+          "extensions": [
+            "Below average legroom (28 in)",
+            "Free Wi-Fi",
+            "In-seat USB outlet",
+            "Stream media to your device",
+            "Carbon emissions estimate: 175 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 900,
+          "name": "Athens International Airport \"Eleftherios Venizelos\"",
+          "id": "ATH"
+        }
+      ],
+      "total_duration": 1230,
+      "carbon_emissions": {
+        "this_flight": 234000,
+        "typical_for_this_route": 207000,
+        "difference_percent": 13
+      },
+      "price": 435,
+      "type": "One way",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/A3.png",
+      "booking_token": "WyJDalJJT1hoM1FWQmZjbWRKWmsxQlFuSmZiWGRDUnkwdExTMHRMUzB0Y0daaVpuQXhNVUZCUVVGQlIzRlNZMkZqVDFaU1dXbEJFZ3RCTXprNU5YeEJNell3TWhvTENMclRBaEFDR2dOVlUwUTRISEM2MHdJPSIsW1siSVNUIiwiMjAyNi0wOS0wMSIsIkFUSCIsbnVsbCwiQTMiLCI5OTUiXSxbIkFUSCIsIjIwMjYtMDktMDIiLCJMSFIiLG51bGwsIkEzIiwiNjAyIl1dXQ=="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Istanbul Airport",
+            "id": "IST",
+            "time": "2026-09-01 21:30"
+          },
+          "arrival_airport": {
+            "name": "Queen Alia International Airport",
+            "id": "AMM",
+            "time": "2026-09-02 00:01"
+          },
+          "duration": 151,
+          "airplane": "Boeing 787",
+          "airline": "Royal Jordanian",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/RJ.png",
+          "travel_class": "Economy",
+          "flight_number": "RJ 164",
+          "legroom": "32 in",
+          "extensions": [
+            "Above average legroom (32 in)",
+            "In-seat power & USB outlets",
+            "On-demand video",
+            "Carbon emissions estimate: 100 kg"
+          ]
+        },
+        {
+          "departure_airport": {
+            "name": "Queen Alia International Airport",
+            "id": "AMM",
+            "time": "2026-09-02 10:20"
+          },
+          "arrival_airport": {
+            "name": "Heathrow Airport",
+            "id": "LHR",
+            "time": "2026-09-02 13:40"
+          },
+          "duration": 320,
+          "airplane": "Boeing 787",
+          "airline": "Royal Jordanian",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/RJ.png",
+          "travel_class": "Economy",
+          "flight_number": "RJ 5111",
+          "legroom": "32 in",
+          "extensions": [
+            "Above average legroom (32 in)",
+            "In-seat power & USB outlets",
+            "On-demand video",
+            "Carbon emissions estimate: 240 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 619,
+          "name": "Queen Alia International Airport",
+          "id": "AMM"
+        }
+      ],
+      "total_duration": 1090,
+      "carbon_emissions": {
+        "this_flight": 340000,
+        "typical_for_this_route": 207000,
+        "difference_percent": 64
+      },
+      "price": 550,
+      "type": "One way",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/RJ.png",
+      "booking_token": "WyJDalJJT1hoM1FWQmZjbWRKWmsxQlFuSmZiWGRDUnkwdExTMHRMUzB0Y0daaVpuQXhNVUZCUVVGQlIzRlNZMkZqVDFaU1dXbEJFZ3hTU2pFMk5IeFNTalV4TVRFYUN3aW1yUU1RQWhvRFZWTkVPQnh3cHEwRCIsW1siSVNUIiwiMjAyNi0wOS0wMSIsIkFNTSIsbnVsbCwiUkoiLCIxNjQiXSxbIkFNTSIsIjIwMjYtMDktMDIiLCJMSFIiLG51bGwsIlJKIiwiNTExMSJdXV0="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Istanbul Airport",
+            "id": "IST",
+            "time": "2026-09-01 17:30"
+          },
+          "arrival_airport": {
+            "name": "Warsaw Chopin Airport",
+            "id": "WAW",
+            "time": "2026-09-01 19:00"
+          },
+          "duration": 150,
+          "airplane": "Embraer 195 E2",
+          "airline": "LOT",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LO.png",
+          "travel_class": "Economy",
+          "flight_number": "LO 136",
+          "legroom": "29 in",
+          "extensions": [
+            "Below average legroom (29 in)",
+            "In-seat power outlet",
+            "Carbon emissions estimate: 138 kg"
+          ]
+        },
+        {
+          "departure_airport": {
+            "name": "Warsaw Chopin Airport",
+            "id": "WAW",
+            "time": "2026-09-02 07:25"
+          },
+          "arrival_airport": {
+            "name": "Heathrow Airport",
+            "id": "LHR",
+            "time": "2026-09-02 09:20"
+          },
+          "duration": 175,
+          "airplane": "Boeing 737MAX 8 Passenger",
+          "airline": "LOT",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LO.png",
+          "travel_class": "Economy",
+          "flight_number": "LO 281",
+          "legroom": "30 in",
+          "extensions": [
+            "Average legroom (30 in)",
+            "In-seat power & USB outlets",
+            "Stream media to your device",
+            "Carbon emissions estimate: 114 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 745,
+          "name": "Warsaw Chopin Airport",
+          "id": "WAW"
+        }
+      ],
+      "total_duration": 1070,
+      "carbon_emissions": {
+        "this_flight": 253000,
+        "typical_for_this_route": 207000,
+        "difference_percent": 22
+      },
+      "price": 632,
+      "type": "One way",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LO.png",
+      "booking_token": "WyJDalJJT1hoM1FWQmZjbWRKWmsxQlFuSmZiWGRDUnkwdExTMHRMUzB0Y0daaVpuQXhNVUZCUVVGQlIzRlNZMkZqVDFaU1dXbEJFZ3RNVHpFek5ueE1Uekk0TVJvTENORHRBeEFDR2dOVlUwUTRISERRN1FNPSIsW1siSVNUIiwiMjAyNi0wOS0wMSIsIldBVyIsbnVsbCwiTE8iLCIxMzYiXSxbIldBVyIsIjIwMjYtMDktMDIiLCJMSFIiLG51bGwsIkxPIiwiMjgxIl1dXQ=="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Istanbul Airport",
+            "id": "IST",
+            "time": "2026-09-01 17:30"
+          },
+          "arrival_airport": {
+            "name": "Warsaw Chopin Airport",
+            "id": "WAW",
+            "time": "2026-09-01 19:00"
+          },
+          "duration": 150,
+          "airplane": "Embraer 195 E2",
+          "airline": "LOT",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LO.png",
+          "travel_class": "Economy",
+          "flight_number": "LO 136",
+          "legroom": "29 in",
+          "extensions": [
+            "Below average legroom (29 in)",
+            "In-seat power outlet",
+            "Carbon emissions estimate: 138 kg"
+          ]
+        },
+        {
+          "departure_airport": {
+            "name": "Warsaw Chopin Airport",
+            "id": "WAW",
+            "time": "2026-09-01 20:20"
+          },
+          "arrival_airport": {
+            "name": "Heathrow Airport",
+            "id": "LHR",
+            "time": "2026-09-01 22:00"
+          },
+          "duration": 160,
+          "airplane": "Boeing 737MAX 8 Passenger",
+          "airline": "LOT",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LO.png",
+          "travel_class": "Economy",
+          "flight_number": "LO 285",
+          "legroom": "29 in",
+          "extensions": [
+            "Below average legroom (29 in)",
+            "In-seat power & USB outlets",
+            "Carbon emissions estimate: 114 kg"
+          ],
+          "often_delayed_by_over_30_min": true
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 80,
+          "name": "Warsaw Chopin Airport",
+          "id": "WAW"
+        }
+      ],
+      "total_duration": 390,
+      "carbon_emissions": {
+        "this_flight": 253000,
+        "typical_for_this_route": 207000,
+        "difference_percent": 22
+      },
+      "price": 747,
+      "type": "One way",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LO.png",
+      "booking_token": "WyJDalJJT1hoM1FWQmZjbWRKWmsxQlFuSmZiWGRDUnkwdExTMHRMUzB0Y0daaVpuQXhNVUZCUVVGQlIzRlNZMkZqVDFaU1dXbEJFZ3RNVHpFek5ueE1Uekk0TlJvTENKL0hCQkFDR2dOVlUwUTRISENmeHdRPSIsW1siSVNUIiwiMjAyNi0wOS0wMSIsIldBVyIsbnVsbCwiTE8iLCIxMzYiXSxbIldBVyIsIjIwMjYtMDktMDEiLCJMSFIiLG51bGwsIkxPIiwiMjg1Il1dXQ=="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Istanbul Airport",
+            "id": "IST",
+            "time": "2026-09-01 15:35"
+          },
+          "arrival_airport": {
+            "name": "Athens International Airport \"Eleftherios Venizelos\"",
+            "id": "ATH",
+            "time": "2026-09-01 17:05"
+          },
+          "duration": 90,
+          "airplane": "Airbus A321",
+          "airline": "Aegean",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/A3.png",
+          "travel_class": "Business Class",
+          "flight_number": "A3 993",
+          "legroom": "33 in",
+          "extensions": [
+            "Average legroom (33 in)",
+            "Carbon emissions estimate: 111 kg"
+          ],
+          "often_delayed_by_over_30_min": true
+        },
+        {
+          "departure_airport": {
+            "name": "Athens International Airport \"Eleftherios Venizelos\"",
+            "id": "ATH",
+            "time": "2026-09-01 19:20"
+          },
+          "arrival_airport": {
+            "name": "Heathrow Airport",
+            "id": "LHR",
+            "time": "2026-09-01 21:10"
+          },
+          "duration": 230,
+          "airplane": "Airbus A321neo",
+          "airline": "Aegean",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/A3.png",
+          "travel_class": "Business Class",
+          "flight_number": "A3 608",
+          "legroom": "30 in",
+          "extensions": [
+            "Average legroom (30 in)",
+            "Free Wi-Fi",
+            "In-seat USB outlet",
+            "Stream media to your device",
+            "Carbon emissions estimate: 262 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 135,
+          "name": "Athens International Airport \"Eleftherios Venizelos\"",
+          "id": "ATH"
+        }
+      ],
+      "total_duration": 455,
+      "carbon_emissions": {
+        "this_flight": 374000,
+        "typical_for_this_route": 207000,
+        "difference_percent": 81
+      },
+      "price": 871,
+      "type": "One way",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/A3.png",
+      "booking_token": "WyJDalJJT1hoM1FWQmZjbWRKWmsxQlFuSmZiWGRDUnkwdExTMHRMUzB0Y0daaVpuQXhNVUZCUVVGQlIzRlNZMkZqVDFaU1dXbEJFZ3RCTXprNU0zeEJNell3T0JvTENOcW5CUkFDR2dOVlUwUTRISERhcHdVPSIsW1siSVNUIiwiMjAyNi0wOS0wMSIsIkFUSCIsbnVsbCwiQTMiLCI5OTMiXSxbIkFUSCIsIjIwMjYtMDktMDEiLCJMSFIiLG51bGwsIkEzIiwiNjA4Il1dXQ=="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Istanbul Airport",
+            "id": "IST",
+            "time": "2026-09-01 17:20"
+          },
+          "arrival_airport": {
+            "name": "Amsterdam Airport Schiphol",
+            "id": "AMS",
+            "time": "2026-09-01 19:45"
+          },
+          "duration": 205,
+          "airplane": "Boeing 737",
+          "airline": "KLM",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/KL.png",
+          "travel_class": "Economy",
+          "flight_number": "KL 1960",
+          "legroom": "30 in",
+          "extensions": [
+            "Average legroom (30 in)",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 159 kg"
+          ],
+          "often_delayed_by_over_30_min": true
+        },
+        {
+          "departure_airport": {
+            "name": "Amsterdam Airport Schiphol",
+            "id": "AMS",
+            "time": "2026-09-01 20:40"
+          },
+          "arrival_airport": {
+            "name": "Heathrow Airport",
+            "id": "LHR",
+            "time": "2026-09-01 20:55"
+          },
+          "duration": 75,
+          "airplane": "Airbus A321neo",
+          "airline": "KLM",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/KL.png",
+          "travel_class": "Economy",
+          "flight_number": "KL 1017",
+          "legroom": "29 in",
+          "extensions": [
+            "Below average legroom (29 in)",
+            "Free Wi-Fi",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 38 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 55,
+          "name": "Amsterdam Airport Schiphol",
+          "id": "AMS"
+        }
+      ],
+      "total_duration": 335,
+      "carbon_emissions": {
+        "this_flight": 198000,
+        "typical_for_this_route": 207000,
+        "difference_percent": -4
+      },
+      "price": 944,
+      "type": "One way",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/KL.png",
+      "booking_token": "WyJDalJJT1hoM1FWQmZjbWRKWmsxQlFuSmZiWGRDUnkwdExTMHRMUzB0Y0daaVpuQXhNVUZCUVVGQlIzRlNZMkZqVDFaU1dXbEJFZzFMVERFNU5qQjhTMHd4TURFM0dnc0k4T0FGRUFJYUExVlRSRGdjY1BEZ0JRPT0iLFtbIklTVCIsIjIwMjYtMDktMDEiLCJBTVMiLG51bGwsIktMIiwiMTk2MCJdLFsiQU1TIiwiMjAyNi0wOS0wMSIsIkxIUiIsbnVsbCwiS0wiLCIxMDE3Il1dXQ=="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Istanbul Airport",
+            "id": "IST",
+            "time": "2026-09-01 08:15"
+          },
+          "arrival_airport": {
+            "name": "Heathrow Airport",
+            "id": "LHR",
+            "time": "2026-09-01 10:30"
+          },
+          "duration": 255,
+          "airplane": "Airbus A320",
+          "airline": "British Airways",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/BA.png",
+          "travel_class": "Economy",
+          "flight_number": "BA 721",
+          "legroom": "29 in",
+          "extensions": [
+            "Below average legroom (29 in)",
+            "Wi-Fi for a fee",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 192 kg"
+          ]
+        }
+      ],
+      "total_duration": 255,
+      "carbon_emissions": {
+        "this_flight": 193000,
+        "typical_for_this_route": 207000,
+        "difference_percent": -7
+      },
+      "price": 975,
+      "type": "One way",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/BA.png",
+      "booking_token": "WyJDalJJT1hoM1FWQmZjbWRKWmsxQlFuSmZiWGRDUnkwdExTMHRMUzB0Y0daaVpuQXhNVUZCUVVGQlIzRlNZMkZqVDFaU1dXbEJFZ1ZDUVRjeU1Sb0xDTkw1QlJBQ0dnTlZVMFE0SEhEUytRVT0iLFtbIklTVCIsIjIwMjYtMDktMDEiLCJMSFIiLG51bGwsIkJBIiwiNzIxIl1dXQ=="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Istanbul Airport",
+            "id": "IST",
+            "time": "2026-09-01 17:45"
+          },
+          "arrival_airport": {
+            "name": "Heathrow Airport",
+            "id": "LHR",
+            "time": "2026-09-01 19:55"
+          },
+          "duration": 250,
+          "airplane": "Airbus A320neo",
+          "airline": "British Airways",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/BA.png",
+          "travel_class": "Economy",
+          "flight_number": "BA 701",
+          "legroom": "29 in",
+          "extensions": [
+            "Below average legroom (29 in)",
+            "Wi-Fi for a fee",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 170 kg"
+          ]
+        }
+      ],
+      "total_duration": 250,
+      "carbon_emissions": {
+        "this_flight": 170000,
+        "typical_for_this_route": 207000,
+        "difference_percent": -18
+      },
+      "price": 975,
+      "type": "One way",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/BA.png",
+      "booking_token": "WyJDalJJT1hoM1FWQmZjbWRKWmsxQlFuSmZiWGRDUnkwdExTMHRMUzB0Y0daaVpuQXhNVUZCUVVGQlIzRlNZMkZqVDFaU1dXbEJFZ1ZDUVRjd01Sb0xDTkw1QlJBQ0dnTlZVMFE0SEhEUytRVT0iLFtbIklTVCIsIjIwMjYtMDktMDEiLCJMSFIiLG51bGwsIkJBIiwiNzAxIl1dXQ=="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Istanbul Airport",
+            "id": "IST",
+            "time": "2026-09-01 19:55"
+          },
+          "arrival_airport": {
+            "name": "Heathrow Airport",
+            "id": "LHR",
+            "time": "2026-09-01 21:55"
+          },
+          "duration": 240,
+          "airplane": "Airbus A321neo",
+          "airline": "British Airways",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/BA.png",
+          "travel_class": "Economy",
+          "flight_number": "BA 719",
+          "legroom": "29 in",
+          "extensions": [
+            "Below average legroom (29 in)",
+            "Wi-Fi for a fee",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 165 kg"
+          ]
+        }
+      ],
+      "total_duration": 240,
+      "carbon_emissions": {
+        "this_flight": 165000,
+        "typical_for_this_route": 207000,
+        "difference_percent": -20
+      },
+      "price": 975,
+      "type": "One way",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/BA.png",
+      "booking_token": "WyJDalJJT1hoM1FWQmZjbWRKWmsxQlFuSmZiWGRDUnkwdExTMHRMUzB0Y0daaVpuQXhNVUZCUVVGQlIzRlNZMkZqVDFaU1dXbEJFZ1ZDUVRjeE9Sb0xDTkw1QlJBQ0dnTlZVMFE0SEhEUytRVT0iLFtbIklTVCIsIjIwMjYtMDktMDEiLCJMSFIiLG51bGwsIkJBIiwiNzE5Il1dXQ=="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Istanbul Airport",
+            "id": "IST",
+            "time": "2026-09-01 20:20"
+          },
+          "arrival_airport": {
+            "name": "Heathrow Airport",
+            "id": "LHR",
+            "time": "2026-09-01 22:25"
+          },
+          "duration": 245,
+          "airplane": "Airbus A330",
+          "airline": "Turkish Airlines",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+          "travel_class": "Economy",
+          "flight_number": "TK 1987",
+          "legroom": "31 in",
+          "extensions": [
+            "Average legroom (31 in)",
+            "Wi-Fi for a fee",
+            "In-seat power & USB outlets",
+            "On-demand video",
+            "Carbon emissions estimate: 175 kg"
+          ]
+        }
+      ],
+      "total_duration": 245,
+      "carbon_emissions": {
+        "this_flight": 175000,
+        "typical_for_this_route": 207000,
+        "difference_percent": -15
+      },
+      "price": 1095,
+      "type": "One way",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+      "booking_token": "WyJDalJJT1hoM1FWQmZjbWRKWmsxQlFuSmZiWGRDUnkwdExTMHRMUzB0Y0daaVpuQXhNVUZCUVVGQlIzRlNZMkZqVDFaU1dXbEJFZ1pVU3pFNU9EY2FDd2l5MXdZUUFob0RWVk5FT0J4d3N0Y0ciLFtbIklTVCIsIjIwMjYtMDktMDEiLCJMSFIiLG51bGwsIlRLIiwiMTk4NyJdXV0="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Istanbul Airport",
+            "id": "IST",
+            "time": "2026-09-01 19:05"
+          },
+          "arrival_airport": {
+            "name": "Heathrow Airport",
+            "id": "LHR",
+            "time": "2026-09-01 21:05"
+          },
+          "duration": 240,
+          "airplane": "Boeing 787",
+          "airline": "Turkish Airlines",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+          "travel_class": "Economy",
+          "flight_number": "TK 1983",
+          "legroom": "31 in",
+          "extensions": [
+            "Average legroom (31 in)",
+            "Wi-Fi for a fee",
+            "In-seat USB outlet",
+            "On-demand video",
+            "Carbon emissions estimate: 155 kg"
+          ]
+        }
+      ],
+      "total_duration": 240,
+      "carbon_emissions": {
+        "this_flight": 156000,
+        "typical_for_this_route": 207000,
+        "difference_percent": -25
+      },
+      "price": 1100,
+      "type": "One way",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+      "booking_token": "WyJDalJJT1hoM1FWQmZjbWRKWmsxQlFuSmZiWGRDUnkwdExTMHRMUzB0Y0daaVpuQXhNVUZCUVVGQlIzRlNZMkZqVDFaU1dXbEJFZ1pVU3pFNU9ETWFDd2lsMndZUUFob0RWVk5FT0J4d3Bkc0ciLFtbIklTVCIsIjIwMjYtMDktMDEiLCJMSFIiLG51bGwsIlRLIiwiMTk4MyJdXV0="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Istanbul Airport",
+            "id": "IST",
+            "time": "2026-09-01 08:05"
+          },
+          "arrival_airport": {
+            "name": "Vienna International Airport",
+            "id": "VIE",
+            "time": "2026-09-01 09:15"
+          },
+          "duration": 130,
+          "airplane": "Boeing 787",
+          "airline": "Turkish Airlines",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+          "travel_class": "Economy",
+          "flight_number": "TK 1883",
+          "legroom": "31 in",
+          "extensions": [
+            "Average legroom (31 in)",
+            "Wi-Fi for a fee",
+            "In-seat USB outlet",
+            "On-demand video",
+            "Carbon emissions estimate: 90 kg"
+          ]
+        },
+        {
+          "departure_airport": {
+            "name": "Vienna International Airport",
+            "id": "VIE",
+            "time": "2026-09-01 09:55"
+          },
+          "arrival_airport": {
+            "name": "Heathrow Airport",
+            "id": "LHR",
+            "time": "2026-09-01 11:25"
+          },
+          "duration": 150,
+          "airplane": "Airbus A320neo",
+          "airline": "Austrian",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/OS.png",
+          "travel_class": "Business Class",
+          "flight_number": "OS 333",
+          "legroom": "30 in",
+          "extensions": [
+            "Average legroom (30 in)",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 151 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 40,
+          "name": "Vienna International Airport",
+          "id": "VIE"
+        }
+      ],
+      "total_duration": 320,
+      "carbon_emissions": {
+        "this_flight": 242000,
+        "typical_for_this_route": 207000,
+        "difference_percent": 17
+      },
+      "price": 1848,
+      "type": "One way",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/multi.png",
+      "booking_token": "WyJDalJJT1hoM1FWQmZjbWRKWmsxQlFuSmZiWGRDUnkwdExTMHRMUzB0Y0daaVpuQXhNVUZCUVVGQlIzRlNZMkZqVDFaU1dXbEJFZ3hVU3pFNE9ETjhUMU16TXpNYUN3aXVvd3NRQWhvRFZWTkVPQnh3cnFNTCIsW1siSVNUIiwiMjAyNi0wOS0wMSIsIlZJRSIsbnVsbCwiVEsiLCIxODgzIl0sWyJWSUUiLCIyMDI2LTA5LTAxIiwiTEhSIixudWxsLCJPUyIsIjMzMyJdXV0="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Istanbul Airport",
+            "id": "IST",
+            "time": "2026-09-01 13:55"
+          },
+          "arrival_airport": {
+            "name": "Heathrow Airport",
+            "id": "LHR",
+            "time": "2026-09-01 16:00"
+          },
+          "duration": 245,
+          "airplane": "Airbus A321neo",
+          "airline": "Turkish Airlines",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+          "travel_class": "Business Class",
+          "flight_number": "TK 1931",
+          "extensions": [
+            "Extra reclining seat",
+            "Free Wi-Fi",
+            "In-seat power & USB outlets",
+            "On-demand video",
+            "Carbon emissions estimate: 288 kg"
+          ]
+        }
+      ],
+      "total_duration": 245,
+      "carbon_emissions": {
+        "this_flight": 288000,
+        "typical_for_this_route": 207000,
+        "difference_percent": 39
+      },
+      "price": 1993,
+      "type": "One way",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+      "booking_token": "WyJDalJJT1hoM1FWQmZjbWRKWmsxQlFuSmZiWGRDUnkwdExTMHRMUzB0Y0daaVpuQXhNVUZCUVVGQlIzRlNZMkZqVDFaU1dXbEJFZ1pVU3pFNU16RWFDd2pSbEF3UUFob0RWVk5FT0J4dzBaUU0iLFtbIklTVCIsIjIwMjYtMDktMDEiLCJMSFIiLG51bGwsIlRLIiwiMTkzMSJdXV0="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Istanbul Airport",
+            "id": "IST",
+            "time": "2026-09-01 07:50"
+          },
+          "arrival_airport": {
+            "name": "Heathrow Airport",
+            "id": "LHR",
+            "time": "2026-09-01 09:50"
+          },
+          "duration": 240,
+          "airplane": "Boeing 777",
+          "airline": "Turkish Airlines",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+          "travel_class": "Business Class",
+          "flight_number": "TK 1979",
+          "extensions": [
+            "Lie flat seat",
+            "Free Wi-Fi",
+            "In-seat power & USB outlets",
+            "On-demand video",
+            "Carbon emissions estimate: 797 kg"
+          ]
+        }
+      ],
+      "total_duration": 240,
+      "carbon_emissions": {
+        "this_flight": 797000,
+        "typical_for_this_route": 207000,
+        "difference_percent": 285
+      },
+      "price": 2093,
+      "type": "One way",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+      "booking_token": "WyJDalJJT1hoM1FWQmZjbWRKWmsxQlFuSmZiWGRDUnkwdExTMHRMUzB0Y0daaVpuQXhNVUZCUVVGQlIzRlNZMkZqVDFaU1dXbEJFZ1pVU3pFNU56a2FDd2pJNGd3UUFob0RWVk5FT0J4d3lPSU0iLFtbIklTVCIsIjIwMjYtMDktMDEiLCJMSFIiLG51bGwsIlRLIiwiMTk3OSJdXV0="
+    }
+  ],
+  "price_insights": {
+    "lowest_price": 435,
+    "price_level": "high",
+    "typical_price_range": [
+      105,
+      230
+    ],
+    "price_history": [
+      [
+        1782594000,
+        270
+      ],
+      [
+        1782680400,
+        270
+      ],
+      [
+        1782766800,
+        267
+      ],
+      [
+        1782853200,
+        199
+      ],
+      [
+        1782939600,
+        199
+      ],
+      [
+        1783026000,
+        198
+      ],
+      [
+        1783112400,
+        258
+      ],
+      [
+        1783198800,
+        233
+      ],
+      [
+        1783285200,
+        198
+      ],
+      [
+        1783371600,
+        197
+      ],
+      [
+        1783458000,
+        197
+      ],
+      [
+        1783544400,
+        197
+      ],
+      [
+        1783630800,
+        197
+      ],
+      [
+        1783717200,
+        196
+      ],
+      [
+        1783803600,
+        272
+      ],
+      [
+        1783890000,
+        308
+      ],
+      [
+        1783976400,
+        307
+      ],
+      [
+        1784062800,
+        235
+      ],
+      [
+        1784149200,
+        234
+      ],
+      [
+        1784235600,
+        234
+      ],
+      [
+        1784322000,
+        269
+      ],
+      [
+        1784408400,
+        269
+      ],
+      [
+        1784494800,
+        269
+      ],
+      [
+        1784581200,
+        279
+      ],
+      [
+        1784667600,
+        296
+      ],
+      [
+        1784754000,
+        317
+      ],
+      [
+        1784840400,
+        351
+      ],
+      [
+        1784926800,
+        350
+      ],
+      [
+        1785013200,
+        315
+      ],
+      [
+        1785099600,
+        315
+      ],
+      [
+        1785186000,
+        360
+      ],
+      [
+        1785272400,
+        371
+      ],
+      [
+        1785358800,
+        369
+      ],
+      [
+        1785445200,
+        316
+      ],
+      [
+        1785531600,
+        315
+      ],
+      [
+        1785618000,
+        316
+      ],
+      [
+        1785704400,
+        316
+      ],
+      [
+        1785790800,
+        316
+      ],
+      [
+        1785877200,
+        317
+      ],
+      [
+        1785963600,
+        319
+      ],
+      [
+        1786050000,
+        318
+      ],
+      [
+        1786136400,
+        318
+      ],
+      [
+        1786222800,
+        318
+      ],
+      [
+        1786309200,
+        317
+      ],
+      [
+        1786395600,
+        317
+      ],
+      [
+        1786482000,
+        317
+      ],
+      [
+        1786568400,
+        317
+      ],
+      [
+        1786654800,
+        317
+      ],
+      [
+        1786741200,
+        317
+      ],
+      [
+        1786827600,
+        317
+      ],
+      [
+        1786914000,
+        318
+      ],
+      [
+        1787000400,
+        317
+      ],
+      [
+        1787086800,
+        317
+      ],
+      [
+        1787173200,
+        368
+      ],
+      [
+        1787259600,
+        413
+      ],
+      [
+        1787346000,
+        413
+      ],
+      [
+        1787432400,
+        434
+      ],
+      [
+        1787518800,
+        444
+      ],
+      [
+        1787605200,
+        444
+      ],
+      [
+        1787691600,
+        419
+      ],
+      [
+        1787778000,
+        637
+      ],
+      [
+        1787864400,
+        435
+      ]
+    ]
+  },
+  "airports": [
+    {
+      "departure": [
+        {
+          "airport": {
+            "id": "IST",
+            "name": "Istanbul Airport"
+          },
+          "city": "Istanbul",
+          "country": "Türkiye",
+          "country_code": "TR",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTCxBjNwAoLrTOKowDJwZyOgqpPqpGuPY1umCd0ey6x2mma7s1rFxR63gC-wiSQxRp8LzzpwbK_vjhTOg",
+          "thumbnail": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRiCjiMuHyH5raqgVAMRbLlsvhbz3F-vRqjoeVsLl90nMoNQwTytaomGjUfudBUtd2MtI9VLBNX1nuQ2S3W5ilNuO2DRBxUVEgdJX-XYQQ"
+        }
+      ],
+      "arrival": [
+        {
+          "airport": {
+            "id": "LHR",
+            "name": "Heathrow Airport"
+          },
+          "city": "London",
+          "country": "United Kingdom",
+          "country_code": "GB",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRpN9RbtOSTDqKIPxWc_D6rdSysaWVh6d-NW7yz7yFXKRwh5RN5BpNIoXEwH1XVcFdLWqn6Sm8_Y_zmeg",
+          "thumbnail": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQYH83YXny8hR4M7k5BMFq4vUT6LNtVABQzgs2pg-hcpSZq3oMBOQK3xh591AAJv2Qx4uvFZUGqOVt4kuoCUOklISunmndJleOoSef_7QE"
+        }
+      ]
+    }
+  ]
+}

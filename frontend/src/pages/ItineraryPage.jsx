@@ -47,7 +47,7 @@ const RequirementsChecklist = ({ params }) => {
 const ItineraryPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, decrementQuota } = useAuth();
+  const { user, decrementQuota, loading: authLoading } = useAuth();
   
   const [itineraryData, setItineraryData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -185,6 +185,14 @@ const ItineraryPage = () => {
   }, [location.state, user]);
 
   const isComplete = parameters?.numberOfPeople && parameters?.departureLocation && parameters?.budget && parameters?.travelDate && parameters?.destination;
+
+  if (authLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-8 h-8 animate-spin text-[#1E3A8A]" />
+      </div>
+    );
+  }
 
   if (messages.length === 0) {
     return (

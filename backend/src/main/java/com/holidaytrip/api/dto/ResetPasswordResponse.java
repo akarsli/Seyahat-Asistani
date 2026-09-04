@@ -10,4 +10,10 @@ import lombok.NoArgsConstructor;
 public class ResetPasswordResponse {
     private String message;
     private String newPassword;
+
+    public ResetPasswordResponse(String message) {
+        this.message = message;
+        this.newPassword = null;
+    }
 }
+

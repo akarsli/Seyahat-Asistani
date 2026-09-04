@@ -19,6 +19,7 @@ const AuthPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [newPassword, setNewPassword] = useState(null);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
 
   // Form States
   const [name, setName] = useState('');
@@ -38,7 +39,7 @@ const AuthPage = () => {
         const errorText = await res.text();
         throw new Error(errorText || t('auth_page.google_error'));
       }
-      
+
       const data = await res.json();
       login(data);
       const returnTo = location.state?.returnTo || '/';
@@ -54,8 +55,8 @@ const AuthPage = () => {
     setError(null);
 
     const url = isLogin ? 'http://localhost:8081/api/auth/login' : 'http://localhost:8081/api/auth/register';
-    
-    const body = isLogin 
+
+    const body = isLogin
       ? { email, password }
       : { fullName: name, email, password };
 
@@ -80,7 +81,7 @@ const AuthPage = () => {
       }
 
       login(data); // context update
-      
+
       const returnTo = location.state?.returnTo || '/';
       navigate(returnTo, { state: { prompt: location.state?.prompt } }); // Redirect to planner
     } catch (err) {
@@ -109,7 +110,11 @@ const AuthPage = () => {
       }
 
       const data = await response.json();
-      setNewPassword(data.newPassword);
+      if (data.newPassword) {
+        setNewPassword(data.newPassword);
+      } else {
+        setResetEmailSent(true);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -123,7 +128,7 @@ const AuthPage = () => {
       setError(t('auth_page.pwd_mismatch'));
       return;
     }
-    
+
     setLoading(true);
     setError(null);
     try {
@@ -154,6 +159,7 @@ const AuthPage = () => {
   const resetToLogin = () => {
     setForgotPasswordMode(false);
     setForceChangePasswordMode(false);
+    setResetEmailSent(false);
     setNewPassword(null);
     setError(null);
     setPassword('');
@@ -199,281 +205,305 @@ const AuthPage = () => {
 
         <div className="w-full max-w-sm mx-auto my-auto">
           {forceChangePasswordMode ? (
-             <>
-               <h2 className="text-3xl font-bold text-slate-800 mb-2">{t('auth_page.force_change_title')}</h2>
-               <p className="text-slate-500 mb-6">{t('auth_page.force_change_desc')}</p>
+            <>
+              <h2 className="text-3xl font-bold text-slate-800 mb-2">{t('auth_page.force_change_title')}</h2>
+              <p className="text-slate-500 mb-6">{t('auth_page.force_change_desc')}</p>
 
-               {error && (
-                 <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl flex items-start gap-2">
-                   <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                   <span>{error}</span>
-                 </div>
-               )}
+              {error && (
+                <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl flex items-start gap-2">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                  <span>{error}</span>
+                </div>
+              )}
 
-               <form onSubmit={handleChangePassword} className="space-y-4">
-                 <div className="space-y-1">
-                   <label className="text-sm font-semibold text-slate-700">{t('auth_page.new_pwd')}</label>
-                   <div className="relative">
-                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                       <Lock className="h-5 w-5 text-slate-400" />
-                     </div>
-                     <input
-                       type="password"
-                       value={newPasswordValue}
-                       onChange={(e) => setNewPasswordValue(e.target.value)}
-                       required
-                       className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
-                       placeholder={t('auth_page.new_pwd_ph')}
-                     />
-                   </div>
-                 </div>
+              <form onSubmit={handleChangePassword} className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-sm font-semibold text-slate-700">{t('auth_page.new_pwd')}</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Lock className="h-5 w-5 text-slate-400" />
+                    </div>
+                    <input
+                      type="password"
+                      value={newPasswordValue}
+                      onChange={(e) => setNewPasswordValue(e.target.value)}
+                      required
+                      className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
+                      placeholder={t('auth_page.new_pwd_ph')}
+                    />
+                  </div>
+                </div>
 
-                 <div className="space-y-1">
-                   <label className="text-sm font-semibold text-slate-700">{t('auth_page.new_pwd_confirm')}</label>
-                   <div className="relative">
-                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                       <Lock className="h-5 w-5 text-slate-400" />
-                     </div>
-                     <input
-                       type="password"
-                       value={newPasswordConfirm}
-                       onChange={(e) => setNewPasswordConfirm(e.target.value)}
-                       required
-                       className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
-                       placeholder={t('auth_page.new_pwd_confirm_ph')}
-                     />
-                   </div>
-                 </div>
+                <div className="space-y-1">
+                  <label className="text-sm font-semibold text-slate-700">{t('auth_page.new_pwd_confirm')}</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Lock className="h-5 w-5 text-slate-400" />
+                    </div>
+                    <input
+                      type="password"
+                      value={newPasswordConfirm}
+                      onChange={(e) => setNewPasswordConfirm(e.target.value)}
+                      required
+                      className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
+                      placeholder={t('auth_page.new_pwd_confirm_ph')}
+                    />
+                  </div>
+                </div>
 
-                 <button
-                   type="submit"
-                   disabled={loading}
-                   className={`w-full flex justify-center items-center gap-2 bg-[#F59E0B] text-white py-3 rounded-xl font-bold transition-colors shadow-md shadow-amber-600/20 mt-4 ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-amber-600 cursor-pointer'}`}
-                 >
-                   {loading ? t('auth_page.processing') : t('auth_page.btn_update_pwd')}
-                 </button>
-               </form>
-             </>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`w-full flex justify-center items-center gap-2 bg-[#F59E0B] text-white py-3 rounded-xl font-bold transition-colors shadow-md shadow-amber-600/20 mt-4 ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-amber-600 cursor-pointer'}`}
+                >
+                  {loading ? t('auth_page.processing') : t('auth_page.btn_update_pwd')}
+                </button>
+              </form>
+            </>
+          ) : resetEmailSent ? (
+            <div className="text-center py-4">
+              <div className="w-16 h-16 bg-blue-50 text-[#F59E0B] rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-blue-100">
+                <Mail className="w-8 h-8" />
+              </div>
+              <h2 className="text-2xl lg:text-3xl font-bold text-slate-800 mb-3">{t('auth_page.reset_sent_title')}</h2>
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6 text-sm text-slate-600 leading-relaxed">
+                <span className="font-semibold text-slate-800 break-all">{email}</span> {t('auth_page.reset_sent_desc')}
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setResetEmailSent(false);
+                  setForgotPasswordMode(false);
+                  setIsLogin(true);
+                  setPassword('');
+                  setError(null);
+                }}
+                className="w-full flex justify-center items-center gap-2 bg-[#F59E0B] text-white py-3 rounded-xl font-bold transition-colors hover:bg-blue-900 shadow-md shadow-blue-900/20 cursor-pointer"
+              >
+                {t('auth_page.btn_continue_to_login')}
+              </button>
+            </div>
           ) : newPassword ? (
-             <div className="text-center">
-               <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                 <Lock className="w-8 h-8" />
-               </div>
-               <h2 className="text-3xl font-bold text-slate-800 mb-2">{t('auth_page.new_password_title')}</h2>
-               <p className="text-slate-500 mb-6">{t('auth_page.new_password_desc')}</p>
-               <div className="bg-slate-100 p-4 rounded-xl mb-8 border border-slate-200">
-                 <p className="text-2xl font-mono font-bold tracking-widest text-slate-800">{newPassword}</p>
-               </div>
-               <button
-                 onClick={() => {
-                   navigator.clipboard.writeText(newPassword);
-                   resetToLogin();
-                 }}
-                 className="w-full flex justify-center items-center gap-2 bg-[#1E3A8A] text-white py-3 rounded-xl font-bold transition-colors hover:bg-blue-900 shadow-md shadow-blue-900/20"
-               >
-                 {t('auth_page.btn_copy_login')}
-               </button>
-             </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Lock className="w-8 h-8" />
+              </div>
+
+              <h2 className="text-3xl font-bold text-slate-800 mb-2">{t('auth_page.new_password_title')}</h2>
+              <p className="text-slate-500 mb-6">{t('auth_page.new_password_desc')}</p>
+              <div className="bg-slate-100 p-4 rounded-xl mb-8 border border-slate-200">
+                <p className="text-2xl font-mono font-bold tracking-widest text-slate-800">{newPassword}</p>
+              </div>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(newPassword);
+                  resetToLogin();
+                }}
+                className="w-full flex justify-center items-center gap-2 bg-[#1E3A8A] text-white py-3 rounded-xl font-bold transition-colors hover:bg-blue-900 shadow-md shadow-blue-900/20"
+              >
+                {t('auth_page.btn_copy_login')}
+              </button>
+            </div>
           ) : forgotPasswordMode ? (
-             <>
-               <h2 className="text-3xl font-bold text-slate-800 mb-2">{t('auth_page.reset_password')}</h2>
-               <p className="text-slate-500 mb-6">{t('auth_page.reset_password_desc')}</p>
+            <>
+              <h2 className="text-3xl font-bold text-slate-800 mb-2">{t('auth_page.reset_password')}</h2>
+              <p className="text-slate-500 mb-6">{t('auth_page.reset_password_desc')}</p>
 
-               {error && (
-                 <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl flex items-start gap-2">
-                   <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                   <span>{error}</span>
-                 </div>
-               )}
+              {error && (
+                <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl flex items-start gap-2">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                  <span>{error}</span>
+                </div>
+              )}
 
-               <form onSubmit={handleResetPassword} className="space-y-4">
-                 <div className="space-y-1">
-                   <label className="text-sm font-semibold text-slate-700">{t('auth_page.email')}</label>
-                   <div className="relative">
-                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                       <Mail className="h-5 w-5 text-slate-400" />
-                     </div>
-                     <input
-                       type="email"
-                       value={email}
-                       onChange={(e) => setEmail(e.target.value)}
-                       required
-                       className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
-                       placeholder={t('auth_page.email_ph')}
-                     />
-                   </div>
-                 </div>
+              <form onSubmit={handleResetPassword} className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-sm font-semibold text-slate-700">{t('auth_page.email')}</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Mail className="h-5 w-5 text-slate-400" />
+                    </div>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
+                      placeholder={t('auth_page.email_ph')}
+                    />
+                  </div>
+                </div>
 
-                 <button
-                   type="submit"
-                   disabled={loading}
-                   className={`w-full flex justify-center items-center gap-2 bg-[#F59E0B] text-white py-3 rounded-xl font-bold transition-colors shadow-md shadow-amber-600/20 mt-4 ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-amber-600 cursor-pointer'}`}
-                 >
-                   {loading ? t('auth_page.loading_reset') : t('auth_page.btn_reset')}
-                 </button>
-               </form>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`w-full flex justify-center items-center gap-2 bg-[#F59E0B] text-white py-3 rounded-xl font-bold transition-colors shadow-md shadow-amber-600/20 mt-4 ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-amber-600 cursor-pointer'}`}
+                >
+                  {loading ? t('auth_page.loading_reset') : t('auth_page.btn_reset')}
+                </button>
+              </form>
 
-               <div className="mt-8 text-center pb-8 lg:pb-0">
-                 <button type="button" onClick={resetToLogin} className="text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors">
-                   {t('auth_page.back_to_login')}
-                 </button>
-               </div>
-             </>
+              <div className="mt-8 text-center pb-8 lg:pb-0">
+                <button type="button" onClick={resetToLogin} className="text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors">
+                  {t('auth_page.back_to_login')}
+                </button>
+              </div>
+            </>
           ) : (
             <>
               <h2 className="text-3xl font-bold text-slate-800 mb-2">
                 {isLogin ? t('auth_page.welcome') : t('auth_page.create_account')}
               </h2>
               <p className="text-slate-500 mb-6">
-                {isLogin 
-                  ? t('auth_page.welcome_desc') 
+                {isLogin
+                  ? t('auth_page.welcome_desc')
                   : t('auth_page.create_account_desc')}
               </p>
 
-          {error && (
-            <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl flex items-start gap-2">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
-              <span>{error}</span>
-            </div>
-          )}
+              {error && (
+                <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl flex items-start gap-2">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                  <span>{error}</span>
+                </div>
+              )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
 
-            {/* Kayıt Ol: Ad Soyad */}
-            {!isLogin && (
-              <div className="space-y-1">
-                <label className="text-sm font-semibold text-slate-700">{t('auth_page.fullname')}</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-slate-400" />
+                {/* Kayıt Ol: Ad Soyad */}
+                {!isLogin && (
+                  <div className="space-y-1">
+                    <label className="text-sm font-semibold text-slate-700">{t('auth_page.fullname')}</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <User className="h-5 w-5 text-slate-400" />
+                      </div>
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required={!isLogin}
+                        className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
+                        placeholder={t('auth_page.fullname_ph')}
+                      />
+                    </div>
                   </div>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required={!isLogin}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
-                    placeholder={t('auth_page.fullname_ph')}
-                  />
-                </div>
-              </div>
-            )}
+                )}
 
-            {/* Email */}
-            <div className="space-y-1">
-              <label className="text-sm font-semibold text-slate-700">{t('auth_page.email')}</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-slate-400" />
+                {/* Email */}
+                <div className="space-y-1">
+                  <label className="text-sm font-semibold text-slate-700">{t('auth_page.email')}</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Mail className="h-5 w-5 text-slate-400" />
+                    </div>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
+                      placeholder={t('auth_page.email_ph')}
+                    />
+                  </div>
                 </div>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
-                  placeholder={t('auth_page.email_ph')}
+
+                {/* Şifre */}
+                <div className="space-y-1">
+                  <div className="flex justify-between items-center">
+                    <label className="text-sm font-semibold text-slate-700">{t('auth_page.password')}</label>
+                    {isLogin && (
+                      <button type="button" onClick={() => { setForgotPasswordMode(true); setError(null); }} className="text-sm font-medium text-[#1E3A8A] hover:underline cursor-pointer">
+                        {t('auth_page.forgot_pwd')}
+                      </button>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Lock className="h-5 w-5 text-slate-400" />
+                    </div>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
+                      placeholder={t('auth_page.password_ph')}
+                    />
+                  </div>
+                </div>
+
+                {/* Kayıt Ol: Kullanım Koşulları */}
+                {!isLogin && (
+                  <div className="flex items-start gap-2 mt-2">
+                    <input
+                      type="checkbox"
+                      id="terms"
+                      checked={acceptTerms}
+                      onChange={(e) => setAcceptTerms(e.target.checked)}
+                      required={!isLogin}
+                      className="mt-1 w-4 h-4 text-[#1E3A8A] border-slate-300 rounded focus:ring-[#1E3A8A]"
+                    />
+                    <label htmlFor="terms" className="text-sm text-slate-600">
+                      <span className="font-semibold text-[#1E3A8A] hover:underline cursor-pointer">{t('auth_page.terms')}</span> {t('auth_page.and')} <span className="font-semibold text-[#1E3A8A] hover:underline cursor-pointer">{t('auth_page.privacy')}</span> {t('auth_page.read_accept')}
+                    </label>
+                  </div>
+                )}
+
+                {/* Giriş Yap / Kayıt Ol Butonu */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`w-full flex justify-center items-center gap-2 bg-[#F59E0B] text-white py-3 rounded-xl font-bold transition-colors shadow-md shadow-amber-600/20 mt-4 ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-amber-600 cursor-pointer'}`}
+                >
+                  {loading ? (
+                    t('auth_page.processing')
+                  ) : (
+                    <>
+                      {isLogin ? t('auth_page.login_btn') : t('auth_page.register_btn')}
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+
+              {/* Veya Şununla Devam Et */}
+              <div className="relative flex items-center my-6">
+                <div className="flex-grow border-t border-slate-200"></div>
+                <span className="flex-shrink-0 mx-4 text-slate-400 text-sm font-medium">{t('auth_page.or_continue_with')}</span>
+                <div className="flex-grow border-t border-slate-200"></div>
+              </div>
+
+              {/* Google Giriş/Kayıt Butonu */}
+              <div className="flex justify-center w-full">
+                <GoogleLogin
+                  key={`${i18n.language}-${isLogin ? 'login' : 'register'}`}
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => setError(t('auth_page.google_error'))}
+                  text={isLogin ? "signin_with" : "signup_with"}
+                  width="100%"
+                  locale={i18n.language?.startsWith('en') ? 'en_US' : 'tr_TR'}
                 />
               </div>
-            </div>
 
-            {/* Şifre */}
-            <div className="space-y-1">
-              <div className="flex justify-between items-center">
-                <label className="text-sm font-semibold text-slate-700">{t('auth_page.password')}</label>
-                {isLogin && (
-                  <button type="button" onClick={() => { setForgotPasswordMode(true); setError(null); }} className="text-sm font-medium text-[#1E3A8A] hover:underline cursor-pointer">
-                    {t('auth_page.forgot_pwd')}
-                  </button>
+              {/* Alt Geçiş Linki */}
+              <div className="mt-8 text-center pb-8 lg:pb-0">
+                {isLogin ? (
+                  <p className="text-slate-600 text-sm">
+                    {t('auth_page.no_account')}{' '}
+                    <button type="button" onClick={() => setIsLogin(false)} className="font-bold text-[#F59E0B] hover:underline cursor-pointer">
+                      {t('auth_page.register_now')}
+                    </button>
+                  </p>
+                ) : (
+                  <p className="text-slate-600 text-sm">
+                    {t('auth_page.has_account')}{' '}
+                    <button type="button" onClick={() => setIsLogin(true)} className="font-bold text-[#F59E0B] hover:underline cursor-pointer">
+                      {t('auth_page.login_now')}
+                    </button>
+                  </p>
                 )}
               </div>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-slate-400" />
-                </div>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition-all"
-                  placeholder={t('auth_page.password_ph')}
-                />
-              </div>
-            </div>
-
-            {/* Kayıt Ol: Kullanım Koşulları */}
-            {!isLogin && (
-              <div className="flex items-start gap-2 mt-2">
-                <input
-                  type="checkbox"
-                  id="terms"
-                  checked={acceptTerms}
-                  onChange={(e) => setAcceptTerms(e.target.checked)}
-                  required={!isLogin}
-                  className="mt-1 w-4 h-4 text-[#1E3A8A] border-slate-300 rounded focus:ring-[#1E3A8A]"
-                />
-                <label htmlFor="terms" className="text-sm text-slate-600">
-                  <span className="font-semibold text-[#1E3A8A] hover:underline cursor-pointer">{t('auth_page.terms')}</span> {t('auth_page.and')} <span className="font-semibold text-[#1E3A8A] hover:underline cursor-pointer">{t('auth_page.privacy')}</span> {t('auth_page.read_accept')}
-                </label>
-              </div>
-            )}
-
-            {/* Giriş Yap / Kayıt Ol Butonu */}
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full flex justify-center items-center gap-2 bg-[#F59E0B] text-white py-3 rounded-xl font-bold transition-colors shadow-md shadow-amber-600/20 mt-4 ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-amber-600 cursor-pointer'}`}
-            >
-              {loading ? (
-                t('auth_page.processing')
-              ) : (
-                <>
-                  {isLogin ? t('auth_page.login_btn') : t('auth_page.register_btn')}
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
-          </form>
-
-          {/* Veya Şununla Devam Et */}
-          <div className="relative flex items-center my-6">
-            <div className="flex-grow border-t border-slate-200"></div>
-            <span className="flex-shrink-0 mx-4 text-slate-400 text-sm font-medium">{t('auth_page.or_continue_with')}</span>
-            <div className="flex-grow border-t border-slate-200"></div>
-          </div>
-
-          {/* Google Giriş/Kayıt Butonu */}
-          <div className="flex justify-center w-full">
-            <GoogleLogin
-              key={`${i18n.language}-${isLogin ? 'login' : 'register'}`}
-              onSuccess={handleGoogleSuccess}
-              onError={() => setError(t('auth_page.google_error'))}
-              text={isLogin ? "signin_with" : "signup_with"}
-              width="100%"
-              locale={i18n.language?.startsWith('en') ? 'en_US' : 'tr_TR'}
-            />
-          </div>
-
-          {/* Alt Geçiş Linki */}
-          <div className="mt-8 text-center pb-8 lg:pb-0">
-            {isLogin ? (
-              <p className="text-slate-600 text-sm">
-                {t('auth_page.no_account')}{' '}
-                <button type="button" onClick={() => setIsLogin(false)} className="font-bold text-[#F59E0B] hover:underline cursor-pointer">
-                  {t('auth_page.register_now')}
-                </button>
-              </p>
-            ) : (
-              <p className="text-slate-600 text-sm">
-                {t('auth_page.has_account')}{' '}
-                <button type="button" onClick={() => setIsLogin(true)} className="font-bold text-[#F59E0B] hover:underline cursor-pointer">
-                  {t('auth_page.login_now')}
-                </button>
-              </p>
-            )}
-          </div>
-          </>
+            </>
           )}
         </div>
       </div>

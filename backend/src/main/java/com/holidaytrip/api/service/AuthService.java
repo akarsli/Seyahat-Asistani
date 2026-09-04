@@ -32,12 +32,15 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final ItineraryRepository itineraryRepository;
+    private final EmailService emailService;
 
     @Autowired
-    public AuthService(UserRepository userRepository, ItineraryRepository itineraryRepository) {
+    public AuthService(UserRepository userRepository, ItineraryRepository itineraryRepository, EmailService emailService) {
         this.userRepository = userRepository;
         this.itineraryRepository = itineraryRepository;
+        this.emailService = emailService;
     }
+
 
     public User checkAndResetQuota(User user) {
         if (user.getLastQuotaReset() == null || ChronoUnit.DAYS.between(user.getLastQuotaReset(), LocalDateTime.now()) >= 7) {
@@ -197,26 +200,30 @@ public class AuthService {
     }
 
     public ResetPasswordResponse resetPassword(ResetPasswordRequest request) {
-        if (request.getEmail() == null || request.getEmail().isEmpty()) {
+        if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
             throw new RuntimeException("E-posta adresi gerekli.");
         }
 
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı."));
+        String email = request.getEmail().trim();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Bu e-posta adresi ile kayıtlı kullanıcı bulunamadı."));
 
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
-            throw new RuntimeException("Google ile giriş yapmışsınız, şifreniz bulunmamaktadır.");
+            throw new RuntimeException("Google ile kayıt olunmuş, şifreniz bulunmamaktadır.");
         }
 
-        // Generate a random 8-character password
-        String newPassword = UUID.randomUUID().toString().substring(0, 8);
+        // 8 karakterli rastgele harf ve rakamlardan oluşan geçici şifre
+        String newPassword = UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
         String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
         
         user.setPassword(hashedPassword);
         user.setRequiresPasswordChange(true);
         userRepository.save(user);
 
-        return new ResetPasswordResponse("Şifreniz başarıyla sıfırlandı.", newPassword);
+        // Kullanıcının e-posta adresine geçici şifreyi gönder
+        emailService.sendPasswordResetEmail(user.getEmail(), newPassword);
+
+        return new ResetPasswordResponse("Geçici şifreniz e-posta adresinize gönderildi.");
     }
 
     public AuthResponseDto changePassword(ChangePasswordRequest request) {

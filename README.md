@@ -39,7 +39,7 @@ Projeyi kendi bilgisayarınızda çalıştırmak için aşağıdaki adımları i
 
 ### 1. Depoyu Klonlayın
 ```bash
-git clone https://github.com/KULLANICI_ADINIZ/Seyahat-Asistani.git
+git clone https://github.com/akarsli/Seyahat-Asistani.git
 cd Seyahat-Asistani
 ```
 
